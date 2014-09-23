@@ -12,16 +12,16 @@
 
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Accueil</a></li>
-				<li><a href="#">Statistiques</a></li>
+				<li class="active"><a href="#"><i class="fa fa-home"></i> Accueil</a></li>
+				<li><a href="#"><i class="fa fa-line-chart"></i> Statistiques</a></li>
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Gérer <span class="caret"></span></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Gérer <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="#">Users</a></li>
+						<li><a href="#"><i class="fa fa-user"></i> Users</a></li>
 						<li class="divider"></li>
-						<li><a href="#">Equipes</a></li>
-						<li><a href="#">Joueurs</a></li>
-						<li><a href="#">Transferts</a></li>
+						<li><a href="#"><i class="fa fa-male"></i> Equipes</a></li>
+						<li><a href="#"><i class="fa fa-group"></i> Joueurs</a></li>
+						<li><a href="#"><i class="fa fa-arrows-h"></i> Transferts</a></li>
 					</ul>
 				</li>
 			</ul>>
@@ -40,6 +40,3 @@
 		</div>
 	</div>
 </nav>
-
-<div class="logo"></div>
-<div class="logo_text"><?php echo $site_title; ?></div>
