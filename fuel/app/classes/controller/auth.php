@@ -3,48 +3,80 @@
 class Controller_Auth extends \Controller
 {
 	public function action_index (){
-		 $this->login();
-	}
 
-	public function login (){
 		// Already logged in
 		if (\Auth::check())
 		{
-			var_dump('check');die();
 			\Response::redirect_back();
 		}
 
-		\Config::load('opauth');
-		$this->data['oauthList'] = \Config::get('Stategy');
-		\Config::load('config');
+		if (\Input::post('login')){
+			if (\Auth::instance()->login(\Input::param('username'), \Input::param('password'))){
+				if (\Input::post('remember_me', false)){
+					\Auth::remember_me();
+				}
+				else {
+					\Auth::dont_remember_me();
+				}
 
-		/**
-		 * Generate login form
-		 */
-		$login = \Fieldset::forge('loginform', array('form_attributes' => array('class' => 'form-horizontal')));
-		$login->form()->add_csrf();
-		$login->add_model('Model\\Auth_User');
+				\Response::redirect('/');
+			}
+			else {
+				\Messages::error(__('login.failure'));
+			}
 
-		//We only need username and password
-		$login->disable('group_id')->disable('email');
+		}
 
-		//Remember me checkbox
-		$login->add('remember_me', __('login.form.remember_me'), array('type' => 'checkbox', 'value' => true));
-		$login->add('login', '', array('type' => 'submit', 'value' => __('login.form.login'), 'class' => 'btn btn-primary'));
+		// create the layout view
+        $view = View::forge('layout');
 
-		$data['login_form'] = $login;
-
-		// var_dump($login);die();
-		$view = View::forge('layout');
-
+        //local view variables, lazy rendering
         $view->head = View::forge('home/head', array('title' => 'FIFAGOAL', 'description' => 'Application de gestion et de report de matchs joués sur le jeu vidéo de football FIFA'));
         $view->header = View::forge('home/header', array('site_title' => 'FIFAGOAL'));
-        $view->content = View::forge('auth/login', array('data' => $data));
-        $view->footer = View::forge('home/footer', array('site_title' => 'FIFAGOAL'));
-        // var_dump($view);die();
-        // return the view object to the Request
-        return $view->render();
+        $view->content = View::forge('auth/login');
+        $view->footer = View::forge('home/footer', array('title' => 'FIFAGOAL'));
 
-		// $this->theme->set_partial('content', 'auth/login')->set($this->data, null, false);
+
+        return $view;
+
+	}
+
+	public function action_signin (){
+		if (\Input::post('register')){
+			try {
+				$created = \Auth::create_user(\Input::post('username'), \Input::post('password'), \Input::post('email'), 3, array('fullname' => \Input::post('fullname')));
+
+				if ($created){
+					\Response::redirect('/');
+				}
+				else {
+					var_dump('error');die();
+				}
+			}
+			catch (\SimpleUserUpdateException $e){
+				if ($e->getCode() == 2){
+					var_dump('pb email');die();
+				}
+
+				elseif ($e->getCode() == 3){
+					var_dump('username already exists');die();
+				}
+
+				else {
+					$e->getMessage();
+				}
+			}
+		}
+
+        $view = View::forge('layout');
+
+        //local view variables, lazy rendering
+        $view->head = View::forge('home/head', array('title' => 'FIFAGOAL', 'description' => 'Application de gestion et de report de matchs joués sur le jeu vidéo de football FIFA'));
+        $view->header = View::forge('home/header', array('site_title' => 'FIFAGOAL'));
+        $view->content = View::forge('auth/signin');
+        $view->footer = View::forge('home/footer', array('title' => 'FIFAGOAL'));
+
+
+        return $view;
 	}
 }

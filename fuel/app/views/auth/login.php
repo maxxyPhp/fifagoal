@@ -1,32 +1,42 @@
-HELLOOOOOO
-<div class="row-fluid">
-<div class="span6">
-    <div class="legend">
-        <legend class=""><?= __('login.form.login') ?></legend>
+<div class="row">
+    <div class="span6">
+        <div class="legend">
+            <legend class=""><?= __('login.form.login') ?></legend>
+        </div>
+
+        <form class="form-horizontal" action="/auth" accept-charset="utf-8" method="post" role="form"> 
+            <div class="form-group">
+                <label id='label-username' for="form_username" class="col-sm-2 control-label">Pseudo</label>
+                <div class="col-sm-8">
+                    <input type="text" required="required" id="form_username" name="username" value="" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label id="label_password" for="form_password" class="col-sm-2 control-label">Mot de passe</label>
+                <div class="col-sm-8">
+                    <input type="password" id="form_password" name="password" value="" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="1" id="form_remember_me">Se souvenir de moi
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <input type="submit" class="btn btn-primary" id="form_login" name="login" value="Se connecter" />
+                </div>
+            </div>
+        </form>
+
     </div>
-
-    <?= \Form::open(array('class' => 'form-horizontal')); ?>
-    <?= $login_form->field('username')->set_attribute(array('class' => 'form-control')); ?>
-    <?= $login_form->field('password')->set_attribute(array('class' => 'form-control')); ?>
-    <?= $login_form->field('remember_me'); ?>
-    <?= $login_form->field('login'); ?>
-    <?= \Form::close(); ?>
-</div>
-
-<?php if($oauthList): ?>
-<div class="span6">
-    <div class="legend">
-        <legend class=""><?= __('login.social-network') ?> :</legend>
-    </div>
-
-    <?= __('login.login-with') ?>:
-    <ul>
-    <?php foreach($oauthList as $strategy_name => $value): ?>
-            <li><a href="<?= \Uri::get('auth_oauth', array('provider' => strtolower($strategy_name))); ?>"><?= $strategy_name ?></a></li>
-    <?php endforeach; ?>
-    </ul>
-</div>
-<?php endif; ?>
 </div>
 
 <script type="text/javascript">
