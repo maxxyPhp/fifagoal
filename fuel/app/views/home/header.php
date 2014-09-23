@@ -35,7 +35,7 @@
 
 			<ul class="nav navbar-nav navbar-right">
 				<button type="button" class="btn btn-default navbar-btn">Inscription</button>
-				<button type="button" class="btn btn-primary navbar-btn">Connexion</button>
+				<a href="/auth" class="btn btn-primary navbar-btn">Connexion</a>
 			</ul>
 		</div>
 	</div>
