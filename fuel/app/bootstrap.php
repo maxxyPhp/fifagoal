@@ -24,10 +24,10 @@ Autoloader::register();
  * Fuel::STAGING
  * Fuel::PRODUCTION
  */
-Fuel::$env = (isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : Fuel::PRODUCTION);
+Fuel::$env = (isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : Fuel::DEVELOPMENT);
 //1and1 Fix
 if (Fuel::$env == false){
-	Fuel::$env = (isset($_SERVER['REDIRECT_FUEL_ENV'])) ? $_SERVER['REDIRECT_FUEL_ENV'] : Fuel::PRODUCTION;
+	Fuel::$env = (isset($_SERVER['REDIRECT_FUEL_ENV'])) ? $_SERVER['REDIRECT_FUEL_ENV'] : Fuel::DEVELOPMENT;
 }
 
 // Initialize the framework with the config file.
