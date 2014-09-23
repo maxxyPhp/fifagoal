@@ -34,7 +34,7 @@
 			</form>
 
 			<ul class="nav navbar-nav navbar-right">
-				<button type="button" class="btn btn-default navbar-btn">Inscription</button>
+				<a href="/auth/signin" class="btn btn-default navbar-btn">Inscription</a>
 				<a href="/auth" class="btn btn-primary navbar-btn">Connexion</a>
 			</ul>
 		</div>

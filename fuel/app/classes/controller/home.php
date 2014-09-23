@@ -2,6 +2,14 @@
 
 class Controller_Home extends Controller
 {
+	public $template = '_layout/template';
+	public $themeOverride = 'home';
+
+	// public function before() {
+ //        // Set template
+ //        $this->theme = \Theme::instance();
+ //    }
+
 	/**
 	 * The basic welcome message
 	 *
@@ -17,11 +25,10 @@ class Controller_Home extends Controller
         $view->head = View::forge('home/head', array('title' => 'FIFAGOAL', 'description' => 'Application de gestion et de report de matchs joués sur le jeu vidéo de football FIFA'));
         $view->header = View::forge('home/header', array('site_title' => 'FIFAGOAL'));
         $view->content = View::forge('home/content', array('username' => 'Pippo', 'title' => 'Home'));
-        $view->footer = View::forge('home/footer', array('site_title' => 'FIFAGOAL'));
+        $view->footer = View::forge('home/footer', array('title' => 'FIFAGOAL'));
 
         // return the view object to the Request
         return $view;
-		// return Response::forge(View::forge('home/index'));
 	}
 
 	/**
