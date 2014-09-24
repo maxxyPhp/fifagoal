@@ -14,17 +14,20 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="#"><i class="fa fa-home"></i> Accueil</a></li>
 				<li><a href="#"><i class="fa fa-line-chart"></i> Statistiques</a></li>
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Gérer <span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="#"><i class="fa fa-user"></i> Users</a></li>
-						<li class="divider"></li>
-						<li><a href="#"><i class="fa fa-male"></i> Equipes</a></li>
-						<li><a href="#"><i class="fa fa-group"></i> Joueurs</a></li>
-						<li><a href="#"><i class="fa fa-arrows-h"></i> Transferts</a></li>
-					</ul>
-				</li>
-			</ul>>
+				<?php $group = \Model\Auth_Group::find(6); ?>
+				<?php if (\Auth::check() && \Auth::member($group)): ?>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Gérer <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="/users"><i class="fa fa-user"></i> Users</a></li>
+							<li class="divider"></li>
+							<li><a href="#"><i class="fa fa-male"></i> Equipes</a></li>
+							<li><a href="#"><i class="fa fa-group"></i> Joueurs</a></li>
+							<li><a href="#"><i class="fa fa-arrows-h"></i> Transferts</a></li>
+						</ul>
+					</li>
+				<?php endif; ?>
+			</ul>
 
 			<form class="navbar-form navbar-left" role="search">
 				<div class="form-group">

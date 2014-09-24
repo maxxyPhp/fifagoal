@@ -5,4 +5,6 @@ return array(
 	
 	'hello(/:name)?' => array('welcome/hello', 'name' => 'hello'),
 	'auth' => array('auth/index', 'name' => 'auth'),
+
+	'users/admin/:id' => 'users/admin',
 );
