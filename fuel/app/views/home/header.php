@@ -34,8 +34,12 @@
 			</form>
 
 			<ul class="nav navbar-nav navbar-right">
-				<a href="/auth/signin" class="btn btn-default navbar-btn">Inscription</a>
-				<a href="/auth" class="btn btn-primary navbar-btn">Connexion</a>
+				<?php if (\Auth::check()): ?>
+					<a href="/auth/logout" class="btn btn-primary navbar-btn">Déconnexion</a>
+				<?php else: ?>
+					<a href="/auth/signin" class="btn btn-default navbar-btn">Inscription</a>
+					<a href="/auth" class="btn btn-primary navbar-btn">Connexion</a>
+				<?php endif; ?>
 			</ul>
 		</div>
 	</div>

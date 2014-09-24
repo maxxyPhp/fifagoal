@@ -79,4 +79,11 @@ class Controller_Auth extends \Controller
 
         return $view;
 	}
+
+	public function action_logout (){
+		\Auth::dont_remember_me();
+		\Auth::logout();
+		\Messages::success('Déconnecté');
+		\Response::redirect('/');
+	}
 }
