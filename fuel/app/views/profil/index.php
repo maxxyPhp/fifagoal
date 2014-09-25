@@ -6,7 +6,7 @@
 	    <?php foreach (array('success', 'info', 'warning', 'error') as $type): ?>
 
 	        <?php foreach (\Messages::instance()->get($type) as $message): ?>
-	            <div class="alert alert-<?= $message['type']; ?>"><?= $message['body']; ?></div>\n
+	            <div class="alert alert-<?= $message['type']; ?>"><?= $message['body']; ?></div>
 	        <?php endforeach; ?>
 
 	    <?php endforeach; ?>
@@ -16,8 +16,14 @@
 	<div class="row">
 		<div class="col-xs-6 col-md-4">
 			<div class="profil_photo">
-				<i class="fa fa-user fa-5x"></i><br>
-				<a href="/users/photo/<?= \Auth::get('id') ?>" class="btn btn-info">Changer ma photo de profil</a>
+				<div class="section_photo">
+					<?php if ($photo_user): ?>
+						<img src="<?= \Uri::base().\Config::get('users.photo.path') ?><?= $photo_user->photo ?>" alt="<?= \Auth::get('username') ?>" class="img-circle" width="300px" heigth="300px">
+					<?php else: ?>
+						<i class="fa fa-user fa-5x"></i><br>
+					<?php endif; ?>
+				</div>
+				<input type="file" id="file_photo" name="file" class="form-control btn btn-info" data-toggle="file-input" title="Changer ma photo de profil">
 			</div>
 		</div>
 		
@@ -37,9 +43,33 @@
 
 			<h2 class="page-header">Fonctionnalités</h2>
 			<a href="/users/change/<?= \Auth::get('id') ?>" class="btn btn-warning">Changer mon mot de passe</a>
-			<a href="/users/delete/<?= \Auth::get('id') ?>" class="btn btn-danger">Me désinscrire du site</a>
+			<a href="/users/delete/<?= \Auth::get('id') ?>" class="btn btn-danger btn-quit">Me désinscrire du site</a>
 		</div>
 
 	
 	</div>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.btn-quit').on('click', function(){
+			if (!confirm("Etes vous sur de vouloir vous désinscrire du site ?")){
+				return false;
+			}
+		});
+
+		$('#file_photo').uploadify({
+			'buttonText' : 'Changer ma photo',
+			'buttonClass' : 'btn btn-info btn-upload-photo',
+			'swf' : window.location.origin+'/assets/js/uploadify/uploadify.swf',
+			'uploader' : window.location.origin+'/users/uploadPhoto',
+			'fileDesc' : 'Image Files',
+			'fileExt' : '*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.pdf',
+			'onUploadSuccess' : function(file, data, response){
+				location.reload();
+			}
+		});
+		$('#file_photo-button').removeClass('uploadify-button');
+		$('#file_photo-button').css('height', '');
+	});
+</script>

@@ -4,3 +4,5 @@
 		2014 <i class="fa fa-soccer-ball-o"></i>
 	</div>
 </div>
+
+<?= \Asset::js('uploadify/jquery.uploadify.min.js'); ?>

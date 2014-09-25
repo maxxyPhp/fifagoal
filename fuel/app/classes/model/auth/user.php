@@ -62,4 +62,15 @@ class Auth_User extends \Auth\Model\Auth_User
         ),
     );
 
+    // Relation Users >> Photo users
+    protected static $_has_one = array(
+        'photouser' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Photousers',
+            'key_to' => 'id_users',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        )
+    );
+
 }

@@ -11,6 +11,7 @@
 <?= \Asset::css('style.css'); ?>
 <?= \Asset::css('bootstrap/bootstrap.min.css'); ?>
 <?= \Asset::css('font-awesome/css/font-awesome.min.css') ?>
+<?= \Asset::css('uploadify/uploadify.css'); ?>
 
 <?= \Asset::js('jquery/jquery-2.1.1.min.js') ?>
 <?= \Asset::js('bootstrap/bootstrap.min.js') ?>

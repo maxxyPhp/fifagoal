@@ -12,6 +12,11 @@
 
 
 return array(
+	'users' => array(
+		'photo' => array(
+			'path' => 'upload/photo_user/',
+		),
+	),
 
 	/**
 	 * base_url - The base URL of the application.
@@ -274,7 +279,7 @@ return array(
 		 * );
 		 */
 		'packages'  => array(
-			'orm', 'auth', 'messages'
+			'orm', 'auth', 'messages',
 		),
 
 		/**

@@ -114,4 +114,58 @@ class Controller_Users extends Controller
 
 		return $view;
 	}
+
+	/**
+	 * Upload des logos avec Uploadify (POST only)
+	 */
+	public function post_uploadPhoto (){
+		if (!empty($_FILES)){
+			// Recherche si déjà une photo de profil
+			$photo_user = \Model_Photousers::find('all', array(
+				'where' => array(
+					array('id_users', \Auth::get('id')),
+				),
+			));
+
+			// Si oui, on supprime l'ancienne
+			if (!empty($photo_user)){
+				$photo_user = current($photo_user);
+				$fichier = DOCROOT . \Config::get('users.photo.path') . DS . $photo_user->photo;
+				if (file_exists($fichier)) unlink($fichier);
+			}
+			// Sinon on en crée une nouvelle
+			else {
+				$photo_user = \Model_Photousers::forge();
+			}
+
+			$uploadConfig = array(
+				'path' => DOCROOT . \Config::get('users.photo.path'),
+				'normalize' => true,
+				'ext_whitelist' => array('jpg', 'jpeg', 'png', 'bmp', 'gif', 'pdf'),
+				'new_name' => \Auth::get('username'),
+			);
+			
+			\Upload::process($uploadConfig);
+
+			if (\Upload::is_valid()){
+				\Upload::save();
+			} 
+
+			foreach (\Upload::get_errors() as $file){
+				foreach ($file['errors'] as $error){
+					if ($error['error'] !== UPLOAD_ERR_NO_FILE){
+						\Messages::error($error['message']);
+						\Response::redirect('/profil');
+					}
+				}
+			}
+
+			foreach (\Upload::get_files() as $file){
+				$photo_user->photo = $file['saved_as'];
+				$photo_user->id_users = \Auth::get('id');
+				$photo_user->save();
+				return $file['saved_as'];
+			}
+		}
+	}
 }
