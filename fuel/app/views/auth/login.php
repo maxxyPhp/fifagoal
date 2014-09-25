@@ -4,6 +4,18 @@
             <legend class=""><?= __('login.form.login') ?></legend>
         </div>
 
+        <?php if (\Messages::any()): ?>
+            <br/>
+            <?php foreach (array('success', 'info', 'warning', 'error') as $type): ?>
+
+                <?php foreach (\Messages::instance()->get($type) as $message): ?>
+                    <div class="alert alert-<?= $message['type']; ?>"><?= $message['body']; ?></div>\n
+                <?php endforeach; ?>
+
+            <?php endforeach; ?>
+            <?php \Messages::reset(); ?>
+        <?php endif; ?>
+
         <form class="form-horizontal" action="/auth" accept-charset="utf-8" method="post" role="form"> 
             <div class="form-group">
                 <label id='label-username' for="form_username" class="col-sm-2 control-label">Pseudo</label>

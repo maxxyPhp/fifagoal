@@ -43,27 +43,34 @@ class Controller_Auth extends \Controller
 
 	public function action_signin (){
 		if (\Input::post('register')){
+			if (!filter_var(\Input::post('email'), FILTER_VALIDATE_EMAIL) || (\Input::post('password') != \Input::post('confirm'))){
+				\Response::redirect('/auth/signin');
+			}
 			try {
-				$created = \Auth::create_user(\Input::post('username'), \Input::post('password'), \Input::post('email'), 3, array('fullname' => \Input::post('fullname')));
+				$created = \Auth::create_user(htmlspecialchars(\Input::post('username')), \Input::post('password'), \Input::post('email'), 3, array('fullname' => htmlspecialchars(\Input::post('fullname'))));
 
 				if ($created){
+					\Auth::login(\Input::post('username'), \Input::post('password'));
 					\Response::redirect('/');
 				}
 				else {
-					var_dump('error');die();
+					\Messages::error('Une erreur est survenue lors de la création du compte');
+					\Response::redirect('/');
 				}
 			}
 			catch (\SimpleUserUpdateException $e){
 				if ($e->getCode() == 2){
-					var_dump('pb email');die();
+					\Messages::error('Le mail est invalide');
+					\Response::redirect_back();
 				}
 
 				elseif ($e->getCode() == 3){
-					var_dump('username already exists');die();
+					\Messages::error('Le pseudo est déjà pris');
+					\Response::redirect_back();
 				}
 
 				else {
-					$e->getMessage();
+					\Messages::error($e->getMessage());
 				}
 			}
 		}
