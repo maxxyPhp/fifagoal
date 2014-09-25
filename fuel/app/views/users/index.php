@@ -29,7 +29,6 @@
 							<?php if ($user->group_id != 6): ?>
 								<a href="/users/admin/<?= $user->id ?>" class="btn btn-info"><i class="fa fa-asterisk"></i> Nommer admin</a>
 							<?php endif; ?>
-							<a href="/users/edit/<?= $user->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 							<a href="/users/delete/<?= $user->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>
 						</td>
 					</tr>
