@@ -12,6 +12,10 @@
 	<?php endif; ?>
 
 	<h1 class="page-header">Liste des pays</h1>
+
+	<a href="/pays/add" class="btn btn-success">Ajouter un nouveau pays</a>
+	<a href="/pays/import" class="btn btn-info"><i class="fa fa-upload"></i> Import CSV</a>
+	
 	<?php if ($pays): ?>
 		<section class="table-responsive">
 			<table class="table table-hover table-striped">
@@ -27,7 +31,7 @@
 						<tr>
 							<td><?= $pay->id ?></td>
 							<td><?= strtoupper($pay->nom) ?></td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.pays.path') . $pay->drapeau ?>" alt="<?= $pay->nom ?>" width="100px" height="75px" /></td>
+							<td><img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $pay->drapeau ?>" alt="<?= $pay->nom ?>" width="100px" height="75px" /></td>
 							<td>	
 								<a href="/pays/add/<?= $pay->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 								<a href="/pays/delete/<?= $pay->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>
@@ -42,5 +46,6 @@
 	<?php endif; ?>
 
 	<a href="/pays/add" class="btn btn-success">Ajouter un nouveau pays</a>
+	<a href="/pays/import" class="btn btn-info"><i class="fa fa-upload"></i> Import CSV</a>
 
 </div>

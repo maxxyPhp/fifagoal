@@ -109,4 +109,123 @@ class Controller_Pays extends Controller
 
 		\Response::redirect('/pays');
 	}
+
+	public function action_import (){
+		if (\Input::method() == 'POST' || \Input::get('current')){
+			if (\Input::method() == 'POST'){
+				$file = \Input::file('file');
+				$name = $this->processUploadCSV($file);
+				if (empty($name)){
+					\Messages::error('Pas de fichier uploadé');
+					\Response::redirect('/pays');
+				}
+
+				$fichier = DOCROOT . \Config::get('upload.tmp.path') . '/' . $name;
+				if (file_exists($fichier)) $file_content = \File::read($fichier, true);
+				$current_line = 0;
+			}
+			else {
+				$name = \Input::get('name');
+				$file_content = \File::read(DOCROOT . \Config::get('upload.tmp.path') . '/' . $name, true);
+				$current_line = \Input::get('current_line');
+			}
+
+			// Conversion CSV vers PHP
+			$donnees = \Format::forge($file_content, 'csv')->to_array();
+
+			// Nombre de logne du fichier
+			$number_of_line = count($donnees);
+			$line = 0;
+
+			//Fetch les lignes
+			for ($i = $current_line; $i < $number_of_line; $i++){
+				$data = $donnees[$i];
+
+				$pays;
+
+				$pays = \Model_Pays::query()->where('nom', '=', $data['Nom'])->get();
+
+
+				if (empty($pays)){
+					$pays = \Model_Pays::forge();
+					$pays->nom = $data['Nom'];
+					$pays->drapeau = str_replace(' ', '', $data['Nom']) . '.png';
+					$pays->save();
+
+					try {
+						$drapeau = file_get_contents($data['Drapeau'], FILE_USE_INCLUDE_PATH);
+					}
+					catch (PhpErrorException $e){
+						\Messages::error($e->getMessage());
+					}
+
+					// $explode = explode('/', $data['Drapeau']);
+					// $name_drap = end($explode);
+
+					//Détermination du nom du fichier et de son chemin d'accès
+					file_exists(DOCROOT . \Config::get('upload.pays.path')) or \File::create_dir(DOCROOT . \Config::get('upload.pays.path'), 'pays');
+
+					$nom_drapeau = DOCROOT . \Config::get('upload.pays.path') . DS . str_replace(' ', '', $data['Nom'] . '.png');
+
+					// Création de l'image
+					$fp = fopen($nom_drapeau, 'w+');
+					fwrite($fp, $drapeau);
+					fclose($fp);
+				}
+
+				// Quand on a interprété 20 ligne, raffraichissement de la page pour éviter erreur TimeExecution
+				if ($line >= 20){
+					echo "Chargement en cours ...";
+					\Response::redirect('/pays/import?current=true&name='.$name.'&current_line='.$i, 'refresh');
+				}
+
+				$line++;
+			}//FOR
+
+			//Suppression fichier CSV
+			$fichier = DOCROOT . \Config::get('upload.tmp.path') . DS . $name;
+			if (file_exists($fichier)) unlink($fichier);
+
+			\Messages::success('Import terminé avec succès');
+			\Response::redirect('/pays');
+		}//IF POST
+
+		$view = $this->view('pays/import', array());
+		return $view;
+	}
+
+	/**
+	 * processUploadCSV
+	 * Upload des fichiers CSV pour l'import de données dans A/R
+	 *
+	 * @param String $file
+	 */
+	public function processUploadCSV ($file){
+		$uploadConfig = array(
+			'path' => DOCROOT . \Config::get('upload.tmp.path'),
+			'normalize' => true,
+			'ext_whitelist' => array('csv'),
+		);
+		
+		\Upload::process($uploadConfig);
+
+		
+		if (\Upload::is_valid()){
+			\Upload::save();
+		}
+
+
+		foreach (\Upload::get_errors() as $file){
+			foreach ($file['errors'] as $error){
+				if ($error['error'] !==  UPLOAD_ERR_NO_FILE){
+					\Messages::error($error['message']);
+					\Response::redirect('/pays');
+				}
+			}
+		}
+
+		foreach (\Upload::get_files() as $file){
+			return $file['saved_as'];
+		}
+	}
 }
