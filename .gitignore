@@ -4,6 +4,9 @@ fuel/app/logs/*
 # Config development
 fuel/app/config/development/db.php
 
+#Upload
+public/upload/*
+
 fifagoal.sublime-workspace
 
 #################
