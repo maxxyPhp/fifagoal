@@ -24,8 +24,10 @@
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="/users"><i class="fa fa-user"></i> Users</a></li>
 							<li class="divider"></li>
+							<li><a href="/pays"><i class="fa fa-flag"></i> Pays</a></li>
 							<li><a href="#"><i class="fa fa-male"></i> Equipes</a></li>
 							<li><a href="#"><i class="fa fa-group"></i> Joueurs</a></li>
+							<li><a href="#"><i class="fa fa-futbol-o"></i> Matchs</a></li>
 							<li><a href="#"><i class="fa fa-arrows-h"></i> Transferts</a></li>
 						</ul>
 					</li>

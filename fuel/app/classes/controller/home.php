@@ -2,16 +2,9 @@
 
 class Controller_Home extends Controller
 {
-	public $template = '_layout/template';
-	public $themeOverride = 'home';
-
-	// public function before() {
- //        // Set template
- //        $this->theme = \Theme::instance();
- //    }
 
 	/**
-	 * The basic welcome message
+	 * The home page
 	 *
 	 * @access  public
 	 * @return  Response

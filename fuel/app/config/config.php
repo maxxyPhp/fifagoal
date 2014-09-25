@@ -18,6 +18,21 @@ return array(
 		),
 	),
 
+	'upload' => array(
+		'pays' => array(
+			'path' => 'upload/pays',
+		),
+		'championnat' => array(
+			'path' => 'upload/championnat',
+		),
+		'equipes' => array(
+			'path' => 'upload/equipes',
+		),
+		'joueurs' => array(
+			'path' => 'upload/joueurs',
+		),
+	),
+
 	/**
 	 * base_url - The base URL of the application.
 	 * MUST contain a trailing slash (/)
