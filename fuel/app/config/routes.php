@@ -7,4 +7,5 @@ return array(
 	'auth' => array('auth/index', 'name' => 'auth'),
 
 	'users/admin/:id' => 'users/admin',
+	'users/delete/:id' => 'users/delete',
 );
