@@ -12,6 +12,9 @@
 <?= \Asset::css('bootstrap/bootstrap.min.css'); ?>
 <?= \Asset::css('font-awesome/css/font-awesome.min.css') ?>
 <?= \Asset::css('uploadify/uploadify.css'); ?>
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/plug-ins/a5734b29083/integration/bootstrap/3/dataTables.bootstrap.css">
+<?= \Asset::css('select2/select2.css'); ?>
 
 <?= \Asset::js('jquery/jquery-2.1.1.min.js') ?>
 <?= \Asset::js('bootstrap/bootstrap.min.js') ?>
+

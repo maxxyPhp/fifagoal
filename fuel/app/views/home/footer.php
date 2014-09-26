@@ -6,3 +6,6 @@
 </div>
 
 <?= \Asset::js('uploadify/jquery.uploadify.min.js'); ?>
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/plug-ins/a5734b29083/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<?= \Asset::js('select2/select2.min.js'); ?>
