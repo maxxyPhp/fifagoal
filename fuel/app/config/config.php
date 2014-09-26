@@ -12,6 +12,11 @@
 
 
 return array(
+	'application' => array(
+		'title' => 'FIFAGOAL',
+		'description' => 'Application de gestion et de report de matchs joués sur le jeu vidéo de football FIFA',
+	),
+
 	'users' => array(
 		'photo' => array(
 			'path' => 'upload/photo_user/',
