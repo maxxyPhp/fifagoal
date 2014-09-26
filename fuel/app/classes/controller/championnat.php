@@ -7,6 +7,8 @@ class Controller_Championnat extends Controller
 	 * Liste les championnats
 	 */
 	public function action_index (){
+		$this->verifAutorisation();
+		
 		$championnats = \Model_Championnat::find('all');
 
 		$view = $this->view('championnat/index', array('championnats' => $championnats));
@@ -41,6 +43,8 @@ class Controller_Championnat extends Controller
 	 * @param int $id
 	 */
 	public function action_add ($id = null){
+		$this->verifAutorisation();
+
 		$isUpdate = ($id !== null) ? true : false;
 
 		if ($isUpdate){
@@ -110,6 +114,8 @@ class Controller_Championnat extends Controller
 	 * @param int $id
 	 */
 	public function action_delete ($id){
+		$this->verifAutorisation();
+
 		$championnat = \Model_Championnat::find($id);
 		if (empty($championnat)){
 			\Messages::error('Ce championnat n\'existe pas');
@@ -134,6 +140,8 @@ class Controller_Championnat extends Controller
 	 * Importer des championnats depuis un fichier CSV
 	 */
 	public function action_import (){
+		$this->verifAutorisation();
+
 		if (\Input::method() == 'POST' || \Input::get('current')){
 			if (\Input::method() == 'POST'){
 				$file = \Input::file('file');
@@ -252,6 +260,16 @@ class Controller_Championnat extends Controller
 
 		foreach (\Upload::get_files() as $file){
 			return $file['saved_as'];
+		}
+	}
+
+	/**
+	 * Verif Autorisation
+	 * Vérifie que l'utilisateur est connecté et est un admin
+	 */
+	public function verifAutorisation (){
+		if (!\Auth::check() || !\Auth::member(6)){
+			\Response::redirect('/');
 		}
 	}
 }

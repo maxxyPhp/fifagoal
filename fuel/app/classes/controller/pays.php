@@ -3,6 +3,8 @@
 class Controller_Pays extends Controller 
 {
 	public function action_index (){
+		$this->verifAutorisation();
+
 		$pays = \Model_Pays::find('all');
 
 		$view = $this->view('pays/index', array('pays' => $pays));
@@ -10,6 +12,8 @@ class Controller_Pays extends Controller
 	}
 
 	public function action_add ($id = null){
+		$this->verifAutorisation();
+
 		$isUpdate = ($id !== null) ? true : false;
 
 		if ($isUpdate){
@@ -91,6 +95,8 @@ class Controller_Pays extends Controller
 	}
 
 	public function action_delete ($id){
+		$this->verifAutorisation();
+
 		$pays = \Model_Pays::find($id);
 		if (empty($pays)){
 			\Messages::error('Ce pays n\'existe pas');
@@ -111,6 +117,8 @@ class Controller_Pays extends Controller
 	}
 
 	public function action_import (){
+		$this->verifAutorisation();
+
 		if (\Input::method() == 'POST' || \Input::get('current')){
 			if (\Input::method() == 'POST'){
 				$file = \Input::file('file');
@@ -158,9 +166,6 @@ class Controller_Pays extends Controller
 					catch (PhpErrorException $e){
 						\Messages::error($e->getMessage());
 					}
-
-					// $explode = explode('/', $data['Drapeau']);
-					// $name_drap = end($explode);
 
 					//Détermination du nom du fichier et de son chemin d'accès
 					file_exists(DOCROOT . \Config::get('upload.pays.path')) or \File::create_dir(DOCROOT . \Config::get('upload.pays.path'), 'pays');
@@ -226,6 +231,16 @@ class Controller_Pays extends Controller
 
 		foreach (\Upload::get_files() as $file){
 			return $file['saved_as'];
+		}
+	}
+
+	/**
+	 * Verif Autorisation
+	 * Vérifie que l'utilisateur est connecté et est un admin
+	 */
+	public function verifAutorisation (){
+		if (!\Auth::check() || !\Auth::member(6)){
+			\Response::redirect('/');
 		}
 	}
 }
