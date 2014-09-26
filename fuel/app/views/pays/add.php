@@ -12,7 +12,7 @@
 		<div class="form-group">
 			<label for="form_nom" class="col-sm-2 control-label">Nom</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="form_pays" required="required" name="nom">
+				<input type="text" class="form-control" id="form_pays" required="required" name="nom" <?php if($pays->nom): ?> value="<?= $pays->nom ?>" <?php endif; ?>>
 			</div>
 		</div>
 
@@ -23,7 +23,7 @@
 			</div>
 		</div>
 
-		<input type="hidden" name="drapeau" id="hidden_drapeau">
+		<input type="hidden" name="drapeau" id="hidden_drapeau" <?php if($pays->drapeau): ?> value="<?= $pays->drapeau ?>" <?php endif; ?>>
 
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">

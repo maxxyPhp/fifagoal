@@ -18,7 +18,7 @@
 	
 	<?php if ($pays): ?>
 		<section class="table-responsive">
-			<table class="table table-hover table-striped">
+			<table id="myTab" class="table table-hover table-striped">
 				<thead>
 					<th>ID</th>
 					<th>Nom</th>
@@ -49,3 +49,9 @@
 	<a href="/pays/import" class="btn btn-info"><i class="fa fa-upload"></i> Import CSV</a>
 
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function(){ 
+		$('#myTab').DataTable();  
+	});
+</script> 

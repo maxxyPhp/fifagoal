@@ -1,5 +1,16 @@
 <section class="container">
 	<h1 class="page-header">Import de pays</h1>
+
+	<div class="alert alert-info alert-dismissible" role="alert">
+		<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<span class="fa-stack fa-lg">
+			<i class="fa fa-circle fa-stack-2x"></i>
+			<i class="fa fa-info fa-stack-1x fa-inverse"></i>
+		</span>
+		<strong>Info sur le fichier CSV :</strong><br>
+		Il doit contenir une colonne "Nom" et une colonne "Drapeau", contenant respectivement le nom du pays sans caractères accentués et l'url des drapeaux.
+	</div>
+
 	<section class="form">
 		<form action="/pays/import" method="post" class="form-horizontal" enctype="multipart/form-data">
 		
