@@ -36,6 +36,9 @@ return array(
 		'joueurs' => array(
 			'path' => 'upload/joueurs',
 		),
+		'selections' => array(
+			'path' => 'upload/selection',
+		),
 		'tmp' => array(
 			'path' => 'upload/tmp',
 		),

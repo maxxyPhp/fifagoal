@@ -27,7 +27,8 @@
 							<li><a href="/pays"><i class="fa fa-flag"></i> Pays</a></li>
 							<li><a href="/championnat"><i class="fa fa-cubes"></i> Championnat</a></li>
 							<li><a href="/equipe"><i class="fa fa-cube"></i> Equipes</a></li>
-							<li><a href="#"><i class="fa fa-male"></i> Joueurs</a></li>
+							<li><a href="/joueur"><i class="fa fa-male"></i> Joueurs</a></li>
+							<li><a href="/selection"><i class="fa fa-gittip"></i> Selections</a></li>
 							<li><a href="#"><i class="fa fa-futbol-o"></i> Matchs</a></li>
 							<li><a href="#"><i class="fa fa-arrows-h"></i> Transferts</a></li>
 						</ul>

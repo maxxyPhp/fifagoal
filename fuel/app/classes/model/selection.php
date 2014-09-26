@@ -1,6 +1,6 @@
 <?php
 
-class Model_Pays extends \Orm\Model
+class Model_Selection extends \Orm\Model
 {
 	protected static $_properties = array(
 		'id',
@@ -10,12 +10,17 @@ class Model_Pays extends \Orm\Model
 			'null' => false,
 			'validation' => array('required'),
 		),
-		'drapeau' => array(
-			'label' => 'Drapeau',
+		'logo' => array(
+			'label' => 'Logo',
 			'default' => '',
 			'null' => false,
-			'validation' => array('required'),
 			'form' => array('type' => 'file'),
+		),
+		'id_pays' => array(
+			'label' => 'Pays',
+			'default' => '',
+			'null' => false,
+			'form' => array('type' => 'select'),
 		),
 		'created_at' => array(
 			'form' => array('type' => false),
@@ -30,10 +35,9 @@ class Model_Pays extends \Orm\Model
 	);
 
 	protected static $_conditions = array(
-		'order_by' => array('nom' => 'asc'),
+		'oder_by' => array('nom' => 'asc'),
 	);
-	
-	//Maj lors de la création et la modification des données 
+
 	protected static $_observers = array(
 		'\Orm\Observer_CreatedAt' => array(
 			'events' => array('before_insert'),
@@ -44,26 +48,26 @@ class Model_Pays extends \Orm\Model
 			'mysql_timestamp' => false,
 		),
 	);
-	
-	protected static $_table_name = 'pays';
 
-	// Realtion Pays >> Championnat
-	protected static $_has_many = array(
-	    'championnat' => array(
-	        'key_from' => 'id',
-	        'model_to' => 'Model_Championnat',
-	        'key_to' => 'id_pays',
+	protected static $_table_name = 'selections';
+
+	// Relation Selection >> Pays
+	protected static $_belongs_to = array(
+	    'pays' => array(
+	        'key_from' => 'id_pays',
+	        'model_to' => 'Model_Pays',
+	        'key_to' => 'id',
 	        'cascade_save' => true,
-	        'cascade_delete' => true,
+	        'cascade_delete' => false,
 	    )
 	);
 
-	// Relation Pays >> Selection
-	protected static $_has_one = array(
-	    'selection' => array(
+	// Relation Selection >> Joueur
+	protected static $_has_many = array(
+	    'joueurs' => array(
 	        'key_from' => 'id',
-	        'model_to' => 'Model_Selection',
-	        'key_to' => 'id_pays',
+	        'model_to' => 'Model_Joueur',
+	        'key_to' => 'id_selection',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
 	    )

@@ -47,7 +47,7 @@
 		<div class="alert alert-danger" role="alert"><i class="fa fa-warning"></i> Pas d'équipe pour le moment</div>
 	<?php endif; ?>
 
-	<a href="/equipe/add" class="btn btn-success">Ajouter un nouveau pays</a>
+	<a href="/equipe/add" class="btn btn-success">Ajouter une nouvelle équipe</a>
 	<a href="/equipe/import" class="btn btn-info"><i class="fa fa-upload"></i> Import CSV</a>
 
 </div>
