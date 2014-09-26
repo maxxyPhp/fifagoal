@@ -1,6 +1,6 @@
 <?php
 
-class Model_Pays extends \Orm\Model
+class Model_Equipe extends \Orm\Model
 {
 	protected static $_properties = array(
 		'id',
@@ -10,12 +10,23 @@ class Model_Pays extends \Orm\Model
 			'null' => false,
 			'validation' => array('required'),
 		),
-		'drapeau' => array(
-			'label' => 'Drapeau',
+		'nom_court' => array(
+			'label' => 'Nom court',
+			'default' => '',
+			'null' => true,
+		),
+		'logo' => array(
+			'label' => 'Logo',
 			'default' => '',
 			'null' => false,
 			'validation' => array('required'),
 			'form' => array('type' => 'file'),
+		),
+		'id_championnat' => array(
+			'label' => 'Championnat',
+			'default' => '',
+			'null' => false,
+			'form' => array('type' => 'select'),
 		),
 		'created_at' => array(
 			'form' => array('type' => false),
@@ -30,10 +41,9 @@ class Model_Pays extends \Orm\Model
 	);
 
 	protected static $_conditions = array(
-		'order_by' => array('nom' => 'asc'),
+		'oder_by' => array('nom' => 'asc'),
 	);
-	
-	//Maj lors de la création et la modification des données 
+
 	protected static $_observers = array(
 		'\Orm\Observer_CreatedAt' => array(
 			'events' => array('before_insert'),
@@ -44,17 +54,17 @@ class Model_Pays extends \Orm\Model
 			'mysql_timestamp' => false,
 		),
 	);
-	
-	protected static $_table_name = 'pays';
 
-	// Realtion Pays >> Championnat
-	protected static $_has_many = array(
+	protected static $_table_name = 'equipes';
+
+	// Relation Equipe >> Championnat
+	protected static $_has_one = array(
 	    'championnat' => array(
-	        'key_from' => 'id',
+	        'key_from' => 'id_championnat',
 	        'model_to' => 'Model_Championnat',
-	        'key_to' => 'id_pays',
+	        'key_to' => 'id',
 	        'cascade_save' => true,
-	        'cascade_delete' => true,
+	        'cascade_delete' => false,
 	    )
 	);
 }

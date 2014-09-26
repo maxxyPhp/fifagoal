@@ -62,4 +62,15 @@ class Model_Championnat extends \Orm\Model
 	        'cascade_delete' => false,
 	    )
 	);
+
+	// Relation Championnat >> Equipe
+	protected static $_has_many = array(
+	    'equipes' => array(
+	        'key_from' => 'id',
+	        'model_to' => 'Model_Equipe',
+	        'key_to' => 'id_championnat',
+	        'cascade_save' => true,
+	        'cascade_delete' => true,
+	    )
+	);
 }
