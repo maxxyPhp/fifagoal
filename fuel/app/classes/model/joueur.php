@@ -1,6 +1,6 @@
 <?php
 
-class Model_Equipe extends \Orm\Model
+class Model_Joueur extends \Orm\Model
 {
 	protected static $_properties = array(
 		'id',
@@ -10,22 +10,34 @@ class Model_Equipe extends \Orm\Model
 			'null' => false,
 			'validation' => array('required'),
 		),
-		'nom_court' => array(
-			'label' => 'Nom court',
+		'prenom' => array(
+			'label' => 'Prénom',
 			'default' => '',
 			'null' => true,
 		),
-		'logo' => array(
-			'label' => 'Logo',
+		'id_poste' => array(
+			'label' => 'Poste',
 			'default' => '',
 			'null' => false,
 			'validation' => array('required'),
-			'form' => array('type' => 'file'),
+			'form' => array('type' => 'select'),
 		),
-		'id_championnat' => array(
-			'label' => 'Championnat',
+		'photo' => array(
+			'label' => 'Photo',
 			'default' => '',
 			'null' => false,
+			'form' => array('type' => 'file'),
+		),
+		'id_equipe' => array(
+			'label' => 'Equipe',
+			'default' => '',
+			'null' => true,
+			'form' => array('type' => 'select'),
+		),
+		'id_selection' => array(
+			'label' => 'Selection',
+			'default' => '',
+			'null' => true,
 			'form' => array('type' => 'select'),
 		),
 		'created_at' => array(
@@ -55,27 +67,34 @@ class Model_Equipe extends \Orm\Model
 		),
 	);
 
-	protected static $_table_name = 'equipes';
+	protected static $_table_name = 'joueurs';
 
-	// Relation Equipe >> Championnat
+	// Relation Joueur >> Equipe
 	protected static $_has_one = array(
-	    'championnat' => array(
-	        'key_from' => 'id_championnat',
-	        'model_to' => 'Model_Championnat',
+	    'equipe' => array(
+	        'key_from' => 'id_equipe',
+	        'model_to' => 'Model_Equipe',
 	        'key_to' => 'id',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
-	    )
+	    ),
 	);
 
-	// Relation Equipe >> Joueur
-	protected static $_has_many = array(
-	    'joueurs' => array(
-	        'key_from' => 'id',
-	        'model_to' => 'Model_Joueur',
-	        'key_to' => 'id_equipe',
+	// Relation Joueur >> Selection
+	protected static $_belongs_to = array(
+	    'selection' => array(
+	        'key_from' => 'id_selection',
+	        'model_to' => 'Model_Selection',
+	        'key_to' => 'id',
 	        'cascade_save' => true,
-	        'cascade_delete' => true,
+	        'cascade_delete' => false,
+	    ),
+	    'poste' => array(
+	        'key_from' => 'id_poste',
+	        'model_to' => 'Model_Poste',
+	        'key_to' => 'id',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
 	    )
 	);
 }

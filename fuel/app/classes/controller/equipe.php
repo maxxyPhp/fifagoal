@@ -3,6 +3,51 @@
 class Controller_Equipe extends \Controller
 {
 	/**
+	 * Get Api
+	 * AJAX ONLY
+	 *
+	 * @param String $context
+	 */
+	public function get_api ($context){
+		switch ($context){
+			case 'getEquipes':
+				if (!is_numeric(\Input::get('id_championnat'))){
+					return 'KO';
+				}
+
+				$equipes = \Model_Equipe::query()->where('id_championnat', '=', \Input::get('id_championnat'))->order_by('nom')->get();
+
+				foreach ($equipes as $equipe){
+					$array[] = $this->object_to_array($equipe);
+				}
+				
+				return json_encode($array);
+				break;
+		}
+	}
+
+	/**
+	 * Object To Array
+	 * Transforme un objet en tableau multidimensionnel
+	 *
+	 * @param $data
+	 * @return $data
+	 */
+	function object_to_array($data){
+	    if(is_array($data) || is_object($data)){
+	        $result = array();
+	 
+	        foreach($data as $key => $value) {
+	            $result[$key] = $this->object_to_array($value);
+	        }
+	 
+	        return $result;
+	    }
+	 
+	    return $data;
+	}
+
+	/**
 	 * Index
 	 * Liste les équipes
 	 */
