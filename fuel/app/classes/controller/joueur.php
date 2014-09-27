@@ -191,4 +191,227 @@ class Controller_Joueur extends \Controller
 
 		\Response::redirect('/joueur');
 	}
+
+	/**
+	 * Import
+	 * Importer des championnats depuis un fichier CSV
+	 */
+	public function action_import (){
+		$this->verifAutorisation();
+
+		if (\Input::method() == 'POST' || \Input::get('current')){
+			if (\Input::method() == 'POST'){
+				$file = \Input::file('file');
+				$name = $this->processUploadCSV($file);
+				if (empty($name)){
+					\Messages::error('Pas de fichier uploadé');
+					\Response::redirect('/joueur');
+				}
+
+				$fichier = DOCROOT . \Config::get('upload.tmp.path') . '/' . $name;
+				if (file_exists($fichier)) $file_content = \File::read($fichier, true);
+				$current_line = 0;
+			}
+			else {
+				$name = \Input::get('name');
+				$file_content = \File::read(DOCROOT . \Config::get('upload.tmp.path') . '/' . $name, true);
+				$current_line = \Input::get('current_line');
+			}
+
+			// Conversion CSV vers PHP
+			$donnees = \Format::forge($file_content, 'csv')->to_array();
+			// Nombre de logne du fichier
+			$number_of_line = count($donnees);
+			$line = 0;
+
+			//Fetch les lignes
+			for ($i = $current_line; $i < $number_of_line; $i++){
+				$data = $donnees[$i];
+
+				$championnat; $pays; $equipe;
+
+				/**
+				 *
+				 * TRAITEMENT DE LA NATIONALITE
+				 *
+				 */
+				
+				//TO DO
+
+				if (!empty($data['Selection'])){
+					/**
+					 *
+					 * TRAITEMENT DU PAYS
+					 *
+					 */
+					$pays = \Model_Pays::query()->where('nom', '=', $data['Selection'])->get();
+					if (empty($pays)){
+						$pays = \Model_Pays::forge();
+						$pays->nom = $data['Selection'];
+						$pays->drapeau = '';
+						$pays->save();
+					} else $pays = current($pays);
+
+					/**
+					 *
+					 * TRAITEMENT DE LA SELECTION
+					 *
+					 */
+					$selection = \Model_Selection::query()->where('nom', '=', $data['Selection'])->get();
+
+
+					if (empty($selection)){
+						$selection = \Model_Selection::forge();
+						$selection->nom = $data['Selection'];
+						$selection->logo = '';
+						$selection->id_pays = $pays->id;
+						$selection->save();
+					} else $selection = current($selection);
+				}
+
+				/**
+				 *
+				 * TRAITEMENT DU CHAMPIONNAT
+				 *
+				 */
+				$championnat = \Model_Championnat::query()->where('nom', '=', $data['Championnat'])->get();
+
+				if (empty($championnat)){
+					$championnat = \Model_Championnat::forge();
+					$championnat->nom = $data['Championnat'];
+					$championnat->logo = '';
+					$championnat->id_pays = 0;
+					$championnat->save();
+				} else $championnat = current($championnat);
+
+				/**
+				 *
+				 * TRAITEMENT DE L'EQUIPE
+				 *
+				 */
+
+				$equipe = \Model_Equipe::query()->where('nom', '=', $data['Equipe'])->get();
+				if (empty($equipe)){
+					$equipe = \Model_Equipe::forge();
+					$equipe->nom = $data['Equipe'];
+					$equipe->nom_court = '';
+					$equipe->logo = '';
+					$equipe->id_championnat = 0;
+					$equipe->save();
+				} else $equipe = current($equipe);
+
+				/**
+				 *
+				 * TRAITEMENT DU POSTE
+				 *
+				 */
+				$poste = \Model_Poste::query()->where('nom', '=', $data['Poste'])->get();
+				if (empty($poste)){
+					$poste = \Model_Poste::forge();
+					$poste->nom = $data['Poste'];
+					$poste->save();
+				} else $poste = current($poste);
+
+				/**
+				 *
+				 * TRAITEMENT DU JOUEUR
+				 *
+				 */
+				$joueur = \Model_Joueur::find('all', array(
+					'where' => array(
+						array('nom', $data['Nom']),
+						array('id_poste', $poste->id),
+						array('id_equipe', $equipe->id),
+					),
+				));
+
+				if (empty($joueur)){
+					$joueur = \Model_Joueur::forge();
+					$joueur->nom = $data['Nom'];
+					$joueur->prenom = isset($data['Prenom']) ? $data['Prenom'] : '';
+					$joueur->id_poste = $poste->id;
+					$joueur->photo = str_replace(' ', '_', $data['Nom'] . '_' . $data['Prenom']) . '.png';
+					$joueur->id_equipe = $equipe->id;
+					$joueur->id_selection = (!empty($selection)) ? $selection->id : 0;
+					$joueur->save();
+
+
+					try {
+						$photo = file_get_contents($data['Photo'], FILE_USE_INCLUDE_PATH);
+					}
+					catch (PhpErrorException $e){
+						\Messages::error($e->getMessage());
+					}
+
+					//Détermination du nom du fichier et de son chemin d'accès
+					if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path'))){
+						\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path'), 'joueurs');
+					}
+					// file_exists(DOCROOT . \Config::get('upload.joueurs.path')) or \File::create_dir(DOCROOT . \Config::get('upload.joueurs.path'), 'joueurs');
+					file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom))) or \File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)), lcfirst($championnat->nom));
+					file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)) . DS . str_replace(' ', '_', lcfirst($equipe->nom))) or \File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)) . DS . str_replace(' ', '_', lcfirst($equipe->nom)), lcfirst($equipe->nom));
+
+					$nom_photo = DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)) . DS . str_replace(' ', '_', lcfirst($equipe->nom)) . DS . str_replace(' ', '_', $data['Nom'] . '.png');
+
+					// Création de l'image
+					$fp = fopen($nom_photo, 'w+');
+					fwrite($fp, $photo);
+					fclose($fp);
+				}
+
+				// Quand on a interprété 20 ligne, raffraichissement de la page pour éviter erreur TimeExecution
+				if ($line >= 20){
+					echo "Chargement en cours ...";
+					\Response::redirect('/joueur/import?current=true&name='.$name.'&current_line='.$i, 'refresh');
+				}
+
+				$line++;
+			}//FOR
+
+			//Suppression fichier CSV
+			$fichier = DOCROOT . \Config::get('upload.tmp.path') . DS . $name;
+			if (file_exists($fichier)) unlink($fichier);
+
+			\Messages::success('Import terminé avec succès');
+			\Response::redirect('/joueur');
+		}//IF POST
+
+		$view = $this->view('joueur/import', array());
+		return $view;
+	}
+
+	/**
+	 * processUploadCSV
+	 * Upload des fichiers CSV pour l'import de données
+	 *
+	 * @param String $file
+	 */
+	public function processUploadCSV ($file){
+		$uploadConfig = array(
+			'path' => DOCROOT . \Config::get('upload.tmp.path'),
+			'normalize' => true,
+			'ext_whitelist' => array('csv'),
+		);
+		
+		\Upload::process($uploadConfig);
+
+		
+		if (\Upload::is_valid()){
+			\Upload::save();
+		}
+
+
+		foreach (\Upload::get_errors() as $file){
+			foreach ($file['errors'] as $error){
+				if ($error['error'] !==  UPLOAD_ERR_NO_FILE){
+					\Messages::error($error['message']);
+					\Response::redirect('/joueur');
+				}
+			}
+		}
+
+		foreach (\Upload::get_files() as $file){
+			return $file['saved_as'];
+		}
+	}
 }
