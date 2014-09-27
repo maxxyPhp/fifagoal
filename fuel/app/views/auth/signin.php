@@ -1,4 +1,6 @@
-<div class="row">
+<div class="container">
+	<h1 class="page-header">S'inscrire</h1>
+
 	<?php if (\Messages::any()): ?>
 	    <br/>
 	    <?php foreach (array('success', 'info', 'warning', 'error') as $type): ?>
@@ -49,7 +51,7 @@
 
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-				<input type="submit" class="btn btn-primary" id="form_register" name="register" value="S'inscrire" />
+				<input type="submit" class="btn btn-primary btn-lg" id="form_register" name="register" value="S'inscrire" />
 			</div>
 		</div>
 	</form>

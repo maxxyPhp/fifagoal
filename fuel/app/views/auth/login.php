@@ -1,8 +1,5 @@
-<div class="row">
-    <div class="span6">
-        <div class="legend">
-            <legend class=""><?= __('login.form.login') ?></legend>
-        </div>
+<div class="container">
+    <h1 class="page-header">Se connecter</h1>
 
         <?php if (\Messages::any()): ?>
             <br/>
@@ -43,12 +40,10 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <input type="submit" class="btn btn-primary" id="form_login" name="login" value="Se connecter" />
+                    <input type="submit" class="btn btn-primary btn-lg" id="form_login" name="login" value="Se connecter" />
                 </div>
             </div>
         </form>
-
-    </div>
 </div>
 
 <script type="text/javascript">
