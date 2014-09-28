@@ -42,6 +42,7 @@ return array(
 		'tmp' => array(
 			'path' => 'upload/tmp',
 		),
+		'path' => 'upload',
 	),
 
 	/**

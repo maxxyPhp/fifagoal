@@ -97,4 +97,18 @@ class Model_Joueur extends \Orm\Model
 	        'cascade_delete' => false,
 	    )
 	);
+
+	// Relation Joueurs >> Pays
+	protected static $_many_many = array(
+	    'pays' => array(
+	        'key_from' => 'id',
+	        'key_through_from' => 'id_joueur', // column 1 from the table in between, should match a posts.id
+	        'table_through' => 'joueurs_pays', // both models plural without prefix in alphabetical order
+	        'key_through_to' => 'id_pays', // column 2 from the table in between, should match a users.id
+	        'model_to' => 'Model_Pays',
+	        'key_to' => 'id',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    )
+	);
 }

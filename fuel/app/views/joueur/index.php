@@ -32,14 +32,26 @@
 				<tbody>
 					<?php foreach ($joueurs as $joueur): ?>
 						<tr>
-							<td><?= $joueur->id ?></td>
-							<td><?= strtoupper($joueur->nom) ?> - <?= $joueur->prenom ?></td>
-							<td><?= $joueur->poste->nom ?></td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . $joueur->photo ?>" alt="<?= $joueur->nom ?> <?= $joueur->prenom ?>" width="75px" height="100px" /></td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . $joueur->equipe->logo ?>" alt="<?= $joueur->equipe->nom ?>" width="75px" height="75px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->equipe->nom ?>" /></td>
 							<td>
-								<?php if ($joueur->id_selection): ?>
-									<img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $joueur->selection->logo ?>" alt="<?= $joueur->selection->nom ?>" width="75px" height="100px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->selection->nom ?>" />
+								<?php if($joueur->pays): ?>
+									<?php foreach ($joueur->pays as $pays): ?>
+										<img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $pays->drapeau ?>" alt="<?= $pays->nom ?>" width="20px" height="20px" />
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</td>
+							<td><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></td>
+							<td><?= $joueur->poste->nom ?></td>
+							<td>
+								<?php if ($joueur->photo): ?>
+									<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', lcfirst($joueur->equipe->championnat->nom)) . '/' . str_replace(' ', '_', $joueur->equipe->nom) . '/' . $joueur->photo ?>" alt="<?= $joueur->nom ?> <?= $joueur->prenom ?>" width="60px" height="60px" />
+								<?php else: ?>
+									<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/notfound.png' ?>" alt="Not found" width="60px" />
+								<?php endif; ?>
+							</td>
+							<td><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . $joueur->equipe->logo ?>" alt="<?= $joueur->equipe->nom ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->equipe->nom ?>" /></td>
+							<td>
+								<?php if ($joueur->selection): ?>
+									<img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $joueur->selection->logo ?>" alt="<?= $joueur->selection->nom ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->selection->nom ?>" />
 								<?php endif; ?>
 							</td>
 							<td>	
