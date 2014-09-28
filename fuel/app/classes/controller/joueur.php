@@ -228,15 +228,8 @@ class Controller_Joueur extends \Controller
 			for ($i = $current_line; $i < $number_of_line; $i++){
 				$data = $donnees[$i];
 
-				$championnat; $pays; $equipe;
+				$championnat; $pays; $equipe; $selection = '';
 
-				/**
-				 *
-				 * TRAITEMENT DE LA NATIONALITE
-				 *
-				 */
-				
-				//TO DO
 
 				if (!empty($data['Selection'])){
 					/**
@@ -305,10 +298,10 @@ class Controller_Joueur extends \Controller
 				 * TRAITEMENT DU POSTE
 				 *
 				 */
-				$poste = \Model_Poste::query()->where('nom', '=', $data['Poste'])->get();
+				$poste = \Model_Poste::query()->where('nom', '=', strtoupper($data['Poste']))->get();
 				if (empty($poste)){
 					$poste = \Model_Poste::forge();
-					$poste->nom = $data['Poste'];
+					$poste->nom = strtoupper($data['Poste']);
 					$poste->save();
 				} else $poste = current($poste);
 
@@ -319,44 +312,63 @@ class Controller_Joueur extends \Controller
 				 */
 				$joueur = \Model_Joueur::find('all', array(
 					'where' => array(
-						array('nom', $data['Nom']),
+						array('nom', strtolower($data['Nom'])),
 						array('id_poste', $poste->id),
 						array('id_equipe', $equipe->id),
 					),
 				));
 
+
 				if (empty($joueur)){
 					$joueur = \Model_Joueur::forge();
-					$joueur->nom = $data['Nom'];
-					$joueur->prenom = isset($data['Prenom']) ? $data['Prenom'] : '';
+					$joueur->nom = strtolower($data['Nom']);
+					$joueur->prenom = isset($data['Prenom']) ? strtolower($data['Prenom']) : '';
 					$joueur->id_poste = $poste->id;
-					$joueur->photo = str_replace(' ', '_', $data['Nom'] . '_' . $data['Prenom']) . '.png';
+					$joueur->photo = !empty($data['Photo']) ? str_replace(' ', '_', strtolower($data['Nom']) . '_' . strtolower($data['Prenom'])) . '.png' : '';
 					$joueur->id_equipe = $equipe->id;
 					$joueur->id_selection = (!empty($selection)) ? $selection->id : 0;
 					$joueur->save();
 
-
-					try {
-						$photo = file_get_contents($data['Photo'], FILE_USE_INCLUDE_PATH);
+					$nationalites = explode('|', $data['Nationalite']);
+					foreach ($nationalites as $nationalite){
+						$pays = \Model_Pays::query()->where('nom', '=', $nationalite)->get();
+						if (!empty($pays)){
+							$joueur->pays = $pays;
+							$joueur->save();
+						}
 					}
-					catch (PhpErrorException $e){
-						\Messages::error($e->getMessage());
+
+					if (!empty($data['Photo'])){
+						try {
+							$photo = file_get_contents($data['Photo'], FILE_USE_INCLUDE_PATH);
+						}
+						catch (PhpErrorException $e){
+							\Messages::error($e->getMessage());
+						}
+
+						//Détermination du nom du fichier et de son chemin d'accès
+						if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path'))){
+							\File::create_dir(DOCROOT . 'upload', 'joueurs');
+						}
+
+						
+						if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)))){
+							\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path'), str_replace(' ', '_', strtolower($championnat->nom)));
+						}
+						
+		
+						if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)) . DS . str_replace(' ', '_', strtolower($equipe->nom)))){
+							\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)), str_replace(' ', '_', strtolower($equipe->nom)));
+						}
+
+
+						$nom_photo = DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)) . DS . str_replace(' ', '_', strtolower($equipe->nom)) . DS . str_replace(' ', '_', strtolower($data['Nom']) . '_' . strtolower($data['Prenom']) . '.png');
+
+						// Création de l'image
+						$fp = fopen($nom_photo, 'w+');
+						fwrite($fp, $photo);
+						fclose($fp);
 					}
-
-					//Détermination du nom du fichier et de son chemin d'accès
-					if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path'))){
-						\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path'), 'joueurs');
-					}
-					// file_exists(DOCROOT . \Config::get('upload.joueurs.path')) or \File::create_dir(DOCROOT . \Config::get('upload.joueurs.path'), 'joueurs');
-					file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom))) or \File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)), lcfirst($championnat->nom));
-					file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)) . DS . str_replace(' ', '_', lcfirst($equipe->nom))) or \File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)) . DS . str_replace(' ', '_', lcfirst($equipe->nom)), lcfirst($equipe->nom));
-
-					$nom_photo = DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', lcfirst($championnat->nom)) . DS . str_replace(' ', '_', lcfirst($equipe->nom)) . DS . str_replace(' ', '_', $data['Nom'] . '.png');
-
-					// Création de l'image
-					$fp = fopen($nom_photo, 'w+');
-					fwrite($fp, $photo);
-					fclose($fp);
 				}
 
 				// Quand on a interprété 20 ligne, raffraichissement de la page pour éviter erreur TimeExecution
