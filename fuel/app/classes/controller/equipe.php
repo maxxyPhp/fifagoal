@@ -256,8 +256,8 @@ class Controller_Equipe extends \Controller
 				if (empty($equipe)){
 					$equipe = \Model_Equipe::forge();
 					$equipe->nom = $data['Nom'];
-					$equipe->nom_court = (isset($data['Nom_court'])) ? $data['Nom_court'] : '';
-					$equipe->logo = str_replace(' ', '', $data['Nom']) . '.png';
+					$equipe->nom_court = (isset($data['Nom_court'])) ? strtoupper($data['Nom_court']) : '';
+					$equipe->logo = str_replace(' ', '_', strtolower($data['Nom'])) . '.png';
 					$equipe->id_championnat = $championnat->id;
 					$equipe->save();
 
@@ -269,9 +269,10 @@ class Controller_Equipe extends \Controller
 					}
 
 					//Détermination du nom du fichier et de son chemin d'accès
-					file_exists(DOCROOT . \Config::get('upload.equipes.path')) or \File::create_dir(DOCROOT . \Config::get('upload.equipes.path'), 'equipes');
+					file_exists(DOCROOT . \Config::get('upload.equipes.path')) or \File::create_dir(DOCROOT . 'upload', 'equipes');
+					file_exists(DOCROOT . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($championnat->nom))) or \File::create_dir(DOCROOT . \Config::get('upload.equipes.path'), str_replace(' ', '_', strtolower($championnat->nom)));
 
-					$nom_logo = DOCROOT . \Config::get('upload.equipes.path') . DS . str_replace(' ', '', $data['Nom'] . '.png');
+					$nom_logo = DOCROOT . \Config::get('upload.equipes.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)) . DS . str_replace(' ', '_', strtolower($data['Nom']) . '.png');
 
 					// Création de l'image
 					$fp = fopen($nom_logo, 'w+');
