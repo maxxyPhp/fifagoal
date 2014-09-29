@@ -1,94 +1,59 @@
-<?php
+<?php 
 
-class Controller_Joueur extends \Controller
+class Controller_Transfert extends \Controller 
 {
 	public function get_api ($context){
 		switch ($context){
-			case 'getInfo':
-				if (!is_numeric(\Input::get('id_joueur'))){
+			case 'transferer':
+				if (!is_numeric(\Input::get('equipe')) || !is_numeric(\Input::get('joueur'))){
 					return 'KO';
 				}
 
-				$joueurs = \Model_Joueur::find(\Input::get('id_joueur'));
+				$joueur = \Model_Joueur::find(\Input::get('joueur'));
+				if (empty($joueur)) return 'KO';
+					
+				$equipe = \Model_Equipe::find(\Input::get('equipe'));
+				if (empty($equipe)) return 'KO';
 
-				if (empty($joueurs)){
-					return 'KO';
+				$old_equipe = $joueur->equipe;
+
+				$joueur->id_equipe = $equipe->id;
+				$joueur->save();
+
+				$chemin_photo = DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($old_equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($old_equipe->nom)) . '/' . $joueur->photo;
+
+				if (file_exists($chemin_photo)){
+					if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($equipe->championnat->nom)))){
+						\File::create_dir(DOCROOT . 'upload/joueurs', str_replace(' ', '_', strtolower($equipe->championnat->nom)));
+					}
+
+					if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($equipe->championnat->nom)) . '/' . str_replace(' ','_', strtolower($equipe->nom)))){
+						\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($equipe->championnat->nom)), str_replace(' ','_', strtolower($equipe->nom)));
+					}
+
+					try {
+						\File::copy($chemin_photo, DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($equipe->championnat->nom)) . '/' . str_replace(' ','_', strtolower($equipe->nom)) . '/' . $joueur->photo);
+					}
+					catch (\FileAccessException $e){
+						var_dump('access');
+					}
+
+					try {
+						\File::delete($chemin_photo);
+					}
+					catch (\InvalidPathException $e){
+						var_dump('path'); 
+					}
 				}
 
-				$poste = \Model_Poste::find($joueurs->id_poste);
-				$joueurs->poste = $poste->nom;
+				return json_encode('OK');
 
-				if ($poste->nom == 'BU' || $poste->nom == 'AT' || $poste->nom == 'AIG' || $poste->nom == 'AID'){
-					$joueurs->status_poste = "primary";
-				} elseif ($poste->nom == 'G'){
-					$joueurs->status_poste = "danger";
-				} elseif ($poste->nom == 'DD' || $poste->nom == 'DC' || $poste->nom == 'DG' || $poste->nom == 'LIB'){
-					$joueurs->status_poste = 'warning';
-				} else $joueurs->status_poste = "success";
-
-				$championnat = \Model_Championnat::find($joueurs->equipe->championnat->id);
-				if (!empty($championnat)){
-					$joueurs->championnat = str_replace(' ', '_', strtolower($championnat->nom));
-				}
-
-				$equipe = \Model_Equipe::find($joueurs->equipe->id);
-				if (!empty($equipe)){
-					$joueurs->equipe = str_replace(' ', '_', strtolower($equipe->nom));
-				}
-
-				$selection = \Model_Selection::find($joueurs->id_selection);
-				if (!empty($selection)){
-					$joueurs->selection = $selection->nom;
-				}
-
-				$joueurs->nationalite = array();
-				foreach ($joueurs->pays as $pays){
-					$joueurs->nationalite[] = $pays->drapeau;
-				}
-				
-
-				foreach ($joueurs as $joueur){
-					$array[] = $this->object_to_array($joueur);
-				}
-
-				return json_encode($array);
 				break;
 		}
 	}
 
-	/**
-	 * Object To Array
-	 * Transforme un objet en tableau multidimensionnel
-	 *
-	 * @param $data
-	 * @return $data
-	 */
-	function object_to_array($data){
-	    if(is_array($data) || is_object($data)){
-	        $result = array();
-	 
-	        foreach($data as $key => $value) {
-	            $result[$key] = $this->object_to_array($value);
-	        }
-	 
-	        return $result;
-	    }
-	 
-	    return $data;
-	}
-
-	/**
-	 * Index
-	 * Liste les équipes
-	 */
 	public function action_index (){
-		$this->verifAutorisation();
-
-		
-		$joueurs = \Model_Joueur::find('all');
-
-		$view = $this->view('joueur/index', array('joueurs' => $joueurs));
-		return $view;
+		return $this->view('transfert/index', array());
 	}
 
 	/**
@@ -130,27 +95,6 @@ class Controller_Joueur extends \Controller
 	 */
 	public function action_add ($id = null){
 		$this->verifAutorisation();
-		
-		$isUpdate = ($id !== null) ? true : false;
-
-		if ($isUpdate){
-			$joueur = \Model_Joueur::find($id);
-			if (empty($joueur)){
-				\Messages::error('Ce joueur n\'existe pas');
-				\Response::redirect('/joueur');
-			}
-
-			$championnat_joueur = current(\Model_Championnat::query()->where('id', '=', $joueur->equipe->championnat->id)->get());
-			$equipes_championnat = \Model_Equipe::query()->where('id_championnat', '=', $championnat_joueur->id)->order_by('nom')->get();
-		}
-		else {
-			$joueur = \Model_Joueur::forge();	
-		}
-
-		// $equipes = \Model_Equipe::find('all');
-		$selections = \Model_Selection::find('all');
-		$postes = \Model_Poste::find('all');
-		$championnats = \Model_Championnat::find('all');
 
 		// Pays qui ont un championnat
 		$query = \DB::query('SELECT DISTINCT pays.nom, pays.id, drapeau FROM pays JOIN championnat ON championnat.id_pays = pays.id ORDER BY pays.nom')->as_object('Model_Pays')->execute();
@@ -158,113 +102,11 @@ class Controller_Joueur extends \Controller
 		foreach ($query as $result){
 			$pays[] = $result;
 		}
-		
 
+		$championnats = \Model_Championnat::find('all');
 
-		if (\Input::post('add')){
-			// var_dump($_FILES);die();
-			$id_equipe = \Input::post('id_equipe');
-			$id_selection = \Input::post('id_selection');
-			if ((!empty($id_equipe) && !is_numeric($id_equipe)) || (!empty($id_selection) && !is_numeric($id_selection))){
-				\Messages::error('Il y a une erreur dans le formulaire');
-					\Response::redirect('/joueur/add');
-			}
-
-			$equipe = \Model_Equipe::find($id_equipe);
-			$championnat = \Model_Championnat::find($equipe->id_championnat);
-
-			
-			/* Creation/modif joueur */
-			$joueur->nom = htmlspecialchars(\Input::post('nom'));
-			$joueur->prenom = (\Input::post('prenom')) ? htmlspecialchars(\Input::post('prenom')) : '';
-			$joueur->id_poste = \Input::post('id_poste');
-			($_FILES['photo']) ? $joueur->photo = $this->processUpload(\Input::post('nom'), \Input::post('prenom'), $championnat, $equipe) : '';
-			$joueur->id_equipe = (\Input::post('id_equipe')) ? \Input::post('id_equipe') : 0;
-			$joueur->id_selection = (\Input::post('id_selection')) ? \Input::post('id_selection') : 0;
-
-
-			if ($joueur->save()){
-				($isUpdate) ? \Messages::success('Joueur modifié avec succès') : \Messages::success('Joueur créé avec succès');
-			}
-			else \Messages::error('Une erreur est survenue');
-
-			\Response::redirect('/joueur');
-		}
-
-
-		if ($isUpdate){
-			$view = $this->view('joueur/add', array('pays' => $pays, 'isUpdate' => $isUpdate, 'selections' => $selections, 'joueur' => $joueur, 'postes' => $postes, 'championnats' => $championnats, 'championnat_joueur' => $championnat_joueur, 'equipes_championnat' => $equipes_championnat));
-		}
-		else $view = $this->view('joueur/add', array('pays' => $pays, 'isUpdate' => $isUpdate, 'selections' => $selections, 'joueur' => $joueur, 'postes' => $postes, 'pays' => $pays, 'championnats' => $championnats));
+		$view = $this->view('transfert/add', array('pays' => $pays, 'championnats' => $championnats));
 		return $view;
-	}
-
-
-
-	/**
-	 * Process Upload
-	 */
-	public function processUpload ($nom, $prenom, $championnat, $equipe){
-		$champ = str_replace(' ', '_', $championnat->nom);
-		$eq = str_replace(' ', '_', $equipe->nom);
-		$name ='';
-		if (!empty($_FILES)){
-			$uploadConfig = array(
-				'path' => DOCROOT . \Config::get('upload.joueurs.path') . '/' . $champ . '/' . $eq,
-				'normalize' => true,
-				'ext_whitelist' => array('jpg', 'jpeg', 'png', 'bmp', 'gif', 'pdf'),
-				'new_name' => $nom . '_' . $prenom,
-			);
-			
-			\Upload::process($uploadConfig);
-
-			if (\Upload::is_valid()){
-				\Upload::save();
-			} 
-
-			foreach (\Upload::get_errors() as $file){
-				foreach ($file['errors'] as $error){
-					if ($error['error'] !== UPLOAD_ERR_NO_FILE){
-						\Messages::error($error['message']);
-						\Response::redirect('/joueur');
-					}
-				}
-			}
-
-			foreach (\Upload::get_files() as $file){
-				$name = $champ . '/' . $eq . '/' . $file['saved_as'];
-			}
-		}
-
-		return $name;
-	}
-
-	/**
-	 * Delete
-	 * Supprime un joueur
-	 *
-	 * @param int $id
-	 */
-	public function action_delete ($id){
-		$this->verifAutorisation();
-
-		$joueur = \Model_Joueur::find($id);
-		if (empty($joueur)){
-			\Messages::error('Ce joueur n\'existe pas');
-			\Response::redirect('/joueur');
-		}
-
-		$fichier = DOCROOT . \Config::get('upload.joueurs.path') .'/'. $joueur->photo;
-		if (file_exists($fichier)) unlink($fichier);
-
-		if ($joueur->delete()){
-			\Messages::success('Joueur supprimé avec succès');
-		}
-		else {
-			\Messages::error('Une erreur est survenue lors de la suppression du joueur');
-		}
-
-		\Response::redirect('/joueur');
 	}
 
 	/**
@@ -280,7 +122,7 @@ class Controller_Joueur extends \Controller
 				$name = $this->processUploadCSV($file);
 				if (empty($name)){
 					\Messages::error('Pas de fichier uploadé');
-					\Response::redirect('/joueur');
+					\Response::redirect('/transfert');
 				}
 
 				$fichier = DOCROOT . \Config::get('upload.tmp.path') . '/' . $name;
@@ -305,37 +147,6 @@ class Controller_Joueur extends \Controller
 
 				$championnat; $pays; $equipe; $selection = '';
 
-
-				if (!empty($data['Selection'])){
-					/**
-					 *
-					 * TRAITEMENT DU PAYS
-					 *
-					 */
-					$pays = \Model_Pays::query()->where('nom', '=', $data['Selection'])->get();
-					if (empty($pays)){
-						$pays = \Model_Pays::forge();
-						$pays->nom = $data['Selection'];
-						$pays->drapeau = '';
-						$pays->save();
-					} else $pays = current($pays);
-
-					/**
-					 *
-					 * TRAITEMENT DE LA SELECTION
-					 *
-					 */
-					$selection = \Model_Selection::query()->where('nom', '=', $data['Selection'])->get();
-
-
-					if (empty($selection)){
-						$selection = \Model_Selection::forge();
-						$selection->nom = $data['Selection'];
-						$selection->logo = '';
-						$selection->id_pays = $pays->id;
-						$selection->save();
-					} else $selection = current($selection);
-				}
 
 				/**
 				 *
@@ -449,7 +260,7 @@ class Controller_Joueur extends \Controller
 				// Quand on a interprété 20 ligne, raffraichissement de la page pour éviter erreur TimeExecution
 				if ($line >= 20){
 					echo "Chargement en cours ...";
-					\Response::redirect('/joueur/import?current=true&name='.$name.'&current_line='.$i, 'refresh');
+					\Response::redirect('/transfert/import?current=true&name='.$name.'&current_line='.$i, 'refresh');
 				}
 
 				$line++;
@@ -460,10 +271,10 @@ class Controller_Joueur extends \Controller
 			if (file_exists($fichier)) unlink($fichier);
 
 			\Messages::success('Import terminé avec succès');
-			\Response::redirect('/joueur');
+			\Response::redirect('/transfert');
 		}//IF POST
 
-		$view = $this->view('joueur/import', array());
+		$view = $this->view('transfert/import', array());
 		return $view;
 	}
 
@@ -492,7 +303,7 @@ class Controller_Joueur extends \Controller
 			foreach ($file['errors'] as $error){
 				if ($error['error'] !==  UPLOAD_ERR_NO_FILE){
 					\Messages::error($error['message']);
-					\Response::redirect('/joueur');
+					\Response::redirect('/transfert');
 				}
 			}
 		}

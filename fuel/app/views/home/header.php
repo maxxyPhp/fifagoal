@@ -31,7 +31,7 @@
 							<li><a href="/poste"><i class="fa fa-arrows-alt"></i> Poste</a></li>
 							<li><a href="/selection"><i class="fa fa-gittip"></i> Selections</a></li>
 							<li><a href="#"><i class="fa fa-futbol-o"></i> Matchs</a></li>
-							<li><a href="#"><i class="fa fa-arrows-h"></i> Transferts</a></li>
+							<li><a href="/transfert"><i class="fa fa-arrows-h"></i> Transferts</a></li>
 						</ul>
 					</li>
 				<?php endif; ?>

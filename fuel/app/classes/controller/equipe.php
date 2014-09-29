@@ -23,6 +23,37 @@ class Controller_Equipe extends \Controller
 				
 				return json_encode($array);
 				break;
+
+			case 'getJoueurs':
+				if (!is_numeric(\Input::get('id_equipe'))){
+					return 'KO';
+				}
+
+				$joueurs = \Model_Joueur::query()->where('id_equipe', '=', \Input::get('id_equipe'))->order_by('nom')->get();
+
+				foreach ($joueurs as $joueur){
+					$array[] = $this->object_to_array($joueur);
+				}
+
+				return json_encode($array);
+				break;
+
+			case 'getEquipe':
+				if (!is_numeric(\Input::get('id_equipe'))){
+					return 'KO';
+				}
+
+				$equipe = \Model_Equipe::find(\Input::get('id_equipe'));
+				$championnat = \Model_Championnat::find($equipe->id_championnat);
+
+				$equipe->championnat = str_replace(' ', '_', strtolower($championnat->nom));
+
+				foreach ($equipe as $eq){
+					$array[] = $this->object_to_array($eq);
+				}
+
+				return json_encode($array);
+				break;
 		}
 	}
 
