@@ -48,7 +48,7 @@
 									<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/notfound.png' ?>" alt="Not found" width="60px" />
 								<?php endif; ?>
 							</td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . $joueur->equipe->logo ?>" alt="<?= $joueur->equipe->nom ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->equipe->nom ?>" /></td>
+							<td><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($joueur->equipe->championnat->nom)) . '/' . $joueur->equipe->logo ?>" alt="<?= $joueur->equipe->nom ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->equipe->nom ?>" /></td>
 							<td>
 								<?php if ($joueur->selection): ?>
 									<img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $joueur->selection->logo ?>" alt="<?= $joueur->selection->nom ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->selection->nom ?>" />

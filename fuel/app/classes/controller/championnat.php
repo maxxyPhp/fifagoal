@@ -79,11 +79,11 @@ class Controller_Championnat extends Controller
 	 */
 	public function post_uploadLogo (){
 		if (!empty($_FILES)){
-
 			$uploadConfig = array(
 				'path' => DOCROOT . \Config::get('upload.championnat.path'),
 				'normalize' => true,
 				'ext_whitelist' => array('jpg', 'jpeg', 'png', 'bmp', 'gif', 'pdf'),
+				// 'new_name' => str_replace(' ', '_', strtolower($_FILES['name'])),
 			);
 			
 			\Upload::process($uploadConfig);
@@ -185,7 +185,7 @@ class Controller_Championnat extends Controller
 				if (empty($championnat)){
 					$championnat = \Model_Championnat::forge();
 					$championnat->nom = $data['Nom'];
-					$championnat->logo = str_replace(' ', '', $data['Nom']) . '.png';
+					$championnat->logo = str_replace(' ', '_', strtolower($data['Nom']) . '.png');
 					$championnat->id_pays = $pays->id;
 					$championnat->save();
 
@@ -197,9 +197,9 @@ class Controller_Championnat extends Controller
 					}
 
 					//Détermination du nom du fichier et de son chemin d'accès
-					file_exists(DOCROOT . \Config::get('upload.championnat.path')) or \File::create_dir(DOCROOT . \Config::get('upload.championnat.path'), 'championnat');
+					file_exists(DOCROOT . \Config::get('upload.championnat.path')) or \File::create_dir(DOCROOT . 'upload', 'championnat');
 
-					$nom_logo = DOCROOT . \Config::get('upload.championnat.path') . DS . str_replace(' ', '', $data['Nom'] . '.png');
+					$nom_logo = DOCROOT . \Config::get('upload.championnat.path') . DS . str_replace(' ', '_', strtolower($data['Nom']) . '.png');
 
 					// Création de l'image
 					$fp = fopen($nom_logo, 'w+');

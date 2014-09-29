@@ -34,8 +34,8 @@
 						<tr>
 							<td><?= $championnat->id ?></td>
 							<td><?= $championnat->nom ?></td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.championnat.path') . '/' . $championnat->logo ?>" alt="<?= $championnat->nom ?>" width="150px" height="100px" /></td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $championnat->pays->drapeau ?>" alt="<?= $championnat->pays->nom ?>" width="150px" height="100px" data-toggle="tooltip" data-placement="top" title="<?= $championnat->pays->nom ?>" class="img_pays" /></td>
+							<td><img src="<?= \Uri::base() . \Config::get('upload.championnat.path') . '/' . $championnat->logo ?>" alt="<?= $championnat->nom ?>" width="80px" /></td>
+							<td><img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $championnat->pays->drapeau ?>" alt="<?= $championnat->pays->nom ?>" width="80px" data-toggle="tooltip" data-placement="top" title="<?= $championnat->pays->nom ?>" class="img_pays" /></td>
 							<td>
 								<a href="/championnat/add/<?= $championnat->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 								<a href="/championnat/delete/<?= $championnat->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>
