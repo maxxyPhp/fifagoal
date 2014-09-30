@@ -34,7 +34,8 @@
 							<td><?= strtoupper($equipe->nom) ?> - <?= strtoupper($equipe->nom_court) ?></td>
 							<td><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe->championnat->nom)) . '/' . $equipe->logo ?>" alt="<?= $equipe->nom ?>" width='60px' /></td>
 							<td><img src="<?= \Uri::base() . \Config::get('upload.championnat.path') . '/' . $equipe->championnat->logo ?>" alt="<?= $equipe->championnat->logo ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $equipe->championnat->nom ?>" /></td>
-							<td>	
+							<td>
+								<a href="/equipe/view/<?= $equipe->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir les joueurs</a>
 								<a href="/equipe/add/<?= $equipe->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 								<a href="/equipe/delete/<?= $equipe->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>
 							</td>
