@@ -1,4 +1,5 @@
-<div class="center-block">
+<div class="container">
+	<h1 class="page-header">Liste des users</h1>
 	<div class="table-responsive">
 		<table class="table table-hover table-striped">
 			<thead>

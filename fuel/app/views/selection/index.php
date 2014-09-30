@@ -32,8 +32,8 @@
 						<tr>
 							<td><?= $selection->id ?></td>
 							<td><?= strtoupper($selection->nom) ?></td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $selection->logo ?>" alt="<?= $selection->nom ?>" width="100px" height="100px" /></td>
-							<td><img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $selection->pays->drapeau ?>" alt="<?= $selection->pays->nom ?>" width="150px" height="75px" data-toggle="tooltip" data-placement="top" title="<?= $selection->pays->nom ?>" /></td>
+							<td><img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $selection->logo ?>" alt="<?= $selection->nom ?>" width="80px" /></td>
+							<td><img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $selection->pays->drapeau ?>" alt="<?= $selection->pays->nom ?>" width="80px" data-toggle="tooltip" data-placement="top" title="<?= $selection->pays->nom ?>" /></td>
 							<td>	
 								<a href="/selection/add/<?= $selection->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 								<a href="/selection/delete/<?= $selection->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>
