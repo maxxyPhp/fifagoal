@@ -128,11 +128,13 @@ class Controller_Transfert extends \Controller
 				$fichier = DOCROOT . \Config::get('upload.tmp.path') . '/' . $name;
 				if (file_exists($fichier)) $file_content = \File::read($fichier, true);
 				$current_line = 0;
+				$error[] = array();
 			}
 			else {
 				$name = \Input::get('name');
 				$file_content = \File::read(DOCROOT . \Config::get('upload.tmp.path') . '/' . $name, true);
 				$current_line = \Input::get('current_line');
+				$error = \Input::get('error');
 			}
 
 			// Conversion CSV vers PHP
@@ -140,131 +142,115 @@ class Controller_Transfert extends \Controller
 			// Nombre de logne du fichier
 			$number_of_line = count($donnees);
 			$line = 0;
+			$error = array();
 
 			//Fetch les lignes
 			for ($i = $current_line; $i < $number_of_line; $i++){
 				$data = $donnees[$i];
 
-				$championnat; $pays; $equipe; $selection = '';
-
-
-				/**
-				 *
-				 * TRAITEMENT DU CHAMPIONNAT
-				 *
-				 */
-				$championnat = \Model_Championnat::query()->where('nom', '=', $data['Championnat'])->get();
-
-				if (empty($championnat)){
-					$championnat = \Model_Championnat::forge();
-					$championnat->nom = $data['Championnat'];
-					$championnat->logo = '';
-					$championnat->id_pays = 0;
-					$championnat->save();
-				} else $championnat = current($championnat);
+				$old_equipe; $new_equipe; $joueur;
 
 				/**
 				 *
-				 * TRAITEMENT DE L'EQUIPE
+				 * TRAITEMENT DE L'ANCIENNE EQUIPE
 				 *
 				 */
 
-				$equipe = \Model_Equipe::query()->where('nom', '=', $data['Equipe'])->get();
-				if (empty($equipe)){
-					$equipe = \Model_Equipe::forge();
-					$equipe->nom = $data['Equipe'];
-					$equipe->nom_court = '';
-					$equipe->logo = '';
-					$equipe->id_championnat = 0;
-					$equipe->save();
-				} else $equipe = current($equipe);
-
-				/**
-				 *
-				 * TRAITEMENT DU POSTE
-				 *
-				 */
-				$poste = \Model_Poste::query()->where('nom', '=', strtoupper($data['Poste']))->get();
-				if (empty($poste)){
-					$poste = \Model_Poste::forge();
-					$poste->nom = strtoupper($data['Poste']);
-					$poste->save();
-				} else $poste = current($poste);
+				$old_equipe = \Model_Equipe::query()->where('nom', '=', $data['Equipe'])->get();
+				if (empty($old_equipe)){
+					$error[] = $data['Nom'];
+					break;
+				} else $old_equipe = current($old_equipe);
 
 				/**
 				 *
 				 * TRAITEMENT DU JOUEUR
 				 *
 				 */
-				$joueur = \Model_Joueur::find('all', array(
-					'where' => array(
-						array('nom', strtolower($data['Nom'])),
-						array('id_poste', $poste->id),
-						array('id_equipe', $equipe->id),
-					),
-				));
 
+				if (!empty($data['Prenom'])){
+					$joueur = \Model_Joueur::find('all', array(
+						'where' => array(
+							array('nom', $data['Nom']),
+							array('id_equipe', $old_equipe->id),
+							array('prenom', $data['Prenom']),
+						),
+					));
+				}
+				else {
+					$joueur = \Model_Joueur::find('all', array(
+						'where' => array(
+							array('nom', $data['Nom']),
+							array('id_equipe', $old_equipe->id),
+						),
+					));
+				}
 
 				if (empty($joueur)){
-					$joueur = \Model_Joueur::forge();
-					$joueur->nom = strtolower($data['Nom']);
-					$joueur->prenom = isset($data['Prenom']) ? strtolower($data['Prenom']) : '';
-					$joueur->id_poste = $poste->id;
-					$joueur->photo = !empty($data['Photo']) ? str_replace(' ', '_', strtolower($data['Nom']) . '_' . strtolower($data['Prenom'])) . '.png' : '';
-					$joueur->id_equipe = $equipe->id;
-					$joueur->id_selection = (!empty($selection)) ? $selection->id : 0;
-					$joueur->save();
+					$error[] = $data['Nom'];
+					break;
+				} else $joueur = current($joueur);
 
-					$nationalites = explode('|', $data['Nationalite']);
-					foreach ($nationalites as $nationalite){
-						$pays = \Model_Pays::query()->where('nom', '=', $nationalite)->get();
-						if (!empty($pays)){
-							$joueur->pays = $pays;
-							$joueur->save();
-						}
+				/**
+				 *
+				 * TRAITEMENT DE LA NOUVELLE EQUIPE
+				 *
+				 */
+
+				$new_equipe = \Model_Equipe::query()->where('nom', '=', $data['New_equipe'])->get();
+				if (empty($new_equipe)){
+					$error[] = $data['Nom'];
+					break;
+				} else $new_equipe = current($new_equipe);
+
+			
+				$joueur->id_equipe = $new_equipe->id;
+				$joueur->save();
+
+				/**
+				 *
+				 * TRAITEMENT DE L'IMAGE
+				 *
+				 */
+				$chemin_photo = DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($old_equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($old_equipe->nom)) . '/' . $joueur->photo;
+
+				if (file_exists($chemin_photo)){
+					if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($new_equipe->championnat->nom)))){
+						\File::create_dir(DOCROOT . 'upload/joueurs', str_replace(' ', '_', strtolower($new_equipe->championnat->nom)));
 					}
 
-					if (!empty($data['Photo'])){
-						try {
-							$photo = file_get_contents($data['Photo'], FILE_USE_INCLUDE_PATH);
-						}
-						catch (PhpErrorException $e){
-							\Messages::error($e->getMessage());
-						}
+					if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($new_equipe->championnat->nom)) . '/' . str_replace(' ','_', strtolower($new_equipe->nom)))){
+						\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($new_equipe->championnat->nom)), str_replace(' ','_', strtolower($new_equipe->nom)));
+					}
 
-						//Détermination du nom du fichier et de son chemin d'accès
-						if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path'))){
-							\File::create_dir(DOCROOT . 'upload', 'joueurs');
-						}
+					try {
+						\File::copy($chemin_photo, DOCROOT . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($new_equipe->championnat->nom)) . '/' . str_replace(' ','_', strtolower($new_equipe->nom)) . '/' . $joueur->photo);
+					}
+					catch (\FileAccessException $e){
+						var_dump('access');
+					}
 
-						
-						if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)))){
-							\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path'), str_replace(' ', '_', strtolower($championnat->nom)));
-						}
-						
-		
-						if (!file_exists(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)) . DS . str_replace(' ', '_', strtolower($equipe->nom)))){
-							\File::create_dir(DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)), str_replace(' ', '_', strtolower($equipe->nom)));
-						}
-
-
-						$nom_photo = DOCROOT . \Config::get('upload.joueurs.path') . DS . str_replace(' ', '_', strtolower($championnat->nom)) . DS . str_replace(' ', '_', strtolower($equipe->nom)) . DS . str_replace(' ', '_', strtolower($data['Nom']) . '_' . strtolower($data['Prenom']) . '.png');
-
-						// Création de l'image
-						$fp = fopen($nom_photo, 'w+');
-						fwrite($fp, $photo);
-						fclose($fp);
+					try {
+						\File::delete($chemin_photo);
+					}
+					catch (\InvalidPathException $e){
+						var_dump('path'); 
 					}
 				}
+
 
 				// Quand on a interprété 20 ligne, raffraichissement de la page pour éviter erreur TimeExecution
 				if ($line >= 20){
 					echo "Chargement en cours ...";
-					\Response::redirect('/transfert/import?current=true&name='.$name.'&current_line='.$i, 'refresh');
+					\Response::redirect('/transfert/import?current=true&name='.$name.'&current_line='.$i.'&error='.$error, 'refresh');
 				}
 
 				$line++;
 			}//FOR
+
+			foreach ($error as $err){
+				\Messages::error('Le joueur '.$err.' n\'a pas pu être transféré');
+			}
 
 			//Suppression fichier CSV
 			$fichier = DOCROOT . \Config::get('upload.tmp.path') . DS . $name;

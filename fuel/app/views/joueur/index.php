@@ -40,7 +40,9 @@
 								<?php endif; ?>
 							</td>
 							<td><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></td>
-							<td><?= $joueur->poste->nom ?></td>
+							<td>
+								<div class="label label-<?= $joueur->poste->couleur ?>"><?= $joueur->poste->nom ?></div>
+							</td>
 							<td>
 								<?php if ($joueur->photo): ?>
 									<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', lcfirst($joueur->equipe->championnat->nom)) . '/' . str_replace(' ', '_', $joueur->equipe->nom) . '/' . $joueur->photo ?>" alt="<?= $joueur->nom ?> <?= $joueur->prenom ?>" width="60px" height="60px" />
