@@ -56,7 +56,7 @@
 									<img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $joueur->selection->logo ?>" alt="<?= $joueur->selection->nom ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $joueur->selection->nom ?>" />
 								<?php endif; ?>
 							</td>
-							<td>	
+							<td>
 								<a href="/joueur/add/<?= $joueur->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 								<a href="/joueur/delete/<?= $joueur->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>
 							</td>
