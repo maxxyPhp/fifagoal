@@ -64,7 +64,7 @@ class Messages_Instance implements \ArrayAccess, \Iterator
 	 */
 	public function error($message)
 	{
-		return $this->add_message('error', $message);
+		return $this->add_message('danger', $message);
 	}
 
 	/**
