@@ -53,7 +53,7 @@ class Model_Joueur extends \Orm\Model
 	);
 
 	protected static $_conditions = array(
-		'oder_by' => array('nom' => 'asc'),
+		'order_by' => array('nom' => 'asc'),
 	);
 
 	protected static $_observers = array(

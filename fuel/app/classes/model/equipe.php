@@ -76,6 +76,20 @@ class Model_Equipe extends \Orm\Model
 	        'key_to' => 'id_equipe',
 	        'cascade_save' => true,
 	        'cascade_delete' => true,
-	    )
+	    ),
+	    'equipe1' => array(
+	        'key_from' => 'id',
+	        'model_to' => 'Model_Matchs',
+	        'key_to' => 'id_equipe1',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    ),
+	    'equipe2' => array(
+	        'key_from' => 'id',
+	        'model_to' => 'Model_Matchs',
+	        'key_to' => 'id_equipe2',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    ),
 	);
 }
