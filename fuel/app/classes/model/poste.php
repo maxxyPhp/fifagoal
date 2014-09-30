@@ -10,6 +10,12 @@ class Model_Poste extends \Orm\Model
 			'null' => false,
 			'validation' => array('required'),
 		),
+		'couleur' => array(
+			'label' => 'Couleur',
+			'default' => '',
+			'null' => false,
+			'validation' => array('required'),
+		),
 		'created_at' => array(
 			'form' => array('type' => false),
 			'default' => 0,

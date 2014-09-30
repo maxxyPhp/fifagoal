@@ -68,6 +68,7 @@ class Controller_Poste extends \Controller
 
 		if (\Input::post('add')){
 			$poste->nom = htmlspecialchars(\Input::post('nom'));
+			$poste->couleur = htmlspecialchars(\Input::post('couleur'));
 			if ($poste->save()){
 				($isUpdate) ? \Messages::success('Poste modifié avec succès') : \Messages::success('Poste créé avec succès');
 			}
