@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Pays extends Controller 
+class Controller_Pays extends Controller_Gestion
 {
 	public function action_index (){
 		$this->verifAutorisation();
@@ -55,19 +55,6 @@ class Controller_Pays extends Controller
 		return $view;
 	}
 
-
-	public function view ($content, $array){
-		$view = View::forge('layout');
-
-        //local view variables, lazy rendering
-        $view->head = View::forge('home/head', array('title' => 'FIFAGOAL', 'description' => 'Application de gestion et de report de matchs joués sur le jeu vidéo de football FIFA'));
-        $view->header = View::forge('home/header', array('site_title' => 'FIFAGOAL'));
-        $view->content = View::forge($content, $array);
-        $view->footer = View::forge('home/footer', array('title' => 'FIFAGOAL'));
-
-        // return the view object to the Request
-        return $view;
-	}
 
 	/**
 	 * Upload des logos avec Uploadify (POST only)
@@ -131,7 +118,7 @@ class Controller_Pays extends Controller
 		if (\Input::method() == 'POST' || \Input::get('current')){
 			if (\Input::method() == 'POST'){
 				$file = \Input::file('file');
-				$name = $this->processUploadCSV($file);
+				$name = $this->processUploadCSV($file, '/pays');
 				if (empty($name)){
 					\Messages::error('Pas de fichier uploadé');
 					\Response::redirect('/pays');
@@ -207,50 +194,5 @@ class Controller_Pays extends Controller
 
 		$view = $this->view('pays/import', array());
 		return $view;
-	}
-
-	/**
-	 * processUploadCSV
-	 * Upload des fichiers CSV pour l'import de données dans A/R
-	 *
-	 * @param String $file
-	 */
-	public function processUploadCSV ($file){
-		$uploadConfig = array(
-			'path' => DOCROOT . \Config::get('upload.tmp.path'),
-			'normalize' => true,
-			'ext_whitelist' => array('csv'),
-		);
-		
-		\Upload::process($uploadConfig);
-
-		
-		if (\Upload::is_valid()){
-			\Upload::save();
-		}
-
-
-		foreach (\Upload::get_errors() as $file){
-			foreach ($file['errors'] as $error){
-				if ($error['error'] !==  UPLOAD_ERR_NO_FILE){
-					\Messages::error($error['message']);
-					\Response::redirect('/pays');
-				}
-			}
-		}
-
-		foreach (\Upload::get_files() as $file){
-			return $file['saved_as'];
-		}
-	}
-
-	/**
-	 * Verif Autorisation
-	 * Vérifie que l'utilisateur est connecté et est un admin
-	 */
-	public function verifAutorisation (){
-		if (!\Auth::check() || !\Auth::member(6)){
-			\Response::redirect('/');
-		}
 	}
 }

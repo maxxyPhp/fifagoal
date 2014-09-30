@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Championnat extends Controller
+class Controller_Championnat extends Controller_Gestion
 {
 	/**
 	 * Index
@@ -10,7 +10,7 @@ class Controller_Championnat extends Controller
 		$this->verifAutorisation();
 
 		try {
-			$championnat = \Cache::get('listChampionnat');
+			$championnats = \Cache::get('listChampionnat');
 		} 
 		catch (\CacheNotFoundException $e){
 			$championnats = \Model_Championnat::find('all');
@@ -22,26 +22,6 @@ class Controller_Championnat extends Controller
 		return $view;
 	}
 
-	/**
-	 * View
-	 * Prépare la vue à afficher
-	 *
-	 * @param String $content
-	 * @param Array $array
-	 * @return View $view
-	 */
-	public function view ($content, $array){
-		$view = View::forge('layout');
-
-        //local view variables, lazy rendering
-        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
-        $view->header = View::forge('home/header', array('site_title' => \Config::get('application.title')));
-        $view->content = View::forge($content, $array);
-        $view->footer = View::forge('home/footer', array('title' => \Config::get('application.title')));
-
-        // return the view object to the Request
-        return $view;
-	}
 
 	/**
 	 * Add
@@ -154,7 +134,7 @@ class Controller_Championnat extends Controller
 		if (\Input::method() == 'POST' || \Input::get('current')){
 			if (\Input::method() == 'POST'){
 				$file = \Input::file('file');
-				$name = $this->processUploadCSV($file);
+				$name = $this->processUploadCSV($file, '/championnat');
 				if (empty($name)){
 					\Messages::error('Pas de fichier uploadé');
 					\Response::redirect('/championnat');
@@ -238,48 +218,22 @@ class Controller_Championnat extends Controller
 		return $view;
 	}
 
+
 	/**
-	 * processUploadCSV
-	 * Upload des fichiers CSV pour l'import de données dans A/R
+	 * View
+	 * Voir les équipes d'un championnat
 	 *
-	 * @param String $file
+	 * @param int $id
 	 */
-	public function processUploadCSV ($file){
-		$uploadConfig = array(
-			'path' => DOCROOT . \Config::get('upload.tmp.path'),
-			'normalize' => true,
-			'ext_whitelist' => array('csv'),
-		);
-		
-		\Upload::process($uploadConfig);
+	public function action_view ($id = null){
+		$this->verifAutorisation();
 
-		
-		if (\Upload::is_valid()){
-			\Upload::save();
+		$championnat = \Model_Championnat::find($id);
+		if (empty($championnat)){
+			\Messages::error('Ce championnat n\'existe pas');
+			\Response::redirect('/championnat');
 		}
 
-
-		foreach (\Upload::get_errors() as $file){
-			foreach ($file['errors'] as $error){
-				if ($error['error'] !==  UPLOAD_ERR_NO_FILE){
-					\Messages::error($error['message']);
-					\Response::redirect('/championnat');
-				}
-			}
-		}
-
-		foreach (\Upload::get_files() as $file){
-			return $file['saved_as'];
-		}
-	}
-
-	/**
-	 * Verif Autorisation
-	 * Vérifie que l'utilisateur est connecté et est un admin
-	 */
-	public function verifAutorisation (){
-		if (!\Auth::check() || !\Auth::member(6)){
-			\Response::redirect('/');
-		}
+		return $this->view('championnat/view', array('championnat' => $championnat, 'equipes' => $championnat->equipes));
 	}
 }

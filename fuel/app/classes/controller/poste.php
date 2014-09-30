@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Poste extends \Controller
+class Controller_Poste extends \Controller_Gestion
 {
 	/**
 	 * Index
@@ -20,37 +20,6 @@ class Controller_Poste extends \Controller
 
 		$view = $this->view('poste/index', array('postes' => $postes));
 		return $view;
-	}
-
-	/**
-	 * View
-	 * Prépare la vue à afficher
-	 *
-	 * @param String $content
-	 * @param Array $array
-	 * @return View $view
-	 */
-	public function view ($content, $array){
-		$view = View::forge('layout');
-
-        //local view variables, lazy rendering
-        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
-        $view->header = View::forge('home/header', array('site_title' => \Config::get('application.title')));
-        $view->content = View::forge($content, $array);
-        $view->footer = View::forge('home/footer', array('title' => \Config::get('application.title')));
-
-        // return the view object to the Request
-        return $view;
-	}
-
-	/**
-	 * Verif Autorisation
-	 * Vérifie que l'utilisateur est connecté et est un admin
-	 */
-	public function verifAutorisation (){
-		if (!\Auth::check() || !\Auth::member(6)){
-			\Response::redirect('/');
-		}
 	}
 
 	/**
@@ -125,7 +94,7 @@ class Controller_Poste extends \Controller
 		if (\Input::method() == 'POST' || \Input::get('current')){
 			if (\Input::method() == 'POST'){
 				$file = \Input::file('file');
-				$name = $this->processUploadCSV($file);
+				$name = $this->processUploadCSV($file, '/poste');
 				if (empty($name)){
 					\Messages::error('Pas de fichier uploadé');
 					\Response::redirect('/poste');
@@ -184,40 +153,5 @@ class Controller_Poste extends \Controller
 
 		$view = $this->view('poste/import', array());
 		return $view;
-	}
-
-	/**
-	 * processUploadCSV
-	 * Upload des fichiers CSV pour l'import de données dans A/R
-	 *
-	 * @param String $file
-	 */
-	public function processUploadCSV ($file){
-		$uploadConfig = array(
-			'path' => DOCROOT . \Config::get('upload.tmp.path'),
-			'normalize' => true,
-			'ext_whitelist' => array('csv'),
-		);
-		
-		\Upload::process($uploadConfig);
-
-		
-		if (\Upload::is_valid()){
-			\Upload::save();
-		}
-
-
-		foreach (\Upload::get_errors() as $file){
-			foreach ($file['errors'] as $error){
-				if ($error['error'] !==  UPLOAD_ERR_NO_FILE){
-					\Messages::error($error['message']);
-					\Response::redirect('/poste');
-				}
-			}
-		}
-
-		foreach (\Upload::get_files() as $file){
-			return $file['saved_as'];
-		}
 	}
 }
