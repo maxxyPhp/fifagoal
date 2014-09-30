@@ -8,8 +8,15 @@ class Controller_Championnat extends Controller
 	 */
 	public function action_index (){
 		$this->verifAutorisation();
+
+		try {
+			$championnat = \Cache::get('listChampionnat');
+		} 
+		catch (\CacheNotFoundException $e){
+			$championnats = \Model_Championnat::find('all');
+			if (!empty($championnats)) \Cache::set('listChampionnat', $championnats);
+		}
 		
-		$championnats = \Model_Championnat::find('all');
 
 		$view = $this->view('championnat/index', array('championnats' => $championnats));
 		return $view;
@@ -67,6 +74,7 @@ class Controller_Championnat extends Controller
 			}
 			else \Messages::error('Une erreur est survenue');
 
+			\Cache::delete('listChampionnat');
 			\Response::redirect('/championnat');
 		}
 
@@ -132,6 +140,7 @@ class Controller_Championnat extends Controller
 			\Messages::error('Une erreur est survenue lors de la suppression du championnat');
 		}
 
+		\Cache::delete('listChampionnat');
 		\Response::redirect('/championnat');
 	}
 
@@ -221,6 +230,7 @@ class Controller_Championnat extends Controller
 			if (file_exists($fichier)) unlink($fichier);
 
 			\Messages::success('Import terminé avec succès');
+			\Cache::delete('listChampionnat');
 			\Response::redirect('/championnat');
 		}//IF POST
 

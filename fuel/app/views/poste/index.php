@@ -29,7 +29,7 @@
 					<?php foreach ($postes as $poste): ?>
 						<tr>
 							<td><?= $poste->id ?></td>
-							<td><?= strtoupper($poste->nom) ?></td>
+							<td><div class="label label-<?= $poste->couleur ?>"><?= strtoupper($poste->nom) ?></div></td>
 							<td>	
 								<a href="/poste/add/<?= $poste->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 								<a href="/poste/delete/<?= $poste->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>

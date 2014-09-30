@@ -8,9 +8,15 @@ class Controller_Selection extends \Controller
 	 */
 	public function action_index (){
 		$this->verifAutorisation();
-		
-		$selections = \Model_Selection::find('all');
 
+		try {
+			$selections = \Cache::get('listSelections');
+		}
+		catch (\CacheNotFoundException $e){
+			$selections = \Model_Selection::find('all');
+			if (!empty($selections)) \Cache::set('listSelections', $selections);
+		}
+		
 		$view = $this->view('selection/index', array('selections' => $selections));
 		return $view;
 	}
@@ -77,6 +83,7 @@ class Controller_Selection extends \Controller
 			}
 			else \Messages::error('Une erreur est survenue');
 
+			\Cache::delete('listSelections');
 			\Response::redirect('/selection');
 		}
 
@@ -142,6 +149,7 @@ class Controller_Selection extends \Controller
 			\Messages::error('Une erreur est survenue lors de la suppression de la selection');
 		}
 
+		\Cache::delete('listSelections');
 		\Response::redirect('/selection');
 	}
 
@@ -242,6 +250,7 @@ class Controller_Selection extends \Controller
 			if (file_exists($fichier)) unlink($fichier);
 
 			\Messages::success('Import terminé avec succès');
+			\Cache::delete('listSelections');
 			\Response::redirect('/selection');
 		}//IF POST
 

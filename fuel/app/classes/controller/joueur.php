@@ -84,8 +84,16 @@ class Controller_Joueur extends \Controller
 	public function action_index (){
 		$this->verifAutorisation();
 
+		try {
+			$joueurs = \Cache::get('listPlayers');
+		}
+		catch (\CacheNotFoundException $e){
+			$joueurs = \Model_Joueur::find('all');
+			if (!empty($joueurs)){
+				\Cache::set('listPlayers', $joueurs);
+			}
+		}
 		
-		$joueurs = \Model_Joueur::find('all');
 
 		$view = $this->view('joueur/index', array('joueurs' => $joueurs));
 		return $view;
@@ -188,6 +196,7 @@ class Controller_Joueur extends \Controller
 			}
 			else \Messages::error('Une erreur est survenue');
 
+			\Cache::delete('listPlayers');
 			\Response::redirect('/joueur');
 		}
 
@@ -264,6 +273,7 @@ class Controller_Joueur extends \Controller
 			\Messages::error('Une erreur est survenue lors de la suppression du joueur');
 		}
 
+		\Cache::delete('listPlayers');
 		\Response::redirect('/joueur');
 	}
 
@@ -460,6 +470,7 @@ class Controller_Joueur extends \Controller
 			if (file_exists($fichier)) unlink($fichier);
 
 			\Messages::success('Import terminé avec succès');
+			\Cache::delete('listPlayers');
 			\Response::redirect('/joueur');
 		}//IF POST
 

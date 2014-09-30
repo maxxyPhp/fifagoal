@@ -9,7 +9,14 @@ class Controller_Poste extends \Controller
 	public function action_index (){
 		$this->verifAutorisation();
 
-		$postes = \Model_Poste::find('all');
+		try {
+			$postes = \Cache::get('listPostes');
+		}
+		catch (\CacheNotFoundException $e){
+			$postes = \Model_Poste::find('all');
+			if (!empty($postes)) \Cache::set('listPostes', $postes);
+		}
+		
 
 		$view = $this->view('poste/index', array('postes' => $postes));
 		return $view;
@@ -74,6 +81,7 @@ class Controller_Poste extends \Controller
 			}
 			else \Messages::error('Une erreur est survenue');
 
+			\Cache::delete('listPostes');
 			\Response::redirect('/poste');
 		}
 
@@ -103,6 +111,7 @@ class Controller_Poste extends \Controller
 			\Messages::error('Une erreur est survenue lors de la suppression du poste');
 		}
 
+		\Cache::delete('listPostes');
 		\Response::redirect('/poste');
 	}
 
@@ -169,6 +178,7 @@ class Controller_Poste extends \Controller
 			if (file_exists($fichier)) unlink($fichier);
 
 			\Messages::success('Import terminé avec succès');
+			\Cache::delete('listPostes');
 			\Response::redirect('/poste');
 		}//IF POST
 

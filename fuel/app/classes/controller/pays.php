@@ -5,8 +5,14 @@ class Controller_Pays extends Controller
 	public function action_index (){
 		$this->verifAutorisation();
 
-		$pays = \Model_Pays::find('all');
-
+		try {
+			$pays = \Cache::get('listPays');
+		}
+		catch (\CacheNotFoundException $e){
+			$pays = \Model_Pays::find('all');
+			if (!empty($pays)) \Cache::set('listPays', $pays);
+		}
+		
 		$view = $this->view('pays/index', array('pays' => $pays));
 		return $view;
 	}
@@ -40,6 +46,8 @@ class Controller_Pays extends Controller
 			else {
 				\Messages::error('Une erreur est surveneue');
 			}
+
+			\Cache::delete('listPays');
 			\Response::redirect('/pays');
 		}
 
@@ -113,6 +121,7 @@ class Controller_Pays extends Controller
 			\Messages::error('Une erreur est survenue lors de la suppression du pays');
 		}
 
+		\Cache::delete('listPays');
 		\Response::redirect('/pays');
 	}
 
@@ -192,6 +201,7 @@ class Controller_Pays extends Controller
 			if (file_exists($fichier)) unlink($fichier);
 
 			\Messages::success('Import terminé avec succès');
+			\Cache::delete('listPays');
 			\Response::redirect('/pays');
 		}//IF POST
 

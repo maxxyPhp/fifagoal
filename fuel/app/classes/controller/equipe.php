@@ -85,7 +85,13 @@ class Controller_Equipe extends \Controller
 	public function action_index (){
 		$this->verifAutorisation();
 
-		$equipes = \Model_Equipe::find('all');
+		try {
+			$equipes = \Cache::get('listEquipes');
+		}
+		catch (\CacheNotFoundException $e){
+			$equipes = \Model_Equipe::find('all');
+			if (!empty($equipes)) \Cache::set('listEquipes', $equipes);
+		}
 
 		$view = $this->view('equipe/index', array('equipes' => $equipes));
 		return $view;
@@ -143,6 +149,7 @@ class Controller_Equipe extends \Controller
 			}
 			else \Messages::error('Une erreur est survenue');
 
+			\Cache::delete('listEquipes');
 			\Response::redirect('/equipe');
 		}
 
@@ -208,6 +215,7 @@ class Controller_Equipe extends \Controller
 			\Messages::error('Une erreur est survenue lors de la suppression de l\'equipe');
 		}
 
+		\Cache::delete('listEquipes');
 		\Response::redirect('/equipe');
 	}
 
@@ -325,6 +333,7 @@ class Controller_Equipe extends \Controller
 			if (file_exists($fichier)) unlink($fichier);
 
 			\Messages::success('Import terminé avec succès');
+			\Cache::delete('listEquipes');
 			\Response::redirect('/equipe');
 		}//IF POST
 
