@@ -21,31 +21,33 @@ class Controller_Front extends \Controller
 	 * @return View $view
 	 */
 	public function view ($content, $array){
-		$demande;
-		$en_cours = \Model_Status::query()->where('nom', '=', 'En attente')->get();
-		if (!empty($en_cours)){
-			$en_cours = current($en_cours);
+		$demande = 0;
+		if (\Auth::check()){	
+			$en_cours = \Model_Status::query()->where('nom', '=', 'En attente')->get();
+			if (!empty($en_cours)){
+				$en_cours = current($en_cours);
 
-			$defis = \Model_Defis::find('all', array(
-				'where' => array(
-					array('id_joueur_defier', \Auth::get('id')),
-					array('status_demande', $en_cours->code),
-				),
-			));
+				$defis = \Model_Defis::find('all', array(
+					'where' => array(
+						array('id_joueur_defier', \Auth::get('id')),
+						array('status_demande', $en_cours->code),
+					),
+				));
 
-			if (!empty($defis)){
-				$defis = current($defis);
-				$demande = count($defis);
+				if (!empty($defis)) $demande = count($defis);
 			}
 		}
 
 		
-
 		$view = View::forge('layout');
 
         //local view variables, lazy rendering
         $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
-        $view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => $demande));
+        if (\Auth::check()){
+        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => $demande));
+        } else {
+        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title')));
+        }
         $view->content = View::forge($content, $array);
         $view->footer = View::forge('home/footer', array('title' => \Config::get('application.title')));
 

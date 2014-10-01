@@ -16,6 +16,13 @@
 				<li><a href="#"><i class="fa fa-line-chart"></i> Statistiques</a></li>
 				<?php if (\Auth::check()): ?>
 					<li><a href="/profil"><i class="fa fa-desktop"></i> Profil</a>
+					<li><a href="/matchs"><i class="fa fa-futbol-o"></i> Matchs</a></li>
+					<li><a href="/membre"><i class="fa fa-male"></i> Membres</a></li>
+					<?php if ($defis >= 1): ?>
+						<li><a href="/defis"><i class="fa fa-gamepad"></i> Défis <span class="badge"><?= $defis ?></span></a></li>
+					<?php else: ?> 
+						<li><a href="/defis"><i class="fa fa-gamepad"></i> Défis</a></li>
+					<?php endif; ?>
 				<?php endif; ?>
 				<?php $group = \Model\Auth_Group::find(6); ?>
 				<?php if (\Auth::check() && \Auth::member($group)): ?>
@@ -29,7 +36,7 @@
 							<li><a href="/equipe"><i class="fa fa-cube"></i> Equipes</a></li>
 							<li><a href="/joueur"><i class="fa fa-male"></i> Joueurs</a></li>
 							<li><a href="/poste"><i class="fa fa-arrows-alt"></i> Poste</a></li>
-							<li><a href="/selection"><i class="fa fa-gittip"></i> Selections</a></li>
+							<li><a href="/selection"><i class="fa fa-heart"></i> Selections</a></li>
 							<li><a href="#"><i class="fa fa-futbol-o"></i> Matchs</a></li>
 							<li><a href="/transfert"><i class="fa fa-arrows-h"></i> Transferts</a></li>
 						</ul>
