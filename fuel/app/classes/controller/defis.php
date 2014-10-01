@@ -165,8 +165,80 @@ class Controller_Defis extends \Controller_Front
 				}
 			}
 		}
+
+		/** DEFIS LANCES */
+		$defis_lances = \Model_Defis::find('all', array(
+			'where' => array(
+				array('id_joueur_defieur', \Auth::get('id')),
+				array('id_match', 0),
+			),
+		));
+
+
+			
+		$array_env = array();
+		foreach ($defis_lances as $env){
+			$status = \Model_Status::find($env->status_demande);
+
+			$defier = \Model\Auth_User::find($env->id_joueur_defier);
+			if (!empty($defier)){
+				$photouser = \Model_Photousers::query()->where('id_users', '=', $defier->id)->get();
+				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+
+				$array_env[] = array(
+					'defier' => $defier,
+					'photouser' => ($photouser != null) ? $photouser->photo : null,
+					'defi' => $env,
+					'status' => $status->code,
+				);
+			}
+		}
+
+		/** DEFIS TERMINES */
+		$defis_termines = \Model_Defis::find('all', array(
+			'where' => array(
+				array('id_joueur_defieur', \Auth::get('id')),
+				array('id_match', null, \DB::expr('IS NOT NULL')),
+			),
+		));
+
+		$array_termines = array();
+		foreach ($defis_termines as $ter){
+			$defier = \Model\Auth_User::find($ter->id_joueur_defier);
+			if (!empty($defier)){
+				$photouser = \Model_Photousers::query()->where('id_users', '=', $defier->id)->get();
+				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+
+				$match = \Model_Matchs::find($ter->id_match);
+				if (empty($match)) break;
+
+				$equipe1 = \Model_Equipe::find($match->id_equipe1);
+				if (empty($equipe1)) break;
+
+				$equipe2 = \Model_Equipe::find($match->id_equipe2);
+				if (empty($equipe2)) break;
+
+				$championnat1 = \Model_Championnat::find($equipe1->id_championnat);
+				if (empty($championnat1)) break;
+
+				$championnat2 = \Model_Championnat::find($equipe2->id_championnat);
+				if (empty($championnat2)) break;
+
+				$array_termines[] = array(
+					'defier' => $defier,
+					'photouser' => ($photouser != null) ? $photouser->photo : null,
+					'defi' => $ter,
+					'match' => $match,
+					'equipe1' => $equipe1,
+					'equipe2' => $equipe2,
+					'championnat1' => str_replace(' ', '_', strtolower($championnat1->nom)),
+					'championnat2' => str_replace(' ', '_', strtolower($championnat2->nom)),
+				);
+			}
+		}
+		
 		
 
-		return $this->view('defis/index', array('new' => $new, 'defis' => $array, 'defis_acp' => $array_acp, 'defis_ref' => $array_ref));
+		return $this->view('defis/index', array('new' => $new, 'defis' => $array, 'defis_acp' => $array_acp, 'defis_ref' => $array_ref, 'defis_lances' => $array_env, 'defis_termines' => $array_termines));
 	}
 }
