@@ -30,7 +30,7 @@ class Controller_Front extends \Controller
 				$defis = \Model_Defis::find('all', array(
 					'where' => array(
 						array('id_joueur_defier', \Auth::get('id')),
-						array('status_demande', $en_cours->code),
+						array('status_demande', $en_cours->id),
 					),
 				));
 
