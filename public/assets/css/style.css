@@ -19,6 +19,50 @@
 	margin-bottom: 20px;
 }
 
+.titre_defis {
+	font-family: 'Merriweather Sans', sans-serif;
+}
+
+/***************************************************************************************************************
+* 							RAPPORT MATCH
+***************************************************************************************************************/
+.rapport-match {
+	margin-top : 30px;
+}
+
+.img-profil-rapport {
+	margin-bottom : 20px;
+}
+
+.center {
+	text-align : center;
+}
+
+.club {
+	height : 140px;
+}
+
+.club > img {
+	position : absolute;
+	bottom : 0;
+}
+
+.valid_match {
+	margin-top : 20px;
+}
+
+/***************************************************************************************************************
+* 							DEFIS
+***************************************************************************************************************/
+.defis_club {
+	height : 40px;
+}
+
+.defis_club > img {
+	position : absolute;
+	bottom : 0;
+}
+
 
 
 
