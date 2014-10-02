@@ -16,6 +16,9 @@
 <?= \Asset::css('select2/select2.css'); ?>
 <link href='http://fonts.googleapis.com/css?family=Merriweather+Sans' rel='stylesheet' type='text/css'>
 <?= \Asset::css('animate.css'); ?>
+<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+<?= \Asset::css('redactor/redactor.css'); ?>
 
 <?= \Asset::js('jquery/jquery-2.1.1.min.js') ?>
 <?= \Asset::js('bootstrap/bootstrap.min.js') ?>

@@ -51,6 +51,19 @@
 	margin-top : 20px;
 }
 
+.match_club_defieur > img {
+	float : left;
+}
+
+.match_club_defier > img {
+	float : right;
+}
+
+.username {
+	font-family: 'Hammersmith One', sans-serif;
+	font-size : 20px;
+}
+
 /***************************************************************************************************************
 * 							DEFIS
 ***************************************************************************************************************/
@@ -61,6 +74,10 @@
 .defis_club > img {
 	position : absolute;
 	bottom : 0;
+}
+
+.score_defis {
+	font-family: 'Montserrat', sans-serif;
 }
 
 
