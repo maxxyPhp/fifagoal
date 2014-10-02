@@ -136,4 +136,87 @@ class Controller_Matchs extends \Controller_Front
 		return $this->view('matchs/add', array('defi' => $defi, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'pays' => $pays, 'championnats' => $championnats));
 	}
 
+	public function action_view ($id){
+		$this->verifAutorisation();
+
+		$match = \Model_Matchs::find($id);
+		if (empty($match)){
+			\Messages::error('Ce match n\'existe pas');
+			\Response::redirect('/defis');
+		}
+
+		/**
+		 *
+		 * ZONE USER
+		 *
+		 */
+		$defieur = \Model\Auth_User::find($match->id_joueur1);
+		$defier = \Model\Auth_User::find($match->id_joueur2);
+
+		$photo_defieur = \Model_Photousers::query()->where('id_users', '=', $defieur->id)->get();
+		(!empty($photo_defieur)) ? $photo_defieur = current($photo_defieur) : $photo_defieur = null;
+
+		$photo_defier = \Model_Photousers::query()->where('id_users', '=', $defier->id)->get();
+		(!empty($photo_defier)) ? $photo_defier = current($photo_defier) : $photo_defier = null;
+
+		$derniers_matchs_1 = '';
+		$stat1 = \DB::query("SELECT * FROM matchs WHERE id_joueur1 = ".$defieur->id." OR id_joueur2 = ".$defieur->id." ORDER BY updated_at LIMIT 5")->as_object('Model_Matchs')->execute();
+		foreach ($stat1 as $result){
+			$derniers_matchs_1 .= $this->derniersMatchs ($result, $defieur);
+		}
+
+		$derniers_matchs_2 = '';
+		$stat2 = \DB::query("SELECT * FROM matchs WHERE id_joueur1 = ".$defier->id." OR id_joueur2 = ".$defier->id." ORDER BY updated_at LIMIT 5")->as_object('Model_Matchs')->execute();
+		foreach ($stat2 as $result){
+			$derniers_matchs_2 .= $this->derniersMatchs ($result, $defier);
+		}
+
+		/**
+		 *
+		 * ZONE FOOT
+		 *
+		 */
+		$equipe1 = \Model_Equipe::find($match->id_equipe1);
+		if (empty($equipe1)){
+			\Messages::error('L\'équipe domicile n\'existe pas');
+			\Response::redirect('/defis');
+		}
+		$championnat1 = \Model_Championnat::find($equipe1->id_championnat);
+		if (!empty($championnat1)) $championnat1 = str_replace(' ', '_', strtolower($championnat1->nom));
+
+		$equipe2 = \Model_Equipe::find($match->id_equipe2);
+		if (empty($equipe2)){
+			\Messages::error('L\'équipe extérieure n\'existe pas');
+			\Response::redirect('/defis');
+		}
+		$championnat2 = \Model_Championnat::find($equipe2->id_championnat);
+		if (!empty($championnat2)) $championnat2 = str_replace(' ', '_', strtolower($championnat2->nom));
+
+
+		/**
+		 *
+		 * COMMENTAIRES
+		 *
+		 */
+		$commentaires = \Model_Commentaires::query()->where('id_match', '=', $match->id)->get();
+
+		return $this->view('matchs/view', array('match' => $match, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'commentaires' => $commentaires));
+	}
+
+	function derniersMatchs ($result, $joueur){
+		if ($result->id_joueur1 == $joueur->id){
+			if ($result->score_joueur1 > $result->score_joueur2){
+				return '<span class="label label-success">V</span>';
+			} elseif ($result->score_joueur1 == $result->score_joueur2){
+				return '<span class="label label-default">N</span>';
+			} else return '<span class="label label-danger">D</span>';
+		} else {
+			if ($result->score_joueur1 > $result->score_joueur2){
+				return '<span class="label label-danger">D</span>';
+			} elseif ($result->score_joueur1 == $result->score_joueur2){
+				return '<span class="label label-default">N</span>';
+			} else return '<span class="label label-success">V</span>';
+		}
+	}
+
 }
