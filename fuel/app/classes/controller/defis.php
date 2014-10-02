@@ -127,12 +127,40 @@ class Controller_Defis extends \Controller_Front
 					$photouser = \Model_Photousers::query()->where('id_users', '=', $defieur->id)->get();
 					(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
 
+					if ($acp->id_match != 0){
+						$match = \Model_Matchs::find($acp->id_match);
+						if (empty($match)) break;
 
-					$array_acp[] = array(
-						'defieur' => $defieur,
-						'photouser' => ($photouser != null) ? $photouser->photo : null,
-						'defi' => $acp,
-					);
+						$equipe1 = \Model_Equipe::find($match->id_equipe1);
+						if (empty($equipe1)) break;
+
+						$equipe2 = \Model_Equipe::find($match->id_equipe2);
+						if (empty($equipe2)) break;
+
+						$championnat1 = \Model_Championnat::find($equipe1->id_championnat);
+						if (empty($championnat1)) break;
+
+						$championnat2 = \Model_Championnat::find($equipe2->id_championnat);
+						if (empty($championnat2)) break;
+
+						$array_acp[] = array(
+							'defieur' => $defieur,
+							'photouser' => ($photouser != null) ? $photouser->photo : null,
+							'defi' => $acp,
+							'match' => $match,
+							'equipe1' => $equipe1,
+							'equipe2' => $equipe2,
+							'championnat1' => str_replace(' ', '_', strtolower($championnat1->nom)),
+							'championnat2' => str_replace(' ', '_', strtolower($championnat2->nom)),
+						);
+					} else {
+						$array_acp[] = array(
+							'defieur' => $defieur,
+							'photouser' => ($photouser != null) ? $photouser->photo : null,
+							'defi' => $acp,
+						);
+					}
+					
 				}
 			}
 		}
