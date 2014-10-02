@@ -46,12 +46,6 @@ class Model_Matchs extends \Orm\Model
 			'validation' => array('required'),
 			'form' => array('type' => 'select'),
 		),
-		'commentaire' => array(
-			'label' => 'Commentaire',
-			'default' => '',
-			'null' => true,
-			'form' => array('type' => 'textarea'),
-		),
 		'created_at' => array(
 			'form' => array('type' => false),
 			'default' => 0,
@@ -92,6 +86,7 @@ class Model_Matchs extends \Orm\Model
 	    )
 	);
 
+	// Relation Matchs >> Equipes
 	protected static $_belongs_to = array(
 	    'equipe1' => array(
 	        'key_from' => 'id_equipe1',
@@ -108,4 +103,15 @@ class Model_Matchs extends \Orm\Model
 	        'cascade_delete' => false,
 	    ),
 	);
+
+	// Relation Matchs >> Commentaires
+	protected static $_has_many = array(
+        'commentaires' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Commentaires',
+            'key_to' => 'id_match',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        )
+    );
 }
