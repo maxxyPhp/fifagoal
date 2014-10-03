@@ -54,4 +54,25 @@ class Controller_Front extends \Controller
         // return the view object to the Request
         return $view;
 	}
+
+	/**
+	 * Object To Array
+	 * Transforme un objet en tableau multidimensionnel
+	 *
+	 * @param $data
+	 * @return $data
+	 */
+	function object_to_array($data){
+	    if(is_array($data) || is_object($data)){
+	        $result = array();
+	 
+	        foreach($data as $key => $value) {
+	            $result[$key] = $this->object_to_array($value);
+	        }
+	 
+	        return $result;
+	    }
+	 
+	    return $data;
+	}
 }

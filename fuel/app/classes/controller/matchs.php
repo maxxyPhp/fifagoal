@@ -2,6 +2,9 @@
 
 class Controller_Matchs extends \Controller_Front
 {
+	/**
+	 * AJAX ONLY
+	 */
 	public function get_api ($context){
 		switch ($context){
 			case 'defier':
@@ -25,6 +28,38 @@ class Controller_Matchs extends \Controller_Front
 
 				return json_encode('OK');
 				break;
+
+			case 'addComment':
+				if (!is_numeric(\Input::get('user')) || !is_numeric(\Input::get('match'))){
+					return 'KO';
+				}
+
+				$user = \Model\Auth_User::find(\Input::get('user'));
+				if (empty($user)) return 'KO';
+
+				$match = \Model_Matchs::find(\Input::get('match'));
+				if (empty($match)) return 'KO';
+
+				$content = htmlspecialchars(\Input::get('content'));
+				$commentaire = \Model_Commentaires::forge();
+				$commentaire->id_user = $user->id;
+				$commentaire->id_match = $match->id;
+				$commentaire->commentaire = $content;
+				$commentaire->save();
+
+				$photouser = \Model_Photousers::query()->where('id_users', '=', $user->id)->get();
+				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+
+				$array = array(
+					'user' => $user,
+					'photouser' => $photouser,
+					'commentaire' => $commentaire->commentaire,
+				);
+
+				$array = $this->object_to_array($array);
+
+				return json_encode($array);
+				break;
 		}
 	}
 
@@ -32,12 +67,16 @@ class Controller_Matchs extends \Controller_Front
 		//return $this->view('matchs/index', array('users' => $array));
 	}
 
+
+
+	/**
+	 * Add
+	 * Ajoute un match
+	 */
 	public function action_add (){
 		$this->verifAutorisation();
 
 		if (\Input::post('add')){
-			// METTRE ID DEFI DANS FORM
-			// VERIFIER ID JOUERS AVEC CEUX DU DEFI
 			if (!is_numeric(\Input::post('joueur1')) || !is_numeric(\Input::post('joueur2')) || !is_numeric(\Input::post('defi'))){
 				\Messages::error('Problèmes avec les joueurs');
 				\Response::redirect('/defis');
@@ -136,6 +175,14 @@ class Controller_Matchs extends \Controller_Front
 		return $this->view('matchs/add', array('defi' => $defi, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'pays' => $pays, 'championnats' => $championnats));
 	}
 
+
+	/**
+	 *
+	 * View
+	 * Affiche le rapport d'un match
+	 *
+	 * @param int $id
+	 */
 	public function action_view ($id){
 		$this->verifAutorisation();
 
@@ -198,11 +245,36 @@ class Controller_Matchs extends \Controller_Front
 		 * COMMENTAIRES
 		 *
 		 */
-		$commentaires = \Model_Commentaires::query()->where('id_match', '=', $match->id)->get();
+		$commentaires = \Model_Commentaires::query()->where('id_match', '=', $match->id)->order_by('created_at', 'desc')->get();
+		// var_dump($commentaires);die();
+		$array_comments = array();
+		foreach ($commentaires as $commentaire){
+			$user = \Model\Auth_User::find($commentaire->id_user);
+			if (!empty($user)){
+				$photouser = \Model_Photousers::query()->where('id_users', '=', $user->id)->get();
+				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
 
-		return $this->view('matchs/view', array('match' => $match, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'commentaires' => $commentaires));
+				$array_comments[] = array(
+					'user' => $user,
+					'photouser' => $photouser,
+					'commentaire' => $commentaire,
+				);
+			}
+		}
+		// var_dump($array_comments);die();
+
+		return $this->view('matchs/view', array('match' => $match, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'commentaires' => $array_comments));
 	}
 
+
+	/**
+	 * derniers Matchs
+	 * Détermine si un match est gagné, perdu, ou nul
+	 *
+	 * @param Object $result : L'objet contenant les scores
+	 * @param Object $joueur : Le joueur
+	 * @return String : Le HTML avec le résultat
+	 */
 	function derniersMatchs ($result, $joueur){
 		if ($result->id_joueur1 == $joueur->id){
 			if ($result->score_joueur1 > $result->score_joueur2){
