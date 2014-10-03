@@ -105,7 +105,7 @@
 						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser'] ?>" alt="<?= $defi['defier']['username'] ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defier']['username'] ?>" />
 						<a href="/profil/view/<?= $defi['defier']['id'] ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
 
-						<a href="/match/view/<?= $defi['match']['id'] ?>" class="btn btn-primary"><i class="fa fa-futbol-o"></i> Voir le rapport du match</a>
+						<a href="/matchs/view/<?= $defi['match']['id'] ?>" class="btn btn-primary"><i class="fa fa-futbol-o"></i> Voir le rapport du match</a>
 					</div>
 
 					<div class="col-md-4">
