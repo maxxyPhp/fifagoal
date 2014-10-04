@@ -54,15 +54,30 @@ class Controller_Front extends \Controller
 			}
 		}
 
+		/**
+		 *
+		 * NOTIFICATIONS
+		 *
+		 */
+		// $notifys = \Model_Notify::query()->where('id_user', '=', \Auth::get('id'))->get();
+		$query = \DB::query('SELECT * FROM notifications WHERE id_user = '.\Auth::get('id').' ORDER BY created_at DESC LIMIT 5')
+				->as_object('Model_Notify')
+				->execute();
+
+		$news = 0;
+		foreach ($query as $result){
+			$notifys[] = $result;
+			if ($result->new == 1) $news++; 
+		}
 		
 		$view = View::forge('layout');
 
         //local view variables, lazy rendering
         $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
         if (\Auth::check()){
-        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => $demande, 'photouser' => $photouser));
+        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => $demande, 'photouser' => $photouser, 'notifys' => $notifys, 'news' => $news));
         } else {
-        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => '', 'photouser' => ''));
+        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => '', 'photouser' => '', 'notifys' => '', 'news' => ''));
         }
         $view->content = View::forge($content, $array);
         $view->footer = View::forge('home/footer', array('title' => \Config::get('application.title')));

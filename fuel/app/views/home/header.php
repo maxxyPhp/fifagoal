@@ -51,12 +51,26 @@
 				<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
 			</form>
 
-			<ul class="nav navbar-nav navbar-right">
+			<ul class="nav navbar-nav navbar-right" style="width:240px;">
 				<?php if (\Auth::check()): ?>
+					<li class="dropdown menu-notif" data-id="<?= \Auth::get('id') ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php if ($news > 0): ?><span class="badge badge-notif"><?= $news ?></span><?php endif; ?> <i class="fa fa-paper-plane"></i> <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu" style="width: 280px;">
+							<?php if (!empty($notifys)): ?>
+								<?php foreach ($notifys as $notify): ?>
+									<li class="li-notifs"><?= htmlspecialchars_decode($notify->message) ?><hr></li>
+								<?php endforeach; ?>
+							<?php else: ?>
+								<li class="li-notifs">Pas de notifications pour le moment.</li>
+							<?php endif; ?>
+						</ul>
+					</li>
+
+
 					<?php if (!empty($photouser)): ?>
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/' . $photouser->photo ?>" alt="<?= \Auth::get('username') ?>" width="30" height="30">
+						<li><img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/' . $photouser->photo ?>" alt="<?= \Auth::get('username') ?>" width="30" height="30" class="photo_profil_menu"></li>
 					<?php else: ?>
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="30px" />
+						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="30px" class="photo_profil_menu" />
 					<?php endif; ?>
 					<a href="/auth/logout" class="btn btn-primary navbar-btn">Déconnexion</a>
 				<?php else: ?>
@@ -67,3 +81,26 @@
 		</div>
 	</div>
 </nav>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.menu-notif').on('click', function(){
+			user = $(this).attr('data-id');
+			if ($('.badge-notif').length){
+				$.ajax({
+					url: window.location.origin + '/notify/api/viewNotify.json',
+					data: 'user='+user,
+					type: 'get',
+					dataType: 'json',
+					success: function(data){
+						if (data == 'KO') alert('Une erreur est survenue pendant le traitement des données');
+					},
+					error: function(){
+						alert('Une erreur est survenue');
+					},
+				});
+			}
+			$('.badge-notif').remove();
+		});
+	});
+</script>
