@@ -21,8 +21,7 @@ class Controller_Users extends Controller
 
 			case 'verifyName':
 				$name = htmlspecialchars(\Input::get('name'));
-				var_dump(is_string($name));die();
-				if (is_string($name)){
+				if (ctype_alpha($name)){
 					return "true";
 				} else return "false";
 				break;

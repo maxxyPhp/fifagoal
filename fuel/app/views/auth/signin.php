@@ -100,7 +100,7 @@
 				success: function(data){
 					console.log(data);
 					input = $('#form_fullname');
-					if (data != "false"){
+					if (data != false){
 						input.parent().parent().addClass('has-success has-feedback').removeClass('has-error');
 						input.parent().append('<span class="feedback-username glyphicon glyphicon-ok form-control-feedback"></span>');
 						// input.parent().find('span').addClass('glyphicon glyphicon-ok form-control-feedback').removeClass('glyphicon-remove');
