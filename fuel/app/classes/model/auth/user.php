@@ -73,6 +73,7 @@ class Auth_User extends \Auth\Model\Auth_User
         )
     );
 
+    // Relation User >> Commentaires
     protected static $_has_many = array(
         'commentaires' => array(
             'key_from' => 'id',
@@ -80,6 +81,14 @@ class Auth_User extends \Auth\Model\Auth_User
             'key_to' => 'id_user',
             'cascade_save' => true,
             'cascade_delete' => false,
+        ),
+        // Relation User >> Notifications
+        'notify' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Notify',
+            'key_to' => 'id_user',
+            'cascade_save' => true,
+            'cascade_delete' => true,
         )
     );
 

@@ -38,6 +38,14 @@ class Controller_Defis extends \Controller_Front
 				$defis->status_demande = $status->id;
 				$defis->save();
 
+				$defier = \Model\Auth_User::find($defis->id_joueur_defier);
+
+				$notify = \Model_Notify::forge();
+				$notify->id_user = $defis->id_joueur_defieur;
+				$notify->message = '<h5><i class="fa fa-gamepad"></i> <strong>'.$defier->username.'</strong> accepte votre défi !</h5>';
+				$notify->new = 1;
+				$notify->save();
+
 				return json_encode('OK');
 				break;
 
