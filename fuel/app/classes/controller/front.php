@@ -21,6 +21,22 @@ class Controller_Front extends \Controller
 	 * @return View $view
 	 */
 	public function view ($content, $array){
+		/**
+		 *
+		 * USER
+		 *
+		 */
+		$photouser;
+		if (\Auth::check()){
+			$photouser = \Model_Photousers::query()->where('id_users', '=', \Auth::get('id'))->get();
+			(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+		}
+
+		/**
+		 *
+		 * DEFIS
+		 *
+		 */
 		$demande = 0;
 		if (\Auth::check()){	
 			$en_cours = \Model_Status::query()->where('nom', '=', 'En attente')->get();
@@ -44,9 +60,9 @@ class Controller_Front extends \Controller
         //local view variables, lazy rendering
         $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
         if (\Auth::check()){
-        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => $demande));
+        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => $demande, 'photouser' => $photouser));
         } else {
-        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title')));
+        	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => '', 'photouser' => ''));
         }
         $view->content = View::forge($content, $array);
         $view->footer = View::forge('home/footer', array('title' => \Config::get('application.title')));
