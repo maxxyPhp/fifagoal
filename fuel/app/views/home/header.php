@@ -53,6 +53,11 @@
 
 			<ul class="nav navbar-nav navbar-right">
 				<?php if (\Auth::check()): ?>
+					<?php if (!empty($photouser)): ?>
+						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/' . $photouser->photo ?>" alt="<?= \Auth::get('username') ?>" width="30" height="30">
+					<?php else: ?>
+						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="30px" />
+					<?php endif; ?>
 					<a href="/auth/logout" class="btn btn-primary navbar-btn">Déconnexion</a>
 				<?php else: ?>
 					<a href="/auth/signin" class="btn btn-default navbar-btn">Inscription</a>
