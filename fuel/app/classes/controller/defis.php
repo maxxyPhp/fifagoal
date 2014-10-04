@@ -58,6 +58,37 @@ class Controller_Defis extends \Controller_Front
 
 				return json_encode('OK');
 				break;
+
+			case 'validMatch':
+				if (!is_numeric(\Input::get('user')) || !is_numeric(\Input::get('match'))){
+					return 'KO';
+				}
+
+				$defi = \Model_Defis::find('all', array(
+					'where' => array(
+						array('id_match', \Input::get('match')),
+					),
+				));
+
+				if (!empty($defi)){
+					$defi = current($defi);
+				} else return 'KO';
+
+				$user = \Model\Auth_User::find(\Input::get('user'));
+				if (empty($user)) return 'KO';
+
+				if ($user->id == $defi->id_joueur_defier){
+					$defi->match_valider2 = 1;
+				}
+				elseif ($user->id == $defi->id_joueur_defieur){
+					$defi->match_valider1 = 1;
+				}
+				$defi->save();
+
+				// ENVOYER NOTIF AU DEFIANT
+
+				return json_encode('OK');
+				break;
 		}
 	}
 

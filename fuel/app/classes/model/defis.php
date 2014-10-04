@@ -31,7 +31,13 @@ class Model_Defis extends \Orm\Model
 			'null' => true,
 			'form' => array('type' => 'select'),
 		),
-		'match_valider' => array(
+		'match_valider1' => array(
+			'label' => 'Match validé',
+			'default' => '',
+			'null' => true,
+			'form' => array('type' => 'checkbox'),
+		),
+		'match_valider2' => array(
 			'label' => 'Match validé',
 			'default' => '',
 			'null' => true,

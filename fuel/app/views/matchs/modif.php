@@ -3,11 +3,14 @@
 	<div class="row rapport-match">
 		<?= \Form::open(array('class' => 'form-horizontal')) ?>
 		<input type="hidden" name="defi" value="<?= $defi->id ?>">
-		<input type="hidden" name="createur" value="<?= \Auth::get('id') ?>">
+		<input type="hidden" name="match" value="<?= $match->id ?>">
+		<input type="hidden" name="modifieur" value="<?= \Auth::get('id') ?>">
 
 		<!-- DEFIEUR -->
 		<div class="col-md-4">
-			<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			<div class="thumbnail-profil">
+				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			</div>
 			<input type="hidden" name="joueur1" value="<?= $defieur->id ?>">
 			<div class="form-group animated fadeInUp">
 				<div class="col-sm-10">
@@ -17,7 +20,11 @@
 							<optgroup label="<?= $pay->nom ?>">
 							<?php foreach ($championnats as $championnat): ?>
 								<?php if ($championnat->id_pays == $pay->id): ?>
-									<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
+									<?php if ($equipe1->id_championnat == $championnat->id): ?>
+										<option value="<?= $championnat->id ?>" selected><?= $championnat->nom ?></option>
+									<?php else: ?>
+										<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
+									<?php endif; ?>
 								<?php endif; ?>
 							<?php endforeach; ?>
 							</optgroup>
@@ -26,10 +33,17 @@
 				</div>
 			</div>
 
-			<div class="form-group" style="display:none;" id="div_equipes_defieur">
+			<div class="form-group animated fadeInUp" id="div_equipes_defieur">
 				<div class="col-sm-10">
 					<select id="form_equipe_defieur" name="id_equipe_defieur">
 						<option></option>
+						<?php foreach ($equipe1->championnat->equipes as $equipe): ?>
+							<?php if ($equipe->id == $equipe1->id): ?>
+								<option value="<?= $equipe->id ?>" selected><?= $equipe->nom ?></option>
+							<?php else: ?>
+								<option value="<?= $equipe->id ?>"><?= $equipe->nom ?></option>
+							<?php endif; ?>
+						<?php endforeach; ?>
 					</select>
 				</div>
 			</div>
@@ -38,33 +52,41 @@
 		<!-- SCORE -->
 		<div class="col-md-4">
 			<div class="row">
-				<div class="col-md-6 club club_defieur"></div>
-				<div class="col-md-6 club club_defier"></div>
+				<div class="col-md-4 club club_defieur">
+					<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe1->championnat->nom)) . '/' . $equipe1->logo ?>" alt="<?= $equipe1->nom ?>" width="100px" class="logo_club_defieur" />
+				</div>
+				<div class="col-md-4" style="text-align:center;"><h1 style="display:inline-block;">vs</h1></div>
+				<div class="col-md-4 club club_defier">
+					<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe2->championnat->nom)) . '/' . $equipe2->logo ?>" alt="<?= $equipe2->nom ?>" width="100px" class="logo_club_defier" style="float:right;"/>
+				</div>
 			</div>
 
-			<div class="score" style="display:none;">
+			<div class="score">
 				<div class="row"><h2 class="center-block center">Score</h2></div>
 				<div class="row">
 					
 					<div class="col-md-6">
-						<input type="number" class="form-control" id="score_joueur1" name="score_joueur_1" min="0" max="20">
+						<input type="number" class="form-control" id="score_joueur1" name="score_joueur_1" min="0" max="20" value="<?= $match->score_joueur1 ?>">
 					</div>
 					<div class="col-md-6">
-						<input type="number" class="form-control" id="score_joueur2" name="score_joueur_2" min="0" max="20">
+						<input type="number" class="form-control" id="score_joueur2" name="score_joueur_2" min="0" max="20" value="<?= $match->score_joueur2 ?>">
 					</div>
 				</div>
 			</div>
 
 
 			<div class="row valid_match">
-				<input type="submit" name="add" value="Valider le match" class="btn btn-primary btn-lg btn-block" disabled="disabled">
+				<input type="submit" name="add" value="Valider le match" class="btn btn-primary btn-lg btn-block">
 			</div>
 		</div>
 
 
 		<!-- DEFIER -->
 		<div class="col-md-4">
-			<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			<div class="thumbnail-profil">
+				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			</div>
+
 			<input type="hidden" name="joueur2" value="<?= $defier->id ?>">
 			<div class="form-group animated fadeInUp">
 				<div class="col-sm-10">
@@ -74,7 +96,11 @@
 							<optgroup label="<?= $pay->nom ?>">
 							<?php foreach ($championnats as $championnat): ?>
 								<?php if ($championnat->id_pays == $pay->id): ?>
-									<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
+									<?php if ($equipe2->id_championnat == $championnat->id): ?>
+										<option value="<?= $championnat->id ?>" selected><?= $championnat->nom ?></option>
+									<?php else: ?>
+										<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
+									<?php endif; ?>
 								<?php endif; ?>
 							<?php endforeach; ?>
 							</optgroup>
@@ -83,10 +109,17 @@
 				</div>
 			</div>
 
-			<div class="form-group" style="display:none;" id="div_equipes_defier">
+			<div class="form-group animated fadeInUp" id="div_equipes_defier">
 				<div class="col-sm-10">
 					<select id="form_equipe_defier" name="id_equipe_defier">
 						<option></option>
+						<?php foreach ($equipe2->championnat->equipes as $equipe): ?>
+							<?php if ($equipe->id == $equipe2->id): ?>
+								<option value="<?= $equipe->id ?>" selected><?= $equipe->nom ?></option>
+							<?php else: ?>
+								<option value="<?= $equipe->id ?>"><?= $equipe->nom ?></option>
+							<?php endif; ?>
+						<?php endforeach; ?>
 					</select>
 				</div>
 			</div>
@@ -99,13 +132,11 @@
 	$(document).ready(function(){
 		$('#form_championnat_defieur').select2({
 			placeholder: "Selectionnez un championnat",
-			allowClear: true,
 			width: '300px'
 		});
 
 		$('#form_equipe_defieur').select2({
 			placeholder: "Selectionnez une équipe",
-			allowClear: true,
 			width: '300px'
 		});
 
@@ -116,13 +147,11 @@
 
 		$('#form_championnat_defier').select2({
 			placeholder: "Selectionnez un championnat",
-			allowClear: true,
 			width: '300px'
 		});
 
 		$('#form_equipe_defier').select2({
 			placeholder: "Selectionnez une équipe",
-			allowClear: true,
 			width: '300px'
 		});
 
@@ -147,12 +176,12 @@
 				dataType: 'json',
 				success: function(data){
 					if (data != 'KO'){
+						select.select2('val', '');
 						select.html('');
 						equipe = data;
 						for (var i in equipe){
 							select.append('<option value="'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
 						}
-						afficher.addClass('animated fadeInUp').show();
 					}
 				},
 				error: function(){
@@ -189,45 +218,11 @@
 					div_equipe.append(
 						'<img src="'+window.location.origin+'/upload/equipes/'+data[7]+'/'+data[2]+'" alt="'+data[0]+'" width="100px" class="'+classImg+'" />'
 					);
-
-					if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
-						$('.score').show();
-					}
 				},
 				error: function(){
 					alert('Une erreur est survenue');
 				},
 			});
-		}
-
-		$('#score_joueur1').on('keyup', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur1').on('blur', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur1').on('click', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur2').on('keyup', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur2').on('blur', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur2').on('click', function(){
-			actionnerValidation();
-		});
-
-		function actionnerValidation(){
-			if ($('#score_joueur1').val() != '' && $('#score_joueur2').val() != ''){
-				$('input:submit').attr('disabled', false);
-			}
 		}
 	});
 </script>
