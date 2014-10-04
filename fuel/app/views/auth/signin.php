@@ -90,6 +90,37 @@
 			});
 		});
 
+		$('#form_fullname').on('blur', function(){
+			name = $(this).val(),
+			$.ajax({
+				url : window.location.origin + '/users/api/verifyName.json',
+				data: 'name='+name,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					console.log(data);
+					input = $('#form_fullname');
+					if (data != "false"){
+						input.parent().parent().addClass('has-success has-feedback').removeClass('has-error');
+						input.parent().append('<span class="feedback-username glyphicon glyphicon-ok form-control-feedback"></span>');
+						// input.parent().find('span').addClass('glyphicon glyphicon-ok form-control-feedback').removeClass('glyphicon-remove');
+						$('.help-name').remove();
+						$("input[type=submit]").attr('disabled', false);
+					} else {
+						input.parent().parent().addClass('has-error has-feddback').removeClass('has-success');
+						input.parent().find('span').addClass('glyphicon glyphicon-remove form-control-feedback').removeClass('glyphicon-ok');
+						if (!$('.help-username').length){
+							input.parent().append('<span class="help-block help-name">Le nom doit être une suite de lettre</span>');
+						}
+						$("input[type=submit]").attr('disabled', 'disabled');
+					}
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				}
+			});
+		});
+
 		$('#form_email').on('blur', function(){
 			email = $(this).val();
 			input = $('#form_email');
