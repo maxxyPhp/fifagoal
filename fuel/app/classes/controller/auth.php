@@ -19,6 +19,18 @@ class Controller_Auth extends \Controller_Front
 					\Auth::dont_remember_me();
 				}
 
+				/**
+				 *
+				 * NETTOYAGE NOTIFICATIONS
+				 *
+				 */
+				$notifys = \Model_Notify::query()->where('id_user', '=', \Auth::get('id'))->order_by('created_at', 'desc')->get();
+				$i = 1;
+				foreach ($notifys as $notify){
+					if ($i > 5) $notify->delete();
+					$i++;
+				}
+
 				\Response::redirect('/');
 			}
 			else {
