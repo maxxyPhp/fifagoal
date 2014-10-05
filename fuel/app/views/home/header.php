@@ -55,7 +55,7 @@
 				<?php if (\Auth::check()): ?>
 					<li class="dropdown menu-notif" data-id="<?= \Auth::get('id') ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php if ($news > 0): ?><span class="badge badge-notif"><?= $news ?></span><?php endif; ?> <i class="fa fa-paper-plane"></i> <span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu" style="width: 280px;">
+						<ul class="dropdown-menu" role="menu" style="width: 370px;">
 							<?php if (!empty($notifys)): ?>
 								<?php foreach ($notifys as $notify): ?>
 									<?php if ($notify->new == 1): ?>
