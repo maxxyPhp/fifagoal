@@ -14,32 +14,58 @@
 	<?php endif; ?>
 	
 	<div class="row">
-		<div class="col-xs-6 col-md-4">
+		<div class="col-xs-6 col-md-4 center-block center">
 			<div class="profil_photo">
 				<div class="section_photo">
 					<?php if ($photo_user): ?>
 						<img src="<?= \Uri::base().\Config::get('users.photo.path') ?><?= $photo_user->photo ?>" alt="<?= \Auth::get('username') ?>" class="img-circle" width="300px" heigth="300px">
 					<?php else: ?>
-						<i class="fa fa-user fa-5x"></i><br>
+						<img src="<?= \Uri::base().\Config::get('users.photo.path') ?>notfound.png" alt="<?= \Auth::get('username') ?>" class="img-circle" width="300px" heigth="300px">
 					<?php endif; ?>
 				</div>
-				<input type="file" id="file_photo" name="file" class="form-control btn btn-info" data-toggle="file-input" title="Changer ma photo de profil">
+				<a class="btn btn-info btn-upload center-block">Changer ma photo de profil</a>
+				<div class="btn-fileupload" style="display:none;">
+					<div id="fileuploader">Upload</div>
+				</div>
 			</div>
 		</div>
 		
 		<div class="col-xs-6 col-md-6">
-			<strong>
-			<?php if (!\Auth::member(6)): ?>
-				Membre
-			<?php else: ?>
-				Administrateur
-			<?php endif; ?>
-			</strong>
-			-
-			Dernière connexion : <?= date('d F Y à H:i', \Auth::get('last_login')) ?><br>
-			Inscription : <?= date('d F Y à H:i', \Auth::get('created_at')) ?><br>
+			<div class="well">
+				<strong>
+				<?php if (!\Auth::member(6)): ?>
+					Membre
+				<?php else: ?>
+					Administrateur
+				<?php endif; ?>
+				</strong><br>
+				<hr>
+				Dernière connexion : <?= date('d/m/Y à H:i', \Auth::get('last_login')) ?><br>
+				Inscription : <?= date('d/m/Y à H:i', \Auth::get('created_at')) ?><br>
+			</div>
 
 			<h2 class="page-header">Mes stats</h2>
+				<span class="label label-info"><?= $stats['victoires'] + $stats['nuls'] + $stats['defaites'] ?> matchs disputés</span>
+				<span class="label label-success"><?= $stats['victoires'] ?> victoires</span>
+				<span class="label label-default"><?= $stats['nuls'] ?> matchs nuls</span>
+				<span class="label label-danger"><?= $stats['defaites'] ?> défaites</span>
+				<hr>
+				<h4>Mes derniers matchs :</h4>
+				<?php if ($derniers_matchs): ?>
+					<?php foreach ($derniers_matchs as $match): ?>
+						<div class="row" style="margin-bottom:10px;">
+							<div class="col-md-4">
+								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['equipe1']->championnat->nom)) . '/' . $match['equipe1']->logo ?>" alt="<?= $match['equipe1']->nom ?>" width="50px" >
+							</div>
+							<div class="col-md-4">
+								<div class="score_defis score-<?= $match['status'] ?>"><?= $match['score1'] ?>-<?= $match['score2'] ?></div>
+							</div>
+							<div class="col-md-4">
+								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['equipe2']->championnat->nom)) . '/' . $match['equipe2']->logo ?>" alt="<?= $match['equipe2']->nom ?>" width="50px" >
+							</div>
+						</div>
+					<?php endforeach; ?>
+				<?php endif; ?>
 
 			<h2 class="page-header">Fonctionnalités</h2>
 			<a href="/users/change/<?= \Auth::get('id') ?>" class="btn btn-warning">Changer mon mot de passe</a>
@@ -58,18 +84,16 @@
 			}
 		});
 
-		$('#file_photo').uploadify({
-			'buttonText' : 'Changer ma photo',
-			'buttonClass' : 'btn btn-info btn-upload-photo',
-			'swf' : window.location.origin+'/assets/js/uploadify/uploadify.swf',
-			'uploader' : window.location.origin+'/users/uploadPhoto',
-			'fileDesc' : 'Image Files',
-			'fileExt' : '*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.pdf',
-			'onUploadSuccess' : function(file, data, response){
-				location.reload();
+		$('.btn-upload').on('click', function(){
+			$('.btn-fileupload').show();
+		});
+
+		$("#fileuploader").uploadFile({
+			url:window.location.origin+'/users/uploadPhoto',
+			fileName:"myfile",
+			onSuccess: function(files, data, xhr){
+				$('.img-circle').attr('src', '<?= \Uri::base() . \Config::get("users.photo.path") ?>'+data);
 			}
 		});
-		$('#file_photo-button').removeClass('uploadify-button');
-		$('#file_photo-button').css('height', '');
 	});
 </script>

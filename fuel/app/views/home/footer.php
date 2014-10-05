@@ -10,3 +10,4 @@
 <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/plug-ins/a5734b29083/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <?= \Asset::js('select2/select2.min.js'); ?>
 <?= \Asset::js('redactor/redactor.js'); ?>
+<?= \Asset::js('uploadFile/jquery.uploadfile.min.js'); ?>

@@ -19,6 +19,7 @@
 <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
 <?= \Asset::css('redactor/redactor.css'); ?>
+<?= \Asset::css('uploadFile/uploadfile.css'); ?>
 
 <?= \Asset::js('jquery/jquery-2.1.1.min.js') ?>
 <?= \Asset::js('bootstrap/bootstrap.min.js') ?>
