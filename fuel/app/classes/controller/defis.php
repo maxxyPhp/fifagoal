@@ -40,11 +40,12 @@ class Controller_Defis extends \Controller_Front
 
 				$defier = \Model\Auth_User::find($defis->id_joueur_defier);
 
-				$notify = \Model_Notify::forge();
-				$notify->id_user = $defis->id_joueur_defieur;
-				$notify->message = '<h5><i class="fa fa-gamepad"></i> <strong>'.$defier->username.'</strong> accepte votre défi !</h5>';
-				$notify->new = 1;
-				$notify->save();
+				/**
+				 *
+				 * NOTIFICATION
+				 */
+				$message = $this->modelMessage('accepteDefi', $defier->username);
+				$this->newNotify($defis->id_joueur_defieur, $message);
 
 				return json_encode('OK');
 				break;
@@ -85,15 +86,24 @@ class Controller_Defis extends \Controller_Front
 				$user = \Model\Auth_User::find(\Input::get('user'));
 				if (empty($user)) return 'KO';
 
+				/**
+				 * NOTIFICATIONS
+				 */
+				$message = $this->modelMessage('validRapport', $user->username, $defi->id_match);
+
 				if ($user->id == $defi->id_joueur_defier){
 					$defi->match_valider2 = 1;
+
+					$this->newNotify($defi->id_joueur_defieur, $message);
 				}
 				elseif ($user->id == $defi->id_joueur_defieur){
 					$defi->match_valider1 = 1;
+
+					$this->newNotify($defi->id_joueur_defier, $message);
 				}
+
 				$defi->save();
 
-				// ENVOYER NOTIF AU DEFIANT
 
 				return json_encode('OK');
 				break;

@@ -58,7 +58,11 @@
 						<ul class="dropdown-menu" role="menu" style="width: 280px;">
 							<?php if (!empty($notifys)): ?>
 								<?php foreach ($notifys as $notify): ?>
-									<li class="li-notifs"><?= htmlspecialchars_decode($notify->message) ?><hr></li>
+									<?php if ($notify->new == 1): ?>
+										<li class="li-notifs"><div class="label label-success">NEW</div><?= htmlspecialchars_decode($notify->message) ?><hr></li>
+									<?php else: ?>
+										<li class="li-notifs"><?= htmlspecialchars_decode($notify->message) ?><hr></li>
+									<?php endif; ?>
 								<?php endforeach; ?>
 							<?php else: ?>
 								<li class="li-notifs">Pas de notifications pour le moment.</li>

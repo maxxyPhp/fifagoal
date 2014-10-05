@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Users extends Controller
+class Controller_Users extends Controller_Front
 {
 	public function get_api ($context){
 		switch ($context){
@@ -66,11 +66,13 @@ class Controller_Users extends Controller
 		$user->group_id = 6;
 
 		if ($user->save()){
-			// \Messages($user->username.' devient admin');
+			$this->newNotify($user->id, $this->modelMessage('admin', \Auth::get('username')));
+
+			\Messages($user->username.' devient admin');
 			\Response::redirect('/users');
 		}
 		else {
-			// \Messages::error('Une erreur est survenue');
+			\Messages::error('Une erreur est survenue');
 			\Response::redirect_back();
 		}
 	}

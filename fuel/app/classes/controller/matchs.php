@@ -26,6 +26,11 @@ class Controller_Matchs extends \Controller_Front
 				$defis->status_demande = $status->id;
 				$defis->save();
 
+				/**
+				 * NOTIFICATION
+				 */
+				$this->newNotify($defier->id, $this->modelMessage('defi', \Auth::get('id')));
+
 				return json_encode('OK');
 				break;
 
@@ -46,6 +51,20 @@ class Controller_Matchs extends \Controller_Front
 				$commentaire->id_match = $match->id;
 				$commentaire->commentaire = $content;
 				$commentaire->save();
+
+				/**
+				 *
+				 * NOTIFICATIONS
+				 */
+				if ($user->id != $match->id_joueur1){
+					$message = $this->modelMessage('addComment', $user->username, $match->id);
+					$this->newNotify($match->id_joueur1, $message);
+				}
+
+				if ($user->id != $match->id_joueur2){
+					$message = $this->modelMessage('addComment', $user->username, $match->id);
+					$this->newNotify($match->id_joueur2, $message);
+				}
 
 				$photouser = \Model_Photousers::query()->where('id_users', '=', $user->id)->get();
 				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;

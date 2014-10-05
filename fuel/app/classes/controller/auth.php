@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Auth extends \Controller
+class Controller_Auth extends \Controller_Front
 {
 	public function action_index (){
 
@@ -50,6 +50,9 @@ class Controller_Auth extends \Controller
 				$created = \Auth::create_user(htmlspecialchars(\Input::post('username')), \Input::post('password'), \Input::post('email'), 3, array('fullname' => htmlspecialchars(\Input::post('fullname'))));
 
 				if ($created){
+					/* Notification */
+					$this->newNotify($created, $this->modelMessage('bienvenue', \Input::post('username')));
+					/* Connexion */
 					\Auth::login(\Input::post('username'), \Input::post('password'));
 					\Response::redirect('/');
 				}

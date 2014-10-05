@@ -59,7 +59,7 @@ class Controller_Front extends \Controller
 		 * NOTIFICATIONS
 		 *
 		 */
-		// $notifys = \Model_Notify::query()->where('id_user', '=', \Auth::get('id'))->get();
+		$notifys = array();
 		$query = \DB::query('SELECT * FROM notifications WHERE id_user = '.\Auth::get('id').' ORDER BY created_at DESC LIMIT 5')
 				->as_object('Model_Notify')
 				->execute();
@@ -105,5 +105,76 @@ class Controller_Front extends \Controller
 	    }
 	 
 	    return $data;
+	}
+
+	/**
+	 * newNotify
+	 * Crée une nouvelle notification
+	 *
+	 * @param int $id_user
+	 * @param String $message
+	 */
+	public function newNotify ($id_user, $message){
+		$notify = \Model_Notify::forge();
+		$notify->id_user = $id_user;
+		$notify->message = $message;
+		$notify->new = 1;
+		$notify->save();
+	}
+
+	/**
+	 * modelMessage
+	 * Prépare le message d'une notification
+	 *
+	 * @param String $model
+	 * @param String $username
+	 * @param int $id
+	 * @return String message
+	 */
+	public function modelMessage ($model, $username, $id = null){
+		switch ($model){
+			case 'defi':
+				return '<a href="/defis"><h5><i class="fa fa-gamepad"></i> <strong>'.$username.'</strong> vous défie !</h5></a>';
+				break;
+
+			case 'accepteDefi':
+				return '<a href="/defis"><h5><i class="fa fa-gamepad"></i> <strong>'.$username.'</strong> accepte votre défi !</h5></a>';
+				break;
+
+			case 'addRapport':
+				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-file-text-o"></i> <strong>'.$username.'</strong> vient de créer le rapport de votre match !</h5></a>';
+				break;
+
+			case 'validRapport':
+				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-check"></i> <strong>'.$username.'</strong> a validé le rapport de votre match !</h5></a>';
+				break;
+
+			case 'addComment':
+				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-comment-o"></i> <strong>'.$username.'</strong> vient de commmenter un de vos rapports de matchs !</h5></a>';
+				break;
+
+			case 'addFriend':
+				return '<a href="/profil/view/'.$id.'"><h5><i class="fa fa-coffee"></i> <strong>'.$username.'</strong> vous demande en coéquipier !</h5></a>';
+				break;
+
+			case 'validFriend':
+				return '<a href="/profil/view/'.$id.'"><h5><i class="fa fa-beer"></i> <strong>'.$username.'</strong> accepte votre demande de coéquipier !</h5></a>';
+				break;
+
+			case 'birthday':
+				return '<a href="/profil/view/'.$id.'"><h5><i class="fa fa-birthday-cake"></i> <strong>Joyeux Anniversaire !</strong><br>L\'équipe de FIFAGOAL vous souhaite une excellente journée !</h5></a>';
+				break;
+
+			case 'bienvenue':
+				return '<a href="/profil"><h5><i class="fa fa-star"></i> <strong>Bienvenue '.$username.'</strong><br>Complète ton profil dès maintenant !</h5></a>';
+				break;
+
+			case 'admin':
+				return '<a href="/"><h5><i class="fa fa-graduation-cap"></i> <strong>'.$username.'</strong> vient de vous faire passer Admin !</h5></a>';
+				break;
+
+			default:
+				break;
+		}
 	}
 }
