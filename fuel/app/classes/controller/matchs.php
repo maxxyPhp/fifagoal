@@ -152,10 +152,19 @@ class Controller_Matchs extends \Controller_Front
 				$defi->match_valider2 = 0;
 			}
 
-
 			$defi->id_match = $match->id;
 
 			if ($defi->save()){
+				/**
+				 * NOTIFICATION
+				 */
+				$message = $this->modelMessage('addRapport', \Auth::get('username'), $match->id);
+				if (\Auth::get('id') == $defi->id_joueur_defier){
+					$this->newNotify($defi->id_joueur_defieur, $message);
+				} elseif (\Auth::get('id') == $defi->id_joueur_defieur){
+					$this->newNotify($defi->id_joueur_defier, $message);
+				}
+
 				\Messages::success('Le rapport du match a bien été enregistré. Votre adversaire recevra une notification pour le valider');
 				\Response::redirect('/defis');
 			}
@@ -299,7 +308,7 @@ class Controller_Matchs extends \Controller_Front
 					);
 				}
 			}
-			return $this->view('matchs/view', array('match' => $match, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'commentaires' => $array_comments));
+			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'commentaires' => $array_comments));
 		}
 		else {
 			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'commentaires' => ''));

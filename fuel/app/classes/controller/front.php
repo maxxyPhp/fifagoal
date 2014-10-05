@@ -177,4 +177,14 @@ class Controller_Front extends \Controller
 				break;
 		}
 	}
+
+	/**
+	 * Verif Autorisation
+	 * Vérifie que l'utilisateur est connecté et est un admin
+	 */
+	public function verifAutorisationAdmin (){
+		if (!\Auth::check() || !\Auth::member(6)){
+			\Response::redirect('/');
+		}
+	}
 }

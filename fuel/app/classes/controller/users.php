@@ -33,20 +33,11 @@ class Controller_Users extends Controller_Front
 	 * Affiche la liste des users
 	 */
 	public function action_index (){
-		if (!\Auth::check() || !\Auth::member(6)){
-			\Response::redirect('/');
-		}
+		$this->verifAutorisationAdmin();
 
 		$users = \Auth\Model\Auth_User::find('all');
 
-		$view = \View::forge('layout');
-
-		$view->head = \View::forge('home/head', array('title' => 'FIFAGOAL', 'description' => 'Application de gestion et de report de matchs joués sur le jeu vidéo de football FIFA'));
-		$view->header = \View::forge('home/header', array('site_title' => 'FIFAGOAL'));
-		$view->content = \View::forge('users/index', array('users' => $users));
-		$view->footer = \View::forge('home/footer', array('title' => 'FIFAGOAL'));
-
-		return $view;
+		return $this->view('users/index', array('users' => $users));
 	}
 
 	/**
@@ -54,7 +45,7 @@ class Controller_Users extends Controller_Front
 	 * Transforme un user en admin
 	 */
 	public function action_admin (){
-		Package::load('messages');
+		$this->verifAutorisationAdmin();
 		$id = $this->param('id');
 		
 		$user = \Auth\Model\Auth_User::find($id);
@@ -98,7 +89,7 @@ class Controller_Users extends Controller_Front
 	}
 
 	public function action_change (){
-		Package::load('messages');
+		$this->verifAutorisation();
 		$id = $this->param('id');
 
 		if (\Input::post('changer')){
@@ -114,14 +105,7 @@ class Controller_Users extends Controller_Front
 			}
 		}
 
-		$view = \View::forge('layout');
-
-		$view->head = \View::forge('home/head', array('title' => 'FIFAGOAL', 'description' => 'Application de gestion et de report de matchs joués sur le jeu vidéo de football FIFA'));
-		$view->header = \View::forge('home/header', array('site_title' => 'FIFAGOAL'));
-		$view->content = \View::forge('users/change');
-		$view->footer = \View::forge('home/footer', array('title' => 'FIFAGOAL'));
-
-		return $view;
+		return $this->view('users/change', array());
 	}
 
 	/**
