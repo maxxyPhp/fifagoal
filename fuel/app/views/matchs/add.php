@@ -7,7 +7,10 @@
 
 		<!-- DEFIEUR -->
 		<div class="col-md-4">
-			<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			<div class="thumbnail-profil">
+				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			</div>
+			
 			<input type="hidden" name="joueur1" value="<?= $defieur->id ?>">
 			<div class="form-group animated fadeInUp">
 				<div class="col-sm-10">
@@ -38,8 +41,9 @@
 		<!-- SCORE -->
 		<div class="col-md-4">
 			<div class="row">
-				<div class="col-md-6 club club_defieur"></div>
-				<div class="col-md-6 club club_defier"></div>
+				<div class="col-md-4 club club_defieur"></div>
+				<div class="col-md-4" style="text-align:center;"><h1 style="display:inline-block;">vs</h1></div>
+				<div class="col-md-4 club club_defier"></div>
 			</div>
 
 			<div class="score" style="display:none;">
@@ -64,7 +68,10 @@
 
 		<!-- DEFIER -->
 		<div class="col-md-4">
-			<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			<div class="thumbnail-profil">
+				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+			</div>
+
 			<input type="hidden" name="joueur2" value="<?= $defier->id ?>">
 			<div class="form-group animated fadeInUp">
 				<div class="col-sm-10">
