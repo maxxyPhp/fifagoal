@@ -89,7 +89,20 @@ class Auth_User extends \Auth\Model\Auth_User
             'key_to' => 'id_user',
             'cascade_save' => true,
             'cascade_delete' => true,
+        ),
+        'amis' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Amis',
+            'key_to' => 'id_user1',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        ),
+        'amis_inverse' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Amis',
+            'key_to' => 'id_user2',
+            'cascade_save' => true,
+            'cascade_delete' => false,
         )
     );
-
 }
