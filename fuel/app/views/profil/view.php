@@ -35,6 +35,7 @@
 					Administrateur
 				<?php endif; ?>
 				</strong>
+
 				<?php if ($ami_inverse == 1): ?>
 					<a class="btn btn-primary btn-acp-ami" data-user="<?= $user->id ?>"><i class="fa fa-plus"></i> Accepter la demande d'ami</a>
 				<?php elseif ($ami === false): ?>
@@ -75,8 +76,22 @@
 				<?php endif; ?>
 		</div>
 
+		<!-- LISTE AMIS -->
 		<div class="col-md-2">
-		<!-- FAIREL ISTE AMI -->
+			<?php if ($liste_amis): ?>
+				<div class="panel panel-default">
+					<div class="panel-heading"><h4><?= count($liste_amis) ?> amis</h4></div>
+					<div class="panel-body liste-amis">
+						<?php foreach ($liste_amis as $friend): ?>
+							<?php if (!empty($friend['photouser'])): ?>
+								<a href="/profil/view/<?= $friend['users']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $friend['photouser']->photo ?>" alt="<?= $friend['users']->username ?>" width="50" height="50" class="photo-amis" data-toggle="tooltip" data-placement="top" title="<?= $friend['users']->username ?>"></a>
+							<?php else: ?>
+								<a href="/profil/view/<?= $friend['users']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $friend['users']->username ?>" width="50" height="50" class="photo-amis" data-toggle="tooltip" data-placement="top" title="<?= $friend['users']->username ?>"></a>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</div>
+				</div>
+			<?php endif; ?>
 		</div>
 
 	
@@ -85,6 +100,8 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('.photo-amis').tooltip();
+
 		$('.btn-ami').on('click', function(){
 			user = $(this).attr('data-user');
 			$.ajax({

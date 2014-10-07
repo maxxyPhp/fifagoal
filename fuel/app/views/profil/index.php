@@ -72,12 +72,32 @@
 			<a href="/users/delete/<?= \Auth::get('id') ?>" class="btn btn-danger btn-quit">Me désinscrire du site</a>
 		</div>
 
+		<!-- LISTE AMIS -->
+		<div class="col-md-2">
+			<?php if ($liste_amis): ?>
+				<div class="panel panel-default">
+					<div class="panel-heading"><h4><?= count($liste_amis) ?> amis</h4></div>
+					<div class="panel-body liste-amis">
+						<?php foreach ($liste_amis as $friend): ?>
+							<?php if (!empty($friend['photouser'])): ?>
+								<a href="/profil/view/<?= $friend['users']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $friend['photouser']->photo ?>" alt="<?= $friend['users']->username ?>" width="50" height="50" class="photo-amis" data-toggle="tooltip" data-placement="top" title="<?= $friend['users']->username ?>"></a>
+							<?php else: ?>
+								<a href="/profil/view/<?= $friend['users']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $friend['users']->username ?>" width="50" height="50" class="photo-amis" data-toggle="tooltip" data-placement="top" title="<?= $friend['users']->username ?>"></a>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</div>
+				</div>
+			<?php endif; ?>
+		</div>
+
 	
 	</div>
 </div>
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('.photo-amis').tooltip();
+
 		$('.btn-quit').on('click', function(){
 			if (!confirm("Etes vous sur de vouloir vous désinscrire du site ?")){
 				return false;

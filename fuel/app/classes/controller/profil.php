@@ -152,9 +152,25 @@ class Controller_Profil extends Controller_Front
 			);
 		}
 
+		$liste_amis = array();
+		$amis = \Model_Amis::query()->where('id_user1', '=', \Auth::get('id'))->get();
+		if (!empty($amis)){
+			
+			foreach ($amis as $am){
+				$users = \Model\Auth_User::find($am->id_user2);
+				$photouser = \Model_Photousers::query()->where('id_users', '=', $users->id)->get();
+				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+
+				$liste_amis[] = array(
+					'users' => $users,
+					'photouser' => $photouser,
+				);
+			}
+		}
 
 
-        return $this->view('profil/index', array('photo_user' => $photo_user, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
+
+        return $this->view('profil/index', array('photo_user' => $photo_user, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
 	}
 
 
@@ -366,6 +382,22 @@ class Controller_Profil extends Controller_Front
 			else $ami_inverse = 0;
 		} else $ami_inverse = 0;
 
-		return $this->view('profil/view', array('user' => $user, 'photo_user' => $photo_user, 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
+		$liste_amis = array();
+		$amis = \Model_Amis::query()->where('id_user1', '=', $user->id)->get();
+		if (!empty($amis)){
+			
+			foreach ($amis as $am){
+				$users = \Model\Auth_User::find($am->id_user2);
+				$photouser = \Model_Photousers::query()->where('id_users', '=', $users->id)->get();
+				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+
+				$liste_amis[] = array(
+					'users' => $users,
+					'photouser' => $photouser,
+				);
+			}
+		}
+
+		return $this->view('profil/view', array('user' => $user, 'photo_user' => $photo_user, 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
 	}
 }
