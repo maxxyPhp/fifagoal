@@ -80,7 +80,7 @@
 		<div class="col-md-2">
 			<?php if ($liste_amis): ?>
 				<div class="panel panel-default">
-					<div class="panel-heading"><h4><?= count($liste_amis) ?> amis</h4></div>
+					<div class="panel-heading"><h4 class="nb_amis" data-nb="<?= count($liste_amis) ?>"><?= count($liste_amis) ?> amis</h4></div>
 					<div class="panel-body liste-amis">
 						<?php foreach ($liste_amis as $friend): ?>
 							<?php if (!empty($friend['photouser'])): ?>
@@ -90,6 +90,11 @@
 							<?php endif; ?>
 						<?php endforeach; ?>
 					</div>
+				</div>
+			<?php else: ?>
+				<div class="panel panel-default panel-amis" style="display:none;">
+					<div class="panel-heading"><h4 class="nb_amis" data-nb="0"></h4></div>
+					<div class="panel-body liste-amis"></div>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -129,7 +134,19 @@
 				type: 'get',
 				dataType: 'json',
 				success: function(data){
-					if (data == 'OK'){
+					console.log(data);
+					if (data != 'KO'){
+						if (data != null){
+							photo = '<a href="/profil/view/'+data.id_users+'"><img src="<?= \Uri::base() . \Config::get('users.photo.path') ?>'+ data.photo +'" width="50" height="50" class="photo-amis"></a>';
+						} else photo = '<a href="/profil/view/'+data.id_users+'"><img src="<?= \Uri::base() . \Config::get("users.photo.path") . 'notfound.png' ?>" width="50" height="50" class="photo-amis"></a>';
+						
+						$('.liste-amis').append(photo);
+
+						nb_amis = $('.nb_amis').attr('data-nb');
+						$('.nb_amis').text(parseFloat(nb_amis)+1 +' amis');
+
+						$('.panel-amis').show();
+
 						$('.btn-acp-ami').text('Ami').addClass('btn-success').removeClass('btn-primary').attr('disabled', 'disabled');
 					} else alert('Une erreur est survenue pendant le processus d\'ajout d\'ami');
 				},

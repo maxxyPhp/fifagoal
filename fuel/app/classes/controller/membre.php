@@ -34,6 +34,9 @@ class Controller_Membre extends \Controller_Front
 				$user = \Model\Auth_User::find(\Input::get('user'));
 				if (empty($user)) return 'KO';
 
+				$photouser = \Model_Photousers::query()->where('id_users', '=', \Auth::get('id'))->get();
+				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+
 				$ami = \Model_Amis::find('all', array(
 					'where' => array(
 						array('id_user1', $user->id),
@@ -55,7 +58,8 @@ class Controller_Membre extends \Controller_Front
 
 				if ($ami_inverse->save()){
 					$this->newNotify($user->id, $this->modelMessage('validFriend', \Auth::get('username'), \Auth::get('id')));
-					return json_encode('OK');
+					$photouser = $this->object_to_array($photouser);
+					return json_encode($photouser);
 				}
 
 				break;

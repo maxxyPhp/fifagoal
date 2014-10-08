@@ -383,7 +383,13 @@ class Controller_Profil extends Controller_Front
 		} else $ami_inverse = 0;
 
 		$liste_amis = array();
-		$amis = \Model_Amis::query()->where('id_user1', '=', $user->id)->get();
+		// $amis = \Model_Amis::query()->where('id_user1', '=', $user->id)->get();
+		$amis = \Model_Amis::find('all', array(
+			'where' => array(
+				array('id_user1', $user->id),
+				array('valider', 1),
+			),
+		));
 		if (!empty($amis)){
 			
 			foreach ($amis as $am){
