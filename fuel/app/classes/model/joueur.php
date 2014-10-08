@@ -98,6 +98,17 @@ class Model_Joueur extends \Orm\Model
 	    )
 	);
 
+	// Relation Joueurs >> Buteurs
+	protected static $_has_many = array(
+	    'buteurs' => array(
+	        'key_from' => 'id',
+	        'model_to' => 'Model_Buteurs',
+	        'key_to' => 'id_joueur',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    )
+	);
+
 	// Relation Joueurs >> Pays
 	protected static $_many_many = array(
 	    'pays' => array(

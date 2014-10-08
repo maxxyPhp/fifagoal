@@ -53,6 +53,20 @@ class Controller_Joueur extends \Controller_Gestion
 
 				return json_encode($array);
 				break;
+
+			case 'getJoueurs':
+				if (!is_numeric(\Input::get('id_equipe'))){
+					return 'KO';
+				}
+
+				$joueurs = \Model_Joueur::query()->where('id_equipe', '=', \Input::get('id_equipe'))->order_by('nom')->get();
+
+				foreach ($joueurs as $joueur){
+					$array[] = $this->object_to_array($joueur);
+				}
+				
+				return json_encode($array);
+				break;
 		}
 	}
 

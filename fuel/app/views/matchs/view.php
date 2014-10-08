@@ -20,7 +20,9 @@
 
 			<!-- DEFIEUR -->
 			<div class="col-md-4 center-block center">
-				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<div class="thumbnail-profil">
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				</div>
 				<p class="username"><strong><?= $defieur->username ?></strong></p>
 				<?= html_entity_decode($derniers_matchs_1) ?><br>
 				<a href="/profil/view/<?= $defieur->id ?>" class="btn btn-primary" style="margin-top:10px;">Voir son profil</a>
@@ -45,7 +47,9 @@
 
 			<!-- DEFIER -->
 			<div class="col-md-4 center-block center">
-				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<div class="thumbnail-profil">
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				</div>
 				<p class="username"><strong><?= $defier->username ?></strong></p>
 				<?= html_entity_decode($derniers_matchs_2) ?><br>
 				<a href="/profil/view/<?= $defier->id ?>" class="btn btn-primary" style="margin-top:10px;">Voir son profil</a>

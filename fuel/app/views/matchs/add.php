@@ -36,6 +36,18 @@
 					</select>
 				</div>
 			</div>
+
+			<div class="list-buteurs">
+
+			</div>
+
+			<div class="form-group" style="display:none;" id="div_joueurs_defieur">
+				<div class="col-sm-10">
+					<select id="form_joueur_defieur" name="id_joueur_defieur">
+						<option></option>
+					</select>
+				</div>
+			</div>
 		</div>
 
 		<!-- SCORE -->
@@ -51,10 +63,10 @@
 				<div class="row">
 					
 					<div class="col-md-6">
-						<input type="number" class="form-control" id="score_joueur1" name="score_joueur_1" min="0" max="20">
+						<input type="number" class="form-control" id="score_joueur1" name="score_joueur_1" min="0" max="20" value="0">
 					</div>
 					<div class="col-md-6">
-						<input type="number" class="form-control" id="score_joueur2" name="score_joueur_2" min="0" max="20">
+						<input type="number" class="form-control" id="score_joueur2" name="score_joueur_2" min="0" max="20" value="0">
 					</div>
 				</div>
 			</div>
@@ -104,15 +116,15 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		var score1 = 0;
+
 		$('#form_championnat_defieur').select2({
 			placeholder: "Selectionnez un championnat",
-			allowClear: true,
 			width: '300px'
 		});
 
 		$('#form_equipe_defieur').select2({
 			placeholder: "Selectionnez une équipe",
-			allowClear: true,
 			width: '300px'
 		});
 
@@ -123,13 +135,11 @@
 
 		$('#form_championnat_defier').select2({
 			placeholder: "Selectionnez un championnat",
-			allowClear: true,
 			width: '300px'
 		});
 
 		$('#form_equipe_defier').select2({
 			placeholder: "Selectionnez une équipe",
-			allowClear: true,
 			width: '300px'
 		});
 
@@ -206,6 +216,101 @@
 				},
 			});
 		}
+
+
+		/**
+		 *
+		 * GESTION DES BUTEURS
+		 *
+		 */
+		$('#score_joueur1').on('click', function(){
+			score1 = $(this).val();
+			if ($(this).val() > 0){
+				score = $(this).val();
+				
+				$('.list-buteurs').append(
+					'<div class="form-group buteurs-domicile animated fadeInUp" style="display:none;">'
+						+'<div class="col-sm-8">'
+							+'<select id="buteurs-'+score+'" name="buteurs['+score+']" class="buteurs">'
+								+'<option></option>'
+							+'</select>'
+						+'</div>'
+						+'<div class="col-sm-4">'
+							+'<input type="number" name="minute_buteur['+score+']" min="1" max="90" class="form-control" placeholder="Minute" style="display:none;">'
+						+'</div>'
+					+'</div>'
+				);
+				
+				afficherJoueurs($('#form_equipe_defieur').val(), $('#buteurs-'+score), $('.buteurs-domicile'));
+
+				$('#buteurs-'+score).select2({
+					placeholder: "Selectionnez un joueur",
+					width: '230px'
+				});
+
+				$('.buteurs-domicile').show();
+				
+			}
+		});
+
+		$('#score_joueur1').on('blur', function(){
+			if ($(this).val() > 0){
+				score = $(this).val();
+				nb = $('.buteurs-domicile').length;
+				for (var i = nb+1; i <= score; i++){
+					$('.list-buteurs').append(
+						'<div class="form-group buteurs-domicile animated fadeInUp" style="display:none;">'
+							+'<div class="col-sm-8">'
+								+'<select id="buteurs-'+i+'" name="buteurs['+i+']" class="buteurs">'
+									+'<option></option>'
+								+'</select>'
+							+'</div>'
+							+'<div class="col-sm-4">'
+								+'<input type="number" name="minute_buteur['+i+']" min="1" max="90" class="form-control" placeholder="Minute" style="display:none;">'
+							+'</div>'
+						+'</div>'
+					);
+
+					afficherJoueurs($('#form_equipe_defieur').val(), $('#buteurs-'+i), $('.buteurs-domicile'));
+				
+					$('#buteurs-'+i).select2({
+						placeholder: "Selectionnez un joueur",
+						width: '230px'
+					});
+
+					$('.buteurs-domicile').show();
+				}
+			}
+		});
+
+		function afficherJoueurs (id_equipe, select, afficher){
+			$.ajax({
+				url : window.location.origin + '/joueur/api/getJoueurs.json',
+				data: 'id_equipe='+id_equipe,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					if (data != 'KO'){
+						select.html('');
+						joueur = data;
+						for (var i in joueur){
+							select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
+						}
+						// afficher.addClass('animated fadeInUp').show();
+					}
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				}
+			});
+		}
+
+		$('body').on('change', $('.buteurs'), function(){
+			console.log('nombr='+$('.buteurs').length);
+			console.log($(this));
+			id = $(this).attr('id');
+			console.log(id);
+		});
 
 		$('#score_joueur1').on('keyup', function(){
 			actionnerValidation();

@@ -112,6 +112,13 @@ class Model_Matchs extends \Orm\Model
             'key_to' => 'id_match',
             'cascade_save' => true,
             'cascade_delete' => false,
+        ),
+        'buteurs' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Buteurs',
+            'key_to' => 'id_match',
+            'cascade_save' => true,
+            'cascade_delete' => false,
         )
     );
 }
