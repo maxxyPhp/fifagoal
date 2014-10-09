@@ -1,5 +1,8 @@
 <div class="container">
-	<h1 class="center-block center">RAPPORT DE MATCH</h1>
+	<div class="panel panel-default">
+		<div class="panel-heading center center-block"><h2>RAPPORT DE MATCH</h2></div>
+	</div>
+
 	<div class="row rapport-match">
 		<?= \Form::open(array('class' => 'form-horizontal')) ?>
 		<input type="hidden" name="defi" value="<?= $defi->id ?>">
@@ -9,9 +12,10 @@
 		<div class="col-md-4">
 			<div class="thumbnail-profil">
 				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
-			</div>
-			
+			</div>	
 			<input type="hidden" name="joueur1" value="<?= $defieur->id ?>">
+
+			<!-- Div championnat -->
 			<div class="form-group animated fadeInUp">
 				<div class="col-sm-10">
 					<select id="form_championnat_defieur">
@@ -29,6 +33,7 @@
 				</div>
 			</div>
 
+			<!-- Div équipes -->
 			<div class="form-group" style="display:none;" id="div_equipes_defieur">
 				<div class="col-sm-10">
 					<select id="form_equipe_defieur" name="id_equipe_defieur">
@@ -37,9 +42,8 @@
 				</div>
 			</div>
 
-			<div class="list-buteurs">
-
-			</div>
+			<!-- Div buteurs -->
+			<div class="list-buteurs-defieur" style="display:none;"></div>
 
 			<div class="form-group" style="display:none;" id="div_joueurs_defieur">
 				<div class="col-sm-10">
@@ -52,6 +56,7 @@
 
 		<!-- SCORE -->
 		<div class="col-md-4">
+			<!-- Logos equipes -->
 			<div class="row">
 				<div class="col-md-4 club club_defieur"></div>
 				<div class="col-md-4" style="text-align:center;"><h1 style="display:inline-block;">vs</h1></div>
@@ -83,8 +88,9 @@
 			<div class="thumbnail-profil">
 				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
 			</div>
-
 			<input type="hidden" name="joueur2" value="<?= $defier->id ?>">
+
+			<!-- Div championnat -->
 			<div class="form-group animated fadeInUp">
 				<div class="col-sm-10">
 					<select id="form_championnat_defier">
@@ -102,9 +108,21 @@
 				</div>
 			</div>
 
+			<!-- Div equipes -->
 			<div class="form-group" style="display:none;" id="div_equipes_defier">
 				<div class="col-sm-10">
 					<select id="form_equipe_defier" name="id_equipe_defier">
+						<option></option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Div buteurs -->
+			<div class="list-buteurs-defier" style="display:none;"></div>
+
+			<div class="form-group" style="display:none;" id="div_joueurs_defier">
+				<div class="col-sm-10">
+					<select id="form_joueur_defier" name="id_joueur_defier">
 						<option></option>
 					</select>
 				</div>
@@ -116,31 +134,27 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		var score1 = 0;
 
-		$('#form_championnat_defieur').select2({
+		$('#form_championnat_defieur, #form_championnat_defier').select2({
 			placeholder: "Selectionnez un championnat",
 			width: '300px'
 		});
 
-		$('#form_equipe_defieur').select2({
+		$('#form_equipe_defieur, #form_equipe_defier').select2({
 			placeholder: "Selectionnez une équipe",
 			width: '300px'
 		});
 
+
+		/**
+		 *
+		 *
+		 * CHOIX D'UN CHAMPIONNAT
+		 *
+		 */
 		$('#form_championnat_defieur').on('change', function(){
 			id_championnat = $(this).val();
 			afficherEquipes(id_championnat, $('#form_equipe_defieur'), $('#div_equipes_defieur'));
-		});
-
-		$('#form_championnat_defier').select2({
-			placeholder: "Selectionnez un championnat",
-			width: '300px'
-		});
-
-		$('#form_equipe_defier').select2({
-			placeholder: "Selectionnez une équipe",
-			width: '300px'
 		});
 
 		$('#form_championnat_defier').on('change', function(){
@@ -179,6 +193,12 @@
 		}
 
 
+		/**
+		 *
+		 *
+		 * CHOIX D'UNE EQUIPE
+		 *
+		 */
 		$('#form_equipe_defieur').on('change', function(){
 			clickEquipe ($(this).val(), $('.club_defieur'), 'logo_club_defieur');
 		});
@@ -209,6 +229,7 @@
 
 					if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
 						$('.score').show();
+						$('input:submit').attr('disabled', false);
 					}
 				},
 				error: function(){
@@ -223,67 +244,95 @@
 		 * GESTION DES BUTEURS
 		 *
 		 */
-		$('#score_joueur1').on('click', function(){
-			score1 = $(this).val();
-			if ($(this).val() > 0){
-				score = $(this).val();
+		$('#score_joueur1').on('click blur', function(){
+			actionScore($(this).val(), $('.list-buteurs-defieur > div').length, 'list-buteurs-defieur', 'buteurs-domicile', 'dom', $('#form_equipe_defieur').val());
+		});
+
+		$('#score_joueur2').on('click blur', function(){
+			actionScore($(this).val(), $('.list-buteurs-defier > div').length, 'list-buteurs-defier', 'buteurs-exterieur', 'ext', $('#form_equipe_defier').val());
+		});
+
+		/**
+		 * actionScore
+		 * Détermine l'action à effectuer pendant évenement score
+		 *
+		 * @param int score
+		 * @param int nb_element : le nombre de select déjà présente
+		 * @param String listeJoueur : la div qui contiendra les listes déroulantes
+		 * @param String nomDivGen : la classe de la div qui contient un select
+		 * @param String ordre : 'dom' ou 'ext'
+		 * @param int idEquipe : l'id de l'équipe sélectionnée
+		 */
+		function actionScore (score, nb_element, listeJoueur, nomDivGen, ordre, idEquipe){
+			if (score == nb_element){
+				return false;
+			} else if (score < nb_element){
+				for (var i = nb_element; i > score; i--){
+					$('.'+listeJoueur).children().each(function(){
+						if ($(this).hasClass('buteurs-'+ordre+'-'+i) || i == 1){
+							$(this).remove();
+						}
+					});
+				}
+			} else {
+				for (var i = nb_element+1; i <= score; i++){
+					afficherChoixButeurs(i, listeJoueur, nomDivGen, ordre, idEquipe);
+				}
+			}
+		}
 				
-				$('.list-buteurs').append(
-					'<div class="form-group buteurs-domicile animated fadeInUp" style="display:none;">'
+
+
+		/**
+		 * afficherChoixButeurs
+		 * Affiche des listes déroulantes avec le nom des joueurs de l'équipes sélectionnée
+		 *
+		 * @param int score
+		 * @param String listeJoueur : la div qui contiendra les listes déroulantes
+		 * @param String nomDivGen : la classe de la div qui contient un select
+		 * @param String ordre : 'dom' ou 'ext'
+		 * @param int selectEquipe : l'id de l'équipe sélectionnée
+		 */
+		function afficherChoixButeurs (score, listeJoueur, nomDivGen, ordre, selectEquipe){
+			if (score > 0){
+				$('.'+listeJoueur).append(
+					'<div class="form-group '+nomDivGen+' buteurs-'+ordre+'-'+score+' animated fadeInUp" style="display:none;">'
 						+'<div class="col-sm-8">'
-							+'<select id="buteurs-'+score+'" name="buteurs['+score+']" class="buteurs">'
+							+'<select id="buteurs-'+ordre+'-'+score+'" name="buteurs-'+ordre+'['+score+']" class="buteurs">'
 								+'<option></option>'
 							+'</select>'
 						+'</div>'
 						+'<div class="col-sm-4">'
-							+'<input type="number" name="minute_buteur['+score+']" min="1" max="90" class="form-control" placeholder="Minute" style="display:none;">'
+							+'<input type="number" name="minute_'+ordre+'_buteur['+score+']" min="1" max="90" class="form-control buteurs-'+ordre+'-'+score+'" placeholder="Minute" style="display:none;">'
 						+'</div>'
 					+'</div>'
 				);
-				
-				afficherJoueurs($('#form_equipe_defieur').val(), $('#buteurs-'+score), $('.buteurs-domicile'));
 
-				$('#buteurs-'+score).select2({
+				afficherJoueurs(selectEquipe, $('#buteurs-'+ordre+'-'+score));
+
+				$('#buteurs-'+ordre+'-'+score).select2({
 					placeholder: "Selectionnez un joueur",
 					width: '230px'
 				});
 
-				$('.buteurs-domicile').show();
-				
-			}
-		});
-
-		$('#score_joueur1').on('blur', function(){
-			if ($(this).val() > 0){
-				score = $(this).val();
-				nb = $('.buteurs-domicile').length;
-				for (var i = nb+1; i <= score; i++){
-					$('.list-buteurs').append(
-						'<div class="form-group buteurs-domicile animated fadeInUp" style="display:none;">'
-							+'<div class="col-sm-8">'
-								+'<select id="buteurs-'+i+'" name="buteurs['+i+']" class="buteurs">'
-									+'<option></option>'
-								+'</select>'
-							+'</div>'
-							+'<div class="col-sm-4">'
-								+'<input type="number" name="minute_buteur['+i+']" min="1" max="90" class="form-control" placeholder="Minute" style="display:none;">'
-							+'</div>'
-						+'</div>'
-					);
-
-					afficherJoueurs($('#form_equipe_defieur').val(), $('#buteurs-'+i), $('.buteurs-domicile'));
-				
-					$('#buteurs-'+i).select2({
-						placeholder: "Selectionnez un joueur",
-						width: '230px'
-					});
-
-					$('.buteurs-domicile').show();
+				if ($('.'+listeJoueur+' > h4').length == 0){
+					$('.'+listeJoueur).prepend('<h4>Liste des buteurs :</h4>');
 				}
-			}
-		});
 
-		function afficherJoueurs (id_equipe, select, afficher){
+				$('.'+nomDivGen).show();
+				$('.'+listeJoueur).show();
+			}
+		}
+
+
+		/**
+		 * afficherJoueur
+		 * Fais une requête pour obtenir les joueurs d'une équipe
+		 *
+		 * @param int id_equipe
+		 * @param element select : le select qui contiendra les noms des joueurs
+		 */
+		function afficherJoueurs (id_equipe, select){
 			$.ajax({
 				url : window.location.origin + '/joueur/api/getJoueurs.json',
 				data: 'id_equipe='+id_equipe,
@@ -296,7 +345,6 @@
 						for (var i in joueur){
 							select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
 						}
-						// afficher.addClass('animated fadeInUp').show();
 					}
 				},
 				error: function(){
@@ -305,41 +353,11 @@
 			});
 		}
 
-		$('body').on('change', $('.buteurs'), function(){
-			console.log('nombr='+$('.buteurs').length);
-			console.log($(this));
+		// Choix d'un buteur, focus sur la minute
+		$('body').on('change', '.buteurs', function(){
 			id = $(this).attr('id');
-			console.log(id);
+			$('.'+id).show().focus();
 		});
 
-		$('#score_joueur1').on('keyup', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur1').on('blur', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur1').on('click', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur2').on('keyup', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur2').on('blur', function(){
-			actionnerValidation();
-		});
-
-		$('#score_joueur2').on('click', function(){
-			actionnerValidation();
-		});
-
-		function actionnerValidation(){
-			if ($('#score_joueur1').val() != '' && $('#score_joueur2').val() != ''){
-				$('input:submit').attr('disabled', false);
-			}
-		}
 	});
 </script>
