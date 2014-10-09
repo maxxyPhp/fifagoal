@@ -11,3 +11,4 @@
 <?= \Asset::js('select2/select2.min.js'); ?>
 <?= \Asset::js('redactor/redactor.js'); ?>
 <?= \Asset::js('uploadFile/jquery.uploadfile.min.js'); ?>
+<?= \Asset::js('timeline/jquery.easing.1.3.js'); ?>

@@ -96,6 +96,7 @@ class Controller_Matchs extends \Controller_Front
 		$this->verifAutorisation();
 
 		if (\Input::post('add')){
+			// var_dump($_POST);die();
 			if (!is_numeric(\Input::post('joueur1')) || !is_numeric(\Input::post('joueur2')) || !is_numeric(\Input::post('defi')) || !is_numeric(\Input::post('createur'))){
 				\Messages::error('Problèmes avec les joueurs');
 				\Response::redirect('/defis');
@@ -150,6 +151,44 @@ class Controller_Matchs extends \Controller_Front
 			} elseif (\Input::post('createur') == $defieur->id){
 				$defi->match_valider1 = 1;
 				$defi->match_valider2 = 0;
+			}
+
+			/**
+			 * Gestion des buteurs
+			 *
+			 */
+			if (\Input::post('buteurs-dom')){
+				$i = 1;
+				foreach (\Input::post('buteurs-dom') as $but){
+					$joueur = \Model_Joueur::find($but);
+					if (!empty($joueur)){
+						$buteur = \Model_Buteurs::forge();
+						$buteur->id_match = $match->id;
+						$buteur->id_joueur = $joueur->id;
+						if (\Input::post('minute_dom_buteur')[$i]){
+							$buteur->minute = \Input::post('minute_dom_buteur')[$i];
+						}
+						$buteur->save();
+					}
+					$i++;
+				}
+			}
+
+			if (\Input::post('buteurs-ext')){
+				$i = 1;
+				foreach (\Input::post('buteurs-ext') as $but){
+					$joueur = \Model_Joueur::find($but);
+					if (!empty($joueur)){
+						$buteur = \Model_Buteurs::forge();
+						$buteur->id_match = $match->id;
+						$buteur->id_joueur = $joueur->id;
+						if (\Input::post('minute_ext_buteur')[$i]){
+							$buteur->minute = \Input::post('minute_ext_buteur')[$i];
+						}
+						$buteur->save();
+					}
+					$i++;
+				}
 			}
 
 			$defi->id_match = $match->id;
@@ -285,6 +324,24 @@ class Controller_Matchs extends \Controller_Front
 		$championnat2 = \Model_Championnat::find($equipe2->id_championnat);
 		if (!empty($championnat2)) $championnat2 = str_replace(' ', '_', strtolower($championnat2->nom));
 
+		/**
+		 * BUTEURS
+		 *
+		 */
+		$buteurs = \Model_Buteurs::query()->where('id_match', '=', $match->id)->order_by('minute')->get();
+
+		$arr_buteurs = array();
+		foreach ($buteurs as $buteur){
+			$joueur = \Model_Joueur::find($buteur->id_joueur);
+			$nationalite = current($joueur->pays);
+			
+			$arr_buteurs[] = array(
+				'but' => $buteur,
+				'joueur' => $joueur,
+				'pays' => $nationalite,
+				'poste' => $joueur->poste,
+			);
+		}
 
 		/**
 		 *
@@ -308,10 +365,10 @@ class Controller_Matchs extends \Controller_Front
 					);
 				}
 			}
-			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'commentaires' => $array_comments));
+			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'buteurs' => $arr_buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'commentaires' => $array_comments));
 		}
 		else {
-			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'commentaires' => ''));
+			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'buteurs' => $arr_buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'commentaires' => ''));
 		}
 
 		

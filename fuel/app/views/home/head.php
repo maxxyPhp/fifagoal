@@ -20,8 +20,10 @@
 <link href='http://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
 <?= \Asset::css('redactor/redactor.css'); ?>
 <?= \Asset::css('uploadFile/uploadfile.css'); ?>
+<?= \Asset::css('timeline/style.css'); ?>
 
 <?= \Asset::js('jquery/jquery-2.1.1.min.js') ?>
 <?= \Asset::js('bootstrap/bootstrap.min.js') ?>
+<?= \Asset::js('timeline/modernizr.custom.11333.js') ?>
 
 
