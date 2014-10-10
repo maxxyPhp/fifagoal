@@ -62,7 +62,7 @@ h2.ss-subtitle:after{
     text-align: left;
     float: left;
 	overflow: hidden;
-	padding-bottom: 500px;
+	padding-bottom: 50px;
 }
 .ss-container h2{
     font-size: 40px;
@@ -90,7 +90,7 @@ h2.ss-subtitle:after{
 }
 .ss-left, .ss-right{
     float: left;
-    width: 48%;
+    width: 50%;
     position: relative;
 }
 .ss-right{
@@ -182,7 +182,7 @@ h2.ss-subtitle:after{
     margin-top: 34px;
 	padding: 10px 15px;
 	background: rgba(26, 27, 33, 0.6);
-	text-shadow: 1px 1px 1px rgba(26, 27, 33, 0.8)
+	/*text-shadow: 1px 1px 1px rgba(26, 27, 33, 0.8)*/
 }
 .ss-container .ss-medium h3{
 	margin-top: 82px;

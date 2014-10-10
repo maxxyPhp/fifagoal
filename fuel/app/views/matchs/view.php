@@ -61,6 +61,27 @@
 			<?php if ($buteurs): ?>
 			<div class="row" style="margin-top:20px;">
 				<div id="ss-container" class="ss-container">
+					<div class="ss-row">
+	                    <div class="ss-left">
+	                        <h2 id="november">Début</h2>
+	                    </div>
+	                    <div class="ss-right">
+	                        <h2>du match</h2>
+	                    </div>
+                	</div>
+
+                	<div class="ss-row ss-medium">
+	                    <div class="ss-left">
+	                       <div class="ss-circle">
+	                       		<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe1->championnat->nom)) . '/' . $equipe1->logo ?>" width="90" class="timeline_logo_club">
+	                       </div>
+	                    </div>
+	                    <div class="ss-right">
+	                         <div class="ss-circle">
+	                         	<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe2->championnat->nom)) . '/' . $equipe2->logo ?>" width="90" class="timeline_logo_club">
+	                         </div>
+	                    </div>
+                	</div>
 					<?php foreach ($buteurs as $buteur):  ?>
 						<?php //var_dump($buteur);die(); ?>
 						<?php //var_dump($buteur['joueur']->id_equipe);die(); ?>
@@ -69,6 +90,7 @@
 								<div class="ss-left">
 			                        <div class="ss-circle">
 			                        	<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($equipe1->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($equipe1->nom)) . '/' . $buteur['joueur']->photo ?>" width="100"/><br>
+			                        	<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe1->championnat->nom)) . '/' . $equipe1->logo ?>" width="50" class="logo_buteurs"><br>
 			                        	<img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $buteur['pays']->drapeau ?>" width="30"><br>
 			                        	<div class="label label-<?= $buteur['poste']->couleur ?>"><?= $buteur['poste']->nom ?></div>
 			                        </div>
@@ -85,15 +107,28 @@
 								<div class="ss-left">
 									<h3>
 			                            <span>GOAL <i class="fa fa-futbol-o"></i></span>
-			                             <?= ucfirst($buteur['joueur']->prenom) .' '. strtoupper($buteur['joueur']->nom). ' !' ?>
+			                             <?= ucfirst($buteur['joueur']->prenom) .' '. strtoupper($buteur['joueur']->nom). ' !  (' . $buteur['but']->minute .'ème)' ?>
 			                        </h3>
 			                    </div>
 			                    <div class="ss-right">
-			                        <div class="ss-circle"><img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($equipe2->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($equipe2->nom)) . '/' . $buteur['joueur']->photo ?>" width="100"/></div>
+			                        <div class="ss-circle">
+				                        <img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($equipe2->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($equipe2->nom)) . '/' . $buteur['joueur']->photo ?>" width="100"/><br>
+				                        <img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe2->championnat->nom)) . '/' . $equipe2->logo ?>" width="50" class="logo_buteurs"><br>
+				                        <img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $buteur['pays']->drapeau ?>" width="30"><br>
+				                        <div class="label label-<?= $buteur['poste']->couleur ?>"><?= $buteur['poste']->nom ?></div>
+			                   		</div>
 			                    </div>
 							</div>
 						<?php endif; ?>
 					<?php endforeach; ?>
+					<div class="ss-row">
+	                    <div class="ss-left">
+	                        <h2 id="november">Fin du</h2>
+	                    </div>
+	                    <div class="ss-right">
+	                        <h2>match</h2>
+	                    </div>
+                	</div>
 				</div>
 			</div>
 			<?php endif; ?>
