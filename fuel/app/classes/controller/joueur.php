@@ -436,7 +436,7 @@ class Controller_Joueur extends \Controller_Gestion
 
 			\Messages::success('Import terminé avec succès');
 			\Cache::delete('listPlayers');
-			\Response::redirect('/joueur');
+			\Response::redirect('/equipe');
 		}//IF POST
 
 		$view = $this->view('joueur/import', array());

@@ -45,19 +45,3 @@
             </div>
         </form>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#form-register').slideUp(0);
-        $('body').on('click', '.toggle-register-form', function() {
-            if ($(this).find('.toggle-register-state').html() == '-') {
-                $(this).find('.toggle-register-state').html('+');
-                $('#form-register').slideUp(200);
-            } else {
-                $(this).find('.toggle-register-state').html('-');
-                $('#form-register').slideDown(200);
-            }
-            return false;
-        });
-    });
-</script>

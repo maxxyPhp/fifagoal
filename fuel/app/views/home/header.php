@@ -76,7 +76,7 @@
 					<?php else: ?>
 						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="30px" class="photo_profil_menu" />
 					<?php endif; ?>
-					<a href="/auth/logout" class="btn btn-primary navbar-btn">Déconnexion</a>
+					<a href="/auth/logout" class="btn btn-primary navbar-btn"><i class="fa fa-sign-out"></i> Déconnexion</a>
 				<?php else: ?>
 					<a href="/auth/signin" class="btn btn-default navbar-btn">Inscription</a>
 					<a href="/auth" class="btn btn-primary navbar-btn">Connexion</a>
