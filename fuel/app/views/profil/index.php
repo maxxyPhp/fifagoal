@@ -44,7 +44,7 @@
 				Inscription : <?= date('d/m/Y à H:i', \Auth::get('created_at')) ?><br>
 			</div>
 
-			<h2 class="page-header">Mes stats</h2>
+			<h2 class="page-header"><i class="fa fa-pie-chart"></i> Mes stats</h2>
 				<span class="label label-info"><?= $stats['victoires'] + $stats['nuls'] + $stats['defaites'] ?> matchs disputés</span>
 				<span class="label label-success"><?= $stats['victoires'] ?> victoires</span>
 				<span class="label label-default"><?= $stats['nuls'] ?> matchs nuls</span>
@@ -67,7 +67,7 @@
 					<?php endforeach; ?>
 				<?php endif; ?>
 
-			<h2 class="page-header">Fonctionnalités</h2>
+			<h2 class="page-header"><i class="fa fa-gear"></i> Fonctionnalités</h2>
 			<a href="/users/change/<?= \Auth::get('id') ?>" class="btn btn-warning">Changer mon mot de passe</a>
 			<a href="/users/delete/<?= \Auth::get('id') ?>" class="btn btn-danger btn-quit">Me désinscrire du site</a>
 		</div>

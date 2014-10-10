@@ -51,7 +51,7 @@
 				Inscription : <?= date('d/m/Y à H:i', \Auth::get('created_at')) ?><br>
 			</div>
 
-			<h2 class="page-header">Ses stats</h2>
+			<h2 class="page-header"><i class="fa fa-pie-chart"></i> Ses stats</h2>
 				<span class="label label-info"><?= $stats['victoires'] + $stats['nuls'] + $stats['defaites'] ?> matchs disputés</span>
 				<span class="label label-success"><?= $stats['victoires'] ?> victoires</span>
 				<span class="label label-default"><?= $stats['nuls'] ?> matchs nuls</span>
@@ -59,7 +59,7 @@
 				<hr>
 				
 				<?php if ($derniers_matchs): ?>
-					<h4>Ses derniers matchs :</h4>
+					<h4><i class="fa fa-futbol-o"></i> Ses derniers matchs :</h4>
 					<?php foreach ($derniers_matchs as $match): ?>
 						<div class="row" style="margin-bottom:10px;">
 							<div class="col-md-4">
@@ -80,7 +80,7 @@
 		<div class="col-md-2">
 			<?php if ($liste_amis): ?>
 				<div class="panel panel-default">
-					<div class="panel-heading"><h4 class="nb_amis" data-nb="<?= count($liste_amis) ?>"><?= count($liste_amis) ?> amis</h4></div>
+					<div class="panel-heading"><h4 class="nb_amis" data-nb="<?= count($liste_amis) ?>"><i class="fa fa-users"></i> <?= count($liste_amis) ?> amis</h4></div>
 					<div class="panel-body liste-amis">
 						<?php foreach ($liste_amis as $friend): ?>
 							<?php if (!empty($friend['photouser'])): ?>
