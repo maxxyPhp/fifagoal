@@ -272,12 +272,18 @@ class Controller_Defis extends \Controller_Front
 		}
 
 		/** DEFIS TERMINES */
-		$defis_termines = \Model_Defis::find('all', array(
-			'where' => array(
-				array('id_joueur_defieur', \Auth::get('id')),
-				array('id_match', null, \DB::expr('IS NOT NULL')),
-			),
-		));
+		// $defis_termines = \Model_Defis::find('all', array(
+		// 	'where' => array(
+		// 		array('id_joueur_defieur', \Auth::get('id')),
+		// 		array('id_match', null, \DB::expr('IS NOT NULL')),
+		// 	),
+		// ));
+
+		$defis_termines = \DB::query("SELECT * FROM defis
+			WHERE id_joueur_defieur = ".\Auth::get('id')."
+			OR id_joueur_defier = ".\Auth::get('id')."
+			AND id_match IS NOT NULL
+		")->as_object('Model_Defis')->execute();
 
 		$array_termines = array();
 		foreach ($defis_termines as $ter){

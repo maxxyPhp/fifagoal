@@ -29,7 +29,7 @@ class Controller_Matchs extends \Controller_Front
 				/**
 				 * NOTIFICATION
 				 */
-				$this->newNotify($defier->id, $this->modelMessage('defi', \Auth::get('id')));
+				$this->newNotify($defier->id, $this->modelMessage('defi', \Auth::get('username')));
 
 				return json_encode('OK');
 				break;
@@ -75,6 +75,48 @@ class Controller_Matchs extends \Controller_Front
 					'commentaire' => $commentaire->commentaire,
 				);
 
+				$array = $this->object_to_array($array);
+
+				return json_encode($array);
+				break;
+
+			case 'like':
+				if (!is_numeric(\Input::get('match'))){
+					return 'KO';
+				}
+
+				$user = \Model\Auth_User::find(\Auth::get('id'));
+
+				$match = \Model_Matchs::find(\Input::get('match'));
+				if (empty($match)) return 'KO';
+
+				$like = \Model_Like::forge();
+				$like->id_user = $user->id;
+				$like->id_match = $match->id;
+				
+				if ($like->save()) return json_encode('OK');
+
+				break;
+
+			case 'playerswhoslike':
+				if (!is_numeric(\Input::get('match'))){
+					return 'KO';
+				}
+
+				$match = \Model_Matchs::find(\Input::get('match'));
+				if (empty($match)) return 'KO';
+
+				$array = array();
+				foreach ($match->like as $like){
+					$user = \Model\Auth_User::find($like->id_user);
+					$photouser = \Model_Photousers::query()->where('id_users', '=', $user->id)->get();
+					(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
+					// $user->photo = (!empty($photouser)) ? $photouser->photo : null;
+					$array[] = array(
+						'user' => $user,
+						'photouser' => $photouser,
+					);
+				}
 				$array = $this->object_to_array($array);
 
 				return json_encode($array);
@@ -345,6 +387,22 @@ class Controller_Matchs extends \Controller_Front
 
 		/**
 		 *
+		 * LIKE
+		 *
+		 */
+		$jaime = false;
+		$like = $match->like;
+		// var_dump($like);die();
+		foreach ($like as $l){
+			if ($l->id_user == \Auth::get('id')){
+				$jaime = true;
+			}
+		}
+		// var_dump($jaime);die();
+
+
+		/**
+		 *
 		 * COMMENTAIRES
 		 *
 		 */
@@ -365,10 +423,10 @@ class Controller_Matchs extends \Controller_Front
 					);
 				}
 			}
-			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'buteurs' => $arr_buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'commentaires' => $array_comments));
+			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'buteurs' => $arr_buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'like' => count($like), 'jaime' => $jaime, 'commentaires' => $array_comments));
 		}
 		else {
-			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'buteurs' => $arr_buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'commentaires' => ''));
+			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'championnat1' => $championnat1, 'championnat2' => $championnat2, 'buteurs' => $arr_buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'like' => count($like), 'jaime' => $jaime, 'commentaires' => ''));
 		}
 
 		

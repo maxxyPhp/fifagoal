@@ -114,7 +114,7 @@ class Controller_Profil extends Controller_Front
 		 */
 		$derniers_matchs = array();
 
-		$query = \DB::query('SELECT id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
+		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
 			JOIN defis ON defis.id_match = matchs.id
 			WHERE id_joueur1 ='.\Auth::get('id').'
 			AND match_valider1 = 1
@@ -125,6 +125,7 @@ class Controller_Profil extends Controller_Front
 
 		foreach ($query as $result){
 			$derniers_matchs[] = array(
+				'id' => $result->id,
 				'equipe1' => $result->equipe1,
 				'equipe2' => $result->equipe2,
 				'score1' => $result->score_joueur1,
@@ -133,7 +134,7 @@ class Controller_Profil extends Controller_Front
 			);
 		}
 
-		$query = \DB::query('SELECT id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
+		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
 			JOIN defis ON defis.id_match = matchs.id
 			WHERE id_joueur2 ='.\Auth::get('id').'
 			AND match_valider1 = 1
@@ -144,6 +145,7 @@ class Controller_Profil extends Controller_Front
 
 		foreach ($query as $result){
 			$derniers_matchs[] = array(
+				'id' => $result->id,
 				'equipe1' => $result->equipe1,
 				'equipe2' => $result->equipe2,
 				'score1' => $result->score_joueur1,
@@ -313,7 +315,7 @@ class Controller_Profil extends Controller_Front
 		 */
 		$derniers_matchs = array();
 
-		$query = \DB::query('SELECT id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
+		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
 			JOIN defis ON defis.id_match = matchs.id
 			WHERE id_joueur1 ='.$user->id.'
 			AND match_valider1 = 1
@@ -324,6 +326,7 @@ class Controller_Profil extends Controller_Front
 
 		foreach ($query as $result){
 			$derniers_matchs[] = array(
+				'id' => $result->id,
 				'equipe1' => $result->equipe1,
 				'equipe2' => $result->equipe2,
 				'score1' => $result->score_joueur1,
@@ -332,7 +335,7 @@ class Controller_Profil extends Controller_Front
 			);
 		}
 
-		$query = \DB::query('SELECT id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
+		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
 			JOIN defis ON defis.id_match = matchs.id
 			WHERE id_joueur2 ='.$user->id.'
 			AND match_valider1 = 1
@@ -343,6 +346,7 @@ class Controller_Profil extends Controller_Front
 
 		foreach ($query as $result){
 			$derniers_matchs[] = array(
+				'id' => $result->id,
 				'equipe1' => $result->equipe1,
 				'equipe2' => $result->equipe2,
 				'score1' => $result->score_joueur1,
