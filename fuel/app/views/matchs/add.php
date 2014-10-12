@@ -11,7 +11,11 @@
 		<!-- DEFIEUR -->
 		<div class="col-md-4">
 			<div class="thumbnail-profil">
-				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php if ($photo_defieur): ?>
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php else: ?>
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php endif; ?>
 			</div>	
 			<input type="hidden" name="joueur1" value="<?= $defieur->id ?>">
 
@@ -86,7 +90,11 @@
 		<!-- DEFIER -->
 		<div class="col-md-4">
 			<div class="thumbnail-profil">
-				<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php if ($photo_defier): ?>
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php else: ?>
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php endif; ?>
 			</div>
 			<input type="hidden" name="joueur2" value="<?= $defier->id ?>">
 

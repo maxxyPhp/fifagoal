@@ -3,6 +3,10 @@
 	CSS de base de l'appli
 */
 
+body {
+	padding-top: 70px;
+}
+
 .trad_acc {
 	font-size : x-small;
 	font-style:  italic;
@@ -40,9 +44,15 @@
 	padding-top: 10px;
 }
 
+/* Photo de profil dans le menu */
 .photo_profil_menu {
 	margin-right: 5px;
 	margin-top: 10px;
+}
+
+/* Photo de profil dans le menu par défaut */
+.photo_profil_menu_default {
+	margin-right : 5px;
 }
 
 
@@ -118,6 +128,10 @@
 	top : 10px;
 }
 
+.nb_like {
+	margin-top : 10px;
+}
+
 /***************************************************************************************************************
 * 							DEFIS
 ***************************************************************************************************************/
@@ -136,6 +150,19 @@
 
 .btn-rapport {
 	margin-top : 10px;
+}
+
+.list-unstyled {
+	padding-left : 0;
+	list-style : none;
+}
+
+.list-unstyled > li {
+	/*display : inline-block;*/
+	height : 30px;
+	margin-bottom : 20px;
+	border-left : solid black 1px;
+
 }
 
 /***************************************************************************************************************
