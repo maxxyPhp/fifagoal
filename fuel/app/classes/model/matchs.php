@@ -119,6 +119,13 @@ class Model_Matchs extends \Orm\Model
             'key_to' => 'id_match',
             'cascade_save' => true,
             'cascade_delete' => false,
+        ),
+        'like' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Like',
+            'key_to' => 'id_match',
+            'cascade_save' => true,
+            'cascade_delete' => false,
         )
     );
 }

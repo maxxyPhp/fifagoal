@@ -103,6 +103,13 @@ class Auth_User extends \Auth\Model\Auth_User
             'key_to' => 'id_user2',
             'cascade_save' => true,
             'cascade_delete' => false,
-        )
+        ),
+        'like' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Like',
+            'key_to' => 'id_user',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        ),
     );
 }

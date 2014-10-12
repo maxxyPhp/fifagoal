@@ -11,18 +11,38 @@
 	<?php elseif (!$match_valider): ?>
 		<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-triangle"></i> Votre adversaire n'a pas encore validé ce match.</div>
 	<?php endif; ?>
+
+
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<strong><i class="fa fa-futbol-o"></i> Rapport de match</strong>
 		</div>
 
 		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-2">
+					<?php if (!$jaime): ?>
+						<a class="btn btn-default btn-like" data-match="<?= $match->id ?>" style="margin-left:50px;"><i class="fa fa-thumbs-o-up"></i> J'applaudis</a>
+					<?php else: ?>
+						<a class="btn btn-default btn-like" data-match="<?= $match->id ?>" disabled="disabled" style="margin-left:50px;"><i class="fa fa-thumbs-o-up"></i> J'applaudis</a>
+					<?php endif; ?>
+				</div>
+				<div class="col-md-10 nb_like" data-like="<?= $like ?>">
+					<a class="btn-jaime" data-toggle="modal" data-target="#myModal"><i class="fa fa-thumbs-up"></i> <?= $like ?><?php if ($jaime): ?>  Vous applaudissez.<?php endif; ?></a>
+					<a href="#panel-commentaires" style="margin-left:30px;"><i class="fa fa-comments"></i> <?= count($commentaires) ?></a>
+				</div>
+			</div>
+			<hr>
 
 			<div class="row">
 				<!-- DEFIEUR -->
 				<div class="col-md-4 center-block center">
 					<div class="thumbnail-profil">
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+						<?php if ($photo_defieur): ?>
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php else: ?>
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+				<?php endif; ?>
 					</div>
 					<p class="username"><strong><?= $defieur->username ?></strong></p>
 					<?= html_entity_decode($derniers_matchs_1) ?><br>
@@ -49,7 +69,11 @@
 				<!-- DEFIER -->
 				<div class="col-md-4 center-block center">
 					<div class="thumbnail-profil">
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+						<?php if ($photo_defier): ?>
+							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+						<?php else: ?>
+							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+						<?php endif; ?>
 					</div>
 					<p class="username"><strong><?= $defier->username ?></strong></p>
 					<?= html_entity_decode($derniers_matchs_2) ?><br>
@@ -83,8 +107,6 @@
 	                    </div>
                 	</div>
 					<?php foreach ($buteurs as $buteur):  ?>
-						<?php //var_dump($buteur);die(); ?>
-						<?php //var_dump($buteur['joueur']->id_equipe);die(); ?>
 						<?php if ($buteur['joueur']->id_equipe == $equipe1->id): ?>
 							<div class="ss-row ss-medium">
 								<div class="ss-left">
@@ -137,7 +159,7 @@
 
 	<?php if ($match_valider): ?>
 		<!-- COMMENTAIRES -->
-		<div class="panel panel-default">
+		<div id="panel-commentaires" class="panel panel-default">
 			<div class="panel-heading">
 				<strong><i class="fa fa-comments-o"></i> Commentaires</strong>
 			</div>
@@ -174,8 +196,84 @@
 	<?php endif; ?>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        		<h4 class="modal-title" id="myModalLabel">Player qui applaudissent ce match</h4>
+      		</div>
+      		<div class="modal-body">
+      			<section class="table-responsive">
+      				<table class="table table-hover">
+      					<tbody class="modal-table"></tbody>
+      				</table>
+      			</section>
+      		</div>
+    	</div>
+  	</div>
+</div>
+
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('.btn-like').on('click', function(){
+			match = $(this).attr('data-match');
+			$.ajax({
+				url : window.location.origin + '/matchs/api/like.json',
+				data: 'match='+match,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					if (data == 'OK'){
+						$('.btn-like').attr('disabled', 'disabled');
+						var nb = $('.nb_like').attr('data-like');
+						console.log(nb);
+						$('.btn-jaime').contents().filter(function(){
+							return this.nodeType === 3;
+						}).remove();
+						$('.btn-jaime').append((parseInt(nb)+1)+' Vous applaudissez.');
+					}
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				},
+			});
+		});
+
+		// Player qui likent le match
+		$('.btn-jaime').on('click', function(){
+			match = $('.btn-like').attr('data-match');
+			$.ajax({
+				url : window.location.origin + '/matchs/api/playerswhoslike.json',
+				data: 'match='+match,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					if (data != 'KO'){
+						console.log(data);
+						$('.modal-table').html('');
+						user = data;
+						for (var i in user){
+							if (user[i]['photouser']){
+								var photo = user[i]['photouser']['photo'];
+							} else var photo = 'notfound.png';
+							$('.modal-table').append(
+								'<tr>'
+									+'<td><img src="<?= \Uri::base() . \Config::get("users.photo.path") ?>'+photo+'" width="50" /></td>'
+									+'<td>'+user[i]['user']['username']+'</td>'
+									+'<td><a href="/profil/view/'+user[i]['user']['id']+'" class="btn btn-success"><i class="fa fa-eye"></i> Voir son profil</a></td>'+
+								+'</tr>'	
+							);
+						}
+					}
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				},
+			});
+		});
+
 		$('#nouv_commentaire').redactor();
 
 		$('.btn-commentaire').on('click', function(){
@@ -191,7 +289,7 @@
 					if (data != 'KO'){
 						console.log(data.commentaire);
 						var photo;
-						if (data.photouser == ''){
+						if (data.photouser == undefined){
 							photo = window.location.origin+'/upload/photo_user/notfound.png';
 						} else photo = window.location.origin+'/upload/photo_user/'+data.photouser.photo;
 
