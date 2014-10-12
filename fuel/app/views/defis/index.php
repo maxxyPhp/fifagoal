@@ -1,4 +1,14 @@
 <div class="container">
+	<div class="menu-defis">
+		<ul class="list-unstyled">
+			<li class="col-md-2"><strong><?= $new + count($defis_lances) + count($defis_acp) + count($defis_ref) + count($defis_termines) ?></strong> défis</li>
+			<li class="col-md-2"><a href="#new-defis"><strong><?= $new ?></strong> nouveaux</a></li>
+			<li class="col-md-2"><a href="#defis-env"><strong><?= count($defis_lances) ?></strong> envoyés</a></li>
+			<li class="col-md-2"><a href="#defis-acp"><strong><?= count($defis_acp) ?></strong> acceptés</a></li>
+			<li class="col-md-2"><a href="#defis-ref"><strong><?= count($defis_ref) ?></strong> refusés</a></li>
+			<li class="col-md-2"><a href="#defis-ter"><strong><?= count($defis_termines) ?></strong> terminés</a></li>
+		</ul>
+	</div>
 
 	<?php if (\Messages::any()): ?>
 	    <br/>
@@ -13,7 +23,7 @@
 	<?php endif; ?>
 
 	<!-- DEFIS EN ATTENTE -->
-	<h1 class="page-header">Vos défis</h1>
+	<h1 id="new-defis" class="page-header">Vos défis</h1>
 	<?php if ($defis): ?>
 		<?php if ($new > 0): ?>
 			<div class="alert alert-success"><i class="fa fa-smile-o"></i> <?= $new ?> nouveaux défis !</div>
@@ -36,10 +46,10 @@
 					<?= $defi['defieur']['username'] ?> vous défis
 				</div>	
 
-				<div class="col-md-4">
-					<a class="btn btn-success btn-accepte" data-defi="<?= $defi['defi']['id'] ?>" data-loading-text="Chargement..."><i class="fa fa-check"></i> Accepter</a>
-					<a class="btn btn-default btn-attendre" data-defi="<?= $defi['defi']['id'] ?>" data-loading-text="Chargement..."><i class="fa fa-ellipsis-h"></i> Attendre</a>
-					<a class="btn btn-danger btn-refuse" data-defi="<?= $defi['defi']['id'] ?>" data-loading-text="Chargement..."><i class="fa fa-close"></i> Refuser</a>
+				<div class="col-md-4 btn-<?= $defi['defi']['id'] ?>">
+					<a class="btn btn-success btn-accepte btn-acp-<?= $defi['defi']['id'] ?>" data-defi="<?= $defi['defi']['id'] ?>" data-loading-text="Chargement..."><i class="fa fa-check"></i> Accepter</a>
+					<a class="btn btn-default btn-attendre btn-att-<?= $defi['defi']['id'] ?>" data-defi="<?= $defi['defi']['id'] ?>" data-loading-text="Chargement..."><i class="fa fa-ellipsis-h"></i> Attendre</a>
+					<a class="btn btn-danger btn-refuse btn-ref-<?= $defi['defi']['id'] ?>" data-defi="<?= $defi['defi']['id'] ?>" data-loading-text="Chargement..."><i class="fa fa-close"></i> Refuser</a>
 				</div>
 			</div>
 		<?php endforeach ?>
@@ -56,7 +66,7 @@
 
 
 	<!-- DEFIS ENVOYES -->
-	<h1 class="page-header">Vos défis envoyés</h1>
+	<h1 id="defis-env" class="page-header">Vos défis envoyés</h1>
 	<?php if ($defis_lances): ?>
 		<?php foreach ($defis_lances as $defi): ?>
 			<div class="row" style="margin-top:10px;">
@@ -94,51 +104,9 @@
 		</div>
 	<?php endif; ?>
 
-
-	<!-- DEFIS TERMINES -->
-	<a class="btn btn-default btn-ter" data-action="1">Voir les défis terminés</a>
-	<div class="defis_termines animated" style="display:none;">
-		<?php if ($defis_termines): ?>
-			<?php foreach ($defis_termines as $defi): ?>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-md-6">
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser'] ?>" alt="<?= $defi['defier']['username'] ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defier']['username'] ?>" />
-						<a href="/profil/view/<?= $defi['defier']['id'] ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
-
-						<a href="/matchs/view/<?= $defi['match']['id'] ?>" class="btn btn-primary"><i class="fa fa-futbol-o"></i> Voir le rapport du match</a>
-					</div>
-
-					<div class="col-md-4">
-						<div class="row">
-							<div class="col-md-4 defis_club">
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . $defi['championnat1'] . '/' . $defi['equipe1']['logo'] ?>" alt="<?= $defi['equipe1']['nom'] ?>" width="30px" />
-							</div>
-							<div class="col-md-4">
-								<div class="score_defis"><?= $defi['match']['score_joueur1'] ?> - <?= $defi['match']['score_joueur2'] ?></div>
-							</div>
-							<div class="col-md-4 defis_club">
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . $defi['championnat2'] . '/' . $defi['equipe2']['logo'] ?>" alt="<?= $defi['equipe2']['nom'] ?>" width="30px" />
-							</div>
-						</div>
-					</div>
-
-					<div class="col-md-2">
-						<?php if ($defi['match']['score_joueur1'] > $defi['match']['score_joueur2']): ?>
-							<span class="label label-success">Victoire</span>
-						<?php elseif ($defi['match']['score_joueur1'] == $defi['match']['score_joueur2']): ?>
-							<span class="label label-default">Nul</span>
-						<?php else: ?>
-							<span class="label label-danger">Défaite</span>
-						<?php endif; ?>
-					</div>
-				</div>
-			<?php endforeach; ?>
-		<?php endif; ?>
-	</div>
-
 	
 	<!-- DEFIS ACCEPTES -->
-	<h1 class="page-header">Vos défis acceptés</h1><a class="btn btn-default btn-acp" data-action="1">Voir les défis acceptés</a>
+	<h1 id="defis-acp" class="page-header">Vos défis acceptés</h1><a class="btn btn-default btn-acp" data-action="1">Voir les défis acceptés</a>
 	<div class="defis_acceptes animated" style="display:none;">
 		<?php if ($defis_acp): ?>
 			<?php foreach ($defis_acp as $defi): ?>
@@ -187,8 +155,8 @@
 	</div>
 
 
-	<!-- DEFIS TERMINES -->
-	<h1 class="page-header">Vos défis refusés</h1><a class="btn btn-default btn-ref" data-action="1">Voir les défis refusés</a>
+	<!-- DEFIS REFUSES -->
+	<h1 id="defis-ref" class="page-header">Vos défis refusés</h1><a class="btn btn-default btn-ref" data-action="1">Voir les défis refusés</a>
 	<div class="defis_refuses animated" style="display:none;">
 		<?php if ($defis_ref): ?>
 			<?php foreach ($defis_ref as $defi): ?>
@@ -209,6 +177,51 @@
 		<?php endif; ?>
 	</div>
 
+
+	<!-- DEFIS TERMINES -->
+	<h1 id="defis-ter" class="page-header">Vos défis terminés</h1>
+	<a class="btn btn-default btn-ter" data-action="1">Voir les défis terminés</a>
+	<div class="defis_termines animated" style="display:none;">
+		<?php if ($defis_termines): ?>
+			<?php foreach ($defis_termines as $defi): ?>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-6">
+						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser'] ?>" alt="<?= $defi['defier']['username'] ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defier']['username'] ?>" />
+						<a href="/profil/view/<?= $defi['defier']['id'] ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
+
+						<?php if (($defi['defi']['id_joueur_defier'] == \Auth::get('id') && $defi['defi']['match_valider2'] == 0) || ($defi['defi']['id_joueur_defieur'] == \Auth::get('id') && $defi['defi']['match_valider1'] == 0)): ?>
+							<a href="/matchs/view/<?= $defi['match']['id'] ?>" class="btn btn-warning"><i class="fa fa-exclamation-triangle"></i> N'oubliez pas de valider le match</a>
+						<?php endif; ?>
+					</div>
+
+					<div class="col-md-4">
+						<div class="row">
+							<div class="col-md-4 defis_club">
+								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . $defi['championnat1'] . '/' . $defi['equipe1']['logo'] ?>" alt="<?= $defi['equipe1']['nom'] ?>" width="30px" />
+							</div>
+							<div class="col-md-4">
+								<a href="/matchs/view/<?= $defi['match']['id'] ?>"><div class="score_defis"><?= $defi['match']['score_joueur1'] ?> - <?= $defi['match']['score_joueur2'] ?></div></a>
+							</div>
+							<div class="col-md-4 defis_club">
+								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . $defi['championnat2'] . '/' . $defi['equipe2']['logo'] ?>" alt="<?= $defi['equipe2']['nom'] ?>" width="30px" />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-2">
+						<?php if ($defi['match']['score_joueur1'] > $defi['match']['score_joueur2']): ?>
+							<span class="label label-success">Victoire</span>
+						<?php elseif ($defi['match']['score_joueur1'] == $defi['match']['score_joueur2']): ?>
+							<span class="label label-default">Nul</span>
+						<?php else: ?>
+							<span class="label label-danger">Défaite</span>
+						<?php endif; ?>
+					</div>
+				</div>
+			<?php endforeach; ?>
+		<?php endif; ?>
+	</div>
+
 </div>
 
 <script type="text/javascript">
@@ -226,8 +239,9 @@
 				success: function(data){
 					if (data == 'OK'){
 						btn.button('reset');
-						$('.btn-accepte').attr('disabled', 'disabled');
-						$('.btn-refuse').attr('disabled', 'disabled');
+						$('.btn-att-'+defi).remove();
+						$('.btn-ref-'+defi).remove();
+						$('.btn-acp-'+defi).remove();
 						alert('Défi mis en attente');
 						$('.label-'+defi).html('Attendre').addClass('label-default').removeClass('label-success');
 					} else alert('Une erreur est survenue pendant le traitement');
@@ -251,11 +265,17 @@
 				success: function(data){
 					if (data == 'OK'){
 						btn.button('reset');
-						$('.btn-attendre').attr('disabled', 'disabled');
-						$('.btn-refuse').attr('disabled', 'disabled');
+						$('.btn-att-'+defi).remove();
+						$('.btn-ref-'+defi).remove();
+						$('.btn-acp-'+defi).remove();
+						$('.btn-'+defi).append(
+							'<a class="btn btn-primary btn-rapport" data-defi="'+defi+'">Faire le rapport du match</a>'
+							+'<form id="form-rapport-'+defi+'" action="/matchs/add" method="post">'
+								+'<input type="hidden" name="defi" value="'+defi+'" />'
+							+'</form>'
+						);
 						alert('Défi accepté. Votre défieur va recevoir une notification');
 						$('.label-'+defi).html('Accepté').addClass('label-success').removeClass('label-default');
-						$('.btn-accepte').attr('disabled', 'disabled');
 					} else alert('Une erreur est survenue pendant le traitement');
 				},
 				error: function(){
@@ -277,9 +297,10 @@
 				success: function(data){
 					if (data == 'OK'){
 						btn.button('reset');
-						$('.btn-attendre').attr('disabled', 'disabled');
-						$('.btn-accepte').attr('disabled', 'disabled');
-						alert('Défi refusé. Votre défieur va recevoir une notification');
+						$('.btn-att-'+defi).remove();
+						$('.btn-ref-'+defi).remove();
+						$('.btn-acp-'+defi).remove();
+						alert('Défi refusé.');
 						$('.label-'+defi).html('Refusé').addClass('label-danger').removeClass('label-default').removeClass('label-success');
 					} else alert('Une erreur est survenue pendant le traitement');
 				},
@@ -324,7 +345,7 @@
 		});
 
 		// CLIC SUR FAIRE UN RAPPORT DE MATCH
-		$('.btn-rapport').on('click', function(){
+		$('body').on('click', '.btn-rapport', function(){
 			defi = $(this).attr('data-defi');
 			$('#form-rapport-'+defi).submit();
 		});
