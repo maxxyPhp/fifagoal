@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -12,7 +12,7 @@
 
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="/"><i class="fa fa-home"></i> Accueil</a></li>
+				<li><a href="/"><i class="fa fa-home"></i> Accueil</a></li>
 				<li><a href="#"><i class="fa fa-line-chart"></i> Statistiques</a></li>
 				<?php if (\Auth::check()): ?>
 					<li><a href="/profil"><i class="fa fa-desktop"></i> Profil</a>
@@ -51,7 +51,7 @@
 				<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
 			</form>
 
-			<ul class="nav navbar-nav navbar-right" style="width:240px;">
+			<ul class="nav navbar-nav navbar-right" style="width:250px;">
 				<?php if (\Auth::check()): ?>
 					<li class="dropdown menu-notif" data-id="<?= \Auth::get('id') ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php if ($news > 0): ?><span class="badge badge-notif"><?= $news ?></span><?php endif; ?> <i class="fa fa-paper-plane"></i> <span class="caret"></span></a>
@@ -74,7 +74,7 @@
 					<?php if (!empty($photouser)): ?>
 						<li><img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/' . $photouser->photo ?>" alt="<?= \Auth::get('username') ?>" width="30" height="30" class="photo_profil_menu"></li>
 					<?php else: ?>
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="30px" class="photo_profil_menu" />
+						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . '/notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="30px" class="photo_profil_menu_default" />
 					<?php endif; ?>
 					<a href="/auth/logout" class="btn btn-primary navbar-btn"><i class="fa fa-sign-out"></i> Déconnexion</a>
 				<?php else: ?>
