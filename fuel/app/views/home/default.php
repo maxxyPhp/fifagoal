@@ -10,7 +10,7 @@
 			<a class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#modalInsc">Rejoins la communauté</a>
 		</p>
 
-		<p class="trad_acc">*Le future dépend de toi</p>
+		<p class="trad_acc">*Le futur dépend de toi</p>
 	</div>
 </div>
 
@@ -23,7 +23,6 @@
     		</div>
     		<div class="modal-body">
 		        <form class="form-horizontal" action="/auth" accept-charset="utf-8" method="post" role="form"> 
-		         	<input type="hidden" id="hidden">
 		            <div class="form-group">
 		                <label id='label-username' for="form_username" class="col-sm-2 control-label">Pseudo</label>
 		                <div class="col-sm-8">
@@ -123,6 +122,8 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('body').on('blur', '#form_username', function(){
+			input = $(this);
+			console.log(input);
 			username = $(this).val();
 			$.ajax({
 				url : window.location.origin + '/users/api/verifyUsername.json',
@@ -130,10 +131,6 @@
 				type: 'get',
 				dataType: 'json',
 				success: function(data){
-					console.log(data);
-					input = $('#form_username');
-					console.log(input.parent());
-					console.log($('#hidden'));
 					if (data == false){
 						console.log("false");
 						input.parent().parent().addClass('has-success has-feedback').removeClass('has-error');
@@ -171,13 +168,13 @@
 						input.parent().parent().addClass('has-success has-feedback').removeClass('has-error');
 						input.parent().append('<span class="feedback-username glyphicon glyphicon-ok form-control-feedback"></span>');
 						// input.parent().find('span').addClass('glyphicon glyphicon-ok form-control-feedback').removeClass('glyphicon-remove');
-						$('.help-name').remove();
+						$('.help-fullname').remove();
 						$("input[type=submit]").attr('disabled', false);
 					} else {
 						input.parent().parent().addClass('has-error has-feddback').removeClass('has-success');
 						input.parent().find('span').addClass('glyphicon glyphicon-remove form-control-feedback').removeClass('glyphicon-ok');
-						if (!$('.help-username').length){
-							input.parent().append('<span class="help-block help-name">Le nom doit être une suite de lettre</span>');
+						if (!$('.help-fullname').length){
+							input.parent().append('<span class="help-block help-fullname">Le nom doit être une suite de lettre</span>');
 						}
 						$("input[type=submit]").attr('disabled', 'disabled');
 					}
