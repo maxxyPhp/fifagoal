@@ -12,7 +12,17 @@ class Controller_Home extends Controller_Front
 	public function action_index()
 	{
 		if (\Auth::check()){
-        	return $this->view('home/content', array('username' => 'Pippo', 'title' => 'Home'));
+			$matchs = \Model_Matchs::query()->order_by('created_at', 'desc')->limit(10)->get();
+			
+			$array = array();
+			foreach ($matchs as $match){
+				if ($match->defis->match_valider1 == 1 && $match->defis->match_valider2 == 1){
+					$array[] = $match;
+				}
+			}
+
+			
+        	return $this->view('home/content', array('matchs' => $array));
         } else {
         	$view = View::forge('layout_default');
 
