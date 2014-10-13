@@ -176,7 +176,11 @@
 							<?php foreach ($commentaires as $commentaire): ?>
 								<li class="media">
 									<a class="pull-left" href="/profil/view/<?= $commentaire['user']['id']	 ?>">
-										<img class="media-object" src="<?= \Uri::base() . \Config::get('users.photo.path') . '/' . $commentaire['photouser']['photo'] ?>" alt="<?= $commentaire['user']['username'] ?>" width="64px">
+										<?php if ($commentaire['photouser']['photo']): ?>
+											<img class="media-object" src="<?= \Uri::base() . \Config::get('users.photo.path') . '/' . $commentaire['photouser']['photo'] ?>" alt="<?= $commentaire['user']['username'] ?>" width="64px">
+										<?php else: ?>
+											<img class="media-object" src="<?= \Uri::base() . \Config::get('users.photo.path') . '/notfound.png' ?>" alt="<?= $commentaire['user']['username'] ?>" width="64px">
+										<?php endif; ?>
 									</a>
 									<div class="media-body">
 										<h4 class="media-heading"><?= $commentaire['user']['username'] ?><small> le <?= date('d/m/Y à H:i', $commentaire['commentaire']['created_at']) ?></small></h4>
