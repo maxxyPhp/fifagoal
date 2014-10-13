@@ -21,6 +21,7 @@ class Controller_Front extends \Controller
 	 * @return View $view
 	 */
 	public function view ($content, $array){
+		setlocale (LC_TIME, 'fr_FR.utf8','fra');
 		/**
 		 *
 		 * USER
@@ -150,7 +151,7 @@ class Controller_Front extends \Controller
 				break;
 
 			case 'addComment':
-				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-comment-o"></i> <strong>'.$username.'</strong> vient de commmenter un de vos rapports de matchs !</h5></a>';
+				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-comment-o"></i> <strong>'.$username.'</strong> vient de commenter un de vos rapports de matchs !</h5></a>';
 				break;
 
 			case 'addFriend':
@@ -186,5 +187,17 @@ class Controller_Front extends \Controller
 		if (!\Auth::check() || !\Auth::member(6)){
 			\Response::redirect('/');
 		}
+	}
+
+	/**
+	 * Photo
+	 * Récupère la photo de profil d'un user
+	 * @param int $id
+	 */
+	public function photo ($id){
+		$photouser = \Model_Photousers::query()->where('id_users', '=', $id)->get();
+		if ( !empty($photouser)){
+			return current($photouser);
+		} else return null;
 	}
 }

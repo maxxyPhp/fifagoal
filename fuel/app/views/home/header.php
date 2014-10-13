@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top " role="navigation">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -16,7 +16,6 @@
 				<li><a href="#"><i class="fa fa-line-chart"></i> Statistiques</a></li>
 				<?php if (\Auth::check()): ?>
 					<li><a href="/profil"><i class="fa fa-desktop"></i> Profil</a>
-					<li><a href="/matchs"><i class="fa fa-futbol-o"></i> Matchs</a></li>
 					<li><a href="/membre"><i class="fa fa-male"></i> Membres</a></li>
 					<?php if ($defis >= 1): ?>
 						<li><a href="/defis"><i class="fa fa-gamepad"></i> Défis <span class="badge"><?= $defis ?></span></a></li>
@@ -37,7 +36,6 @@
 							<li><a href="/joueur"><i class="fa fa-male"></i> Joueurs</a></li>
 							<li><a href="/poste"><i class="fa fa-arrows-alt"></i> Poste</a></li>
 							<li><a href="/selection"><i class="fa fa-heart"></i> Selections</a></li>
-							<li><a href="#"><i class="fa fa-futbol-o"></i> Matchs</a></li>
 							<li><a href="/transfert"><i class="fa fa-arrows-h"></i> Transferts</a></li>
 						</ul>
 					</li>
@@ -61,7 +59,12 @@
 									<?php if ($notify->new == 1): ?>
 										<li class="li-notifs"><div class="label label-success">NEW</div><?= htmlspecialchars_decode($notify->message) ?><hr></li>
 									<?php else: ?>
-										<li class="li-notifs"><?= htmlspecialchars_decode($notify->message) ?><hr></li>
+										<li class="li-notifs">
+											<span><?= htmlspecialchars_decode($notify->message) ?></span>
+											<i class="fa fa-clock-o"></i> <?= date('m', $notify->created_at) ?>
+											<?= strftime("%B,", $notify->created_at) ?>
+											<?= date('H:i', $notify->created_at) ?>
+										<hr></li>
 									<?php endif; ?>
 								<?php endforeach; ?>
 							<?php else: ?>
