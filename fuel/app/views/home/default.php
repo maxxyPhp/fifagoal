@@ -1,6 +1,6 @@
 <div class="jumbotron jumb_acc" style="height:100%;">
 	<div class="container">
-		<h1><i class="fa fa-futbol-o"></i> <?= $title ?></h1>
+		<h1 class="site_title"><i class="fa fa-futbol-o"></i> <?= $title ?></h1>
 		<p>Tu es un joueur de FIFA, un joueur qui aime gagner, qui produit du jeu ou au contraire qui joue le contre ?<br>
 		Prendre des grandes équipes comme le Bayern ou le Real, c'est bien. Mais sais tu gagner en prenant des équipes plus modestes du style Evian TG ou Getafe ?<br>
 		Viens donc nous le prouver, et fais toi un nom dans la communauté des fans de FIFA.</p>

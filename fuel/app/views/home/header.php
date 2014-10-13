@@ -7,7 +7,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">FIFAGOAL</a>
+			<a class="navbar-brand site_title" href="#">FIFAGOAL</a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -57,7 +57,14 @@
 							<?php if (!empty($notifys)): ?>
 								<?php foreach ($notifys as $notify): ?>
 									<?php if ($notify->new == 1): ?>
-										<li class="li-notifs"><div class="label label-success">NEW</div><?= htmlspecialchars_decode($notify->message) ?><hr></li>
+										<li class="li-notifs">
+											<span>
+												<div class="label label-success">NEW</div><?= htmlspecialchars_decode($notify->message) ?>
+											</span>
+											<i class="fa fa-clock-o"></i> <?= date('m', $notify->created_at) ?>
+											<?= strftime("%B,", $notify->created_at) ?>
+											<?= date('H:i', $notify->created_at) ?>
+											<hr></li>
 									<?php else: ?>
 										<li class="li-notifs">
 											<span><?= htmlspecialchars_decode($notify->message) ?></span>

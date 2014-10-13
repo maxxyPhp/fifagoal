@@ -7,6 +7,10 @@ body {
 	padding-top: 70px;
 }
 
+.site_title {
+	font-family: 'Audiowide', cursive;
+}
+
 .trad_acc {
 	font-size : x-small;
 	font-style:  italic;
@@ -62,6 +66,7 @@ body {
 .li-notifs > span > a > h5 {
 	color : black;
 	text-decoration : none;
+	font-family: 'Exo', sans-serif;
 }
 
 /* Photo de profil dans le menu */

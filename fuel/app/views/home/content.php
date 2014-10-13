@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="well">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-6" style="font-family: 'Ubuntu', sans-serif;">
 				<?php $i = rand(1, 4); ?>
 				<?php switch ($i){
 					case 1:
@@ -21,9 +21,9 @@
 
 			<div class="col-md-6">
 				<?php if ($photo): ?>
-					<a href="/profil"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo->photo ?>" alt="<?= \Auth::get('username') ?>" width="100" class="photo_accueil" title="Mon profil" /></a>
+					<a href="/profil"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo->photo ?>" alt="<?= \Auth::get('username') ?>" width="100" class="photo_accueil img-responsive" title="Mon profil" /></a>
 				<?php else: ?>
-					<a href="/profil"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="100" class="photo_accueil" /></a>
+					<a href="/profil"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= \Auth::get('username') ?>" width="100" class="photo_accueil img-responsive" /></a>
 				<?php endif; ?>
 			</div>
 		</div>
