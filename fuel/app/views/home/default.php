@@ -116,6 +116,8 @@
 <style>
 .jumb_acc {
 	margin-bottom : 0;
+	margin-top : -70px;
+	max-height : 90%;
 }
 </style>
 

@@ -10,19 +10,42 @@ class Controller_Home extends Controller_Front
 	 * @return  Response
 	 */
 	public function action_index()
-	{
+	{ 
 		if (\Auth::check()){
+			/**
+			 *
+			 * PHOTO
+			 *
+			 */
+			$photouser = $this->photo(\Auth::get('id'));
+
+			/**
+			 *
+			 * DERNIERS MATCHS
+			 *
+			 */
 			$matchs = \Model_Matchs::query()->order_by('created_at', 'desc')->limit(10)->get();
 			
 			$array = array();
 			foreach ($matchs as $match){
 				if ($match->defis->match_valider1 == 1 && $match->defis->match_valider2 == 1){
-					$array[] = $match;
+					$defieur = \Model\Auth_User::find($match->id_joueur1);
+					$photouser1 = $this->photo($defieur->id);
+					$defier = \Model\Auth_User::find($match->id_joueur2);
+					$photouser2 = $this->photo($defier->id);
+
+					$array[] = array(
+						'match' => $match,
+						'defieur' => $defieur,
+						'defier' => $defier,
+						'photouser1' => $photouser1,
+						'photouser2' => $photouser2,
+					);
 				}
 			}
 
 			
-        	return $this->view('home/content', array('matchs' => $array));
+        	return $this->view('home/content', array('photo' => $photouser, 'matchs' => $array));
         } else {
         	$view = View::forge('layout_default');
 
