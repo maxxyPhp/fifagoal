@@ -12,3 +12,4 @@
 <?= \Asset::js('redactor/redactor.js'); ?>
 <?= \Asset::js('uploadFile/jquery.uploadfile.min.js'); ?>
 <?= \Asset::js('timeline/jquery.easing.1.3.js'); ?>
+<?= \Asset::js('bootstrap-switch/bootstrap-switch.min.js'); ?>

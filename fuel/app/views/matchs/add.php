@@ -3,7 +3,7 @@
 		<div class="panel-heading center center-block"><h2>RAPPORT DE MATCH</h2></div>
 	</div>
 
-	<div class="row rapport-match">
+	<div class="row rapport-match center-block">
 		<?= \Form::open(array('class' => 'form-horizontal')) ?>
 		<input type="hidden" name="defi" value="<?= $defi->id ?>">
 		<input type="hidden" name="createur" value="<?= \Auth::get('id') ?>">
@@ -12,9 +12,9 @@
 		<div class="col-md-4">
 			<div class="thumbnail-profil">
 				<?php if ($photo_defieur): ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php else: ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php endif; ?>
 			</div>	
 			<input type="hidden" name="joueur1" value="<?= $defieur->id ?>">
@@ -67,7 +67,7 @@
 				<div class="col-md-4 club club_defier"></div>
 			</div>
 
-			<div class="score" style="display:none;">
+			<div class="score" >
 				<div class="row"><h2 class="center-block center">Score</h2></div>
 				<div class="row">
 					
@@ -77,6 +77,10 @@
 					<div class="col-md-6">
 						<input type="number" class="form-control" id="score_joueur2" name="score_joueur_2" min="0" max="20" value="0">
 					</div>
+				</div>
+
+				<div class="center-block center" style="margin-top:10px;">
+					<input type="checkbox" name="prolongation" id="prolong">
 				</div>
 			</div>
 
@@ -88,18 +92,18 @@
 
 
 		<!-- DEFIER -->
-		<div class="col-md-4">
+		<div class="col-md-4 center-block">
 			<div class="thumbnail-profil">
 				<?php if ($photo_defier): ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php else: ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php endif; ?>
 			</div>
 			<input type="hidden" name="joueur2" value="<?= $defier->id ?>">
 
 			<!-- Div championnat -->
-			<div class="form-group animated fadeInUp">
+			<div class="form-group animated fadeInUp center-block">
 				<div class="col-sm-10">
 					<select id="form_championnat_defier">
 						<option></option>
@@ -142,6 +146,19 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		var max_minute = 90;
+
+		$('#prolong').bootstrapSwitch({
+			size: 'normal',
+			onText: 'Oui',
+			offText: 'Non',
+			labelText: 'Prolongation',
+			onSwitchChange: function (event, state){
+				if (state){
+					max_minute = 120;
+				}
+			}
+		});
 
 		$('#form_championnat_defieur, #form_championnat_defier').select2({
 			placeholder: "Selectionnez un championnat",
@@ -311,7 +328,7 @@
 							+'</select>'
 						+'</div>'
 						+'<div class="col-sm-4">'
-							+'<input type="number" name="minute_'+ordre+'_buteur['+score+']" min="1" max="90" class="form-control buteurs-'+ordre+'-'+score+'" placeholder="Minute" style="display:none;">'
+							+'<input type="number" name="minute_'+ordre+'_buteur['+score+']" min="1" max="'+max_minute+'" class="form-control buteurs-'+ordre+'-'+score+'" placeholder="Minute" style="display:none;">'
 						+'</div>'
 					+'</div>'
 				);

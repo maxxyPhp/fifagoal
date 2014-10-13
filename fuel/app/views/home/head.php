@@ -21,6 +21,10 @@
 <?= \Asset::css('redactor/redactor.css'); ?>
 <?= \Asset::css('uploadFile/uploadfile.css'); ?>
 <?= \Asset::css('timeline/style.css'); ?>
+<link href='http://fonts.googleapis.com/css?family=Exo' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+<?= \Asset::css('bootstrap-switch/bootstrap-switch.min.css'); ?>
 
 <?= \Asset::js('jquery/jquery-2.1.1.min.js') ?>
 <?= \Asset::js('bootstrap/bootstrap.min.js') ?>

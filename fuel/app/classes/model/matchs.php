@@ -46,6 +46,17 @@ class Model_Matchs extends \Orm\Model
 			'validation' => array('required'),
 			'form' => array('type' => 'select'),
 		),
+		'prolongation' => array(
+			'label' => 'prolongation',
+			'default' => '',
+			'null' => false,
+			'form' => array('type' => 'checkbox'),
+		),
+		'id_tab' => array(
+			'label' => 'TAB',
+			'default' => '',
+			'null' => true,
+		),
 		'created_at' => array(
 			'form' => array('type' => false),
 			'default' => 0,
