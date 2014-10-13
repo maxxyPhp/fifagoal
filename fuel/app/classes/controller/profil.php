@@ -2,6 +2,35 @@
 
 class Controller_Profil extends Controller_Front
 {
+	/**
+	 * AJAX ONLY
+	 */
+	public function get_api ($context){
+		switch ($context){
+			case 'equipefav':
+				if (!is_numeric(\Input::get('equipe'))){
+					return 'KO';
+				}
+
+				$equipe = \Model_Equipe::find(\Input::get('equipe'));
+				if (empty($equipe)) return 'KO';
+
+				$user = \Model\Auth_User::find(\Auth::get('id'));
+
+				$user->equipe_fav = $equipe->id;
+
+				$equipe->championnat = str_replace(' ', '_', strtolower($equipe->championnat->nom));
+				$array = $this->object_to_array($equipe);
+
+				if ($user->save()) return json_encode($array);
+				break;
+		}
+	}
+
+	/**
+	 * Index
+	 *	Affiche le profil de l'user connecté
+	 */
 	public function action_index (){
 		$this->verifAutorisation();
 
@@ -170,9 +199,26 @@ class Controller_Profil extends Controller_Front
 			}
 		}
 
+		/**
+		 *
+		 * DETERMINATION EQUIPE FAVORITE
+		 *
+		 */
+		$equipe_fav = \Model_Equipe::find(\Auth::get('equipe_fav'));
+		if (empty($equipe_fav)) $equipe_fav = null;
+
+		// Pays qui ont un championnat
+		$query = \DB::query('SELECT DISTINCT pays.nom, pays.id, drapeau FROM pays JOIN championnat ON championnat.id_pays = pays.id ORDER BY pays.nom')->as_object('Model_Pays')->execute();
+		$pays = array();
+		foreach ($query as $result){
+			$pays[] = $result;
+		}
+
+		$championnats = \Model_Championnat::find('all');
 
 
-        return $this->view('profil/index', array('photo_user' => $photo_user, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
+
+        return $this->view('profil/index', array('photo_user' => $photo_user, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs, 'equipe_fav' => $equipe_fav, 'pays' => $pays, 'championnats' => $championnats));
 	}
 
 
@@ -408,6 +454,17 @@ class Controller_Profil extends Controller_Front
 			}
 		}
 
-		return $this->view('profil/view', array('user' => $user, 'photo_user' => $photo_user, 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
+		/**
+		 *
+		 * DETERMINATION EQUIPE FAVORITE
+		 *
+		 */
+		$equipe_fav;
+		if (!empty($user->equipe_favorite)){
+			$equipe_fav = \Model_Equipe::find($user->equipe_favorite);
+		}
+		else $equipe_fav = null;
+
+		return $this->view('profil/view', array('user' => $user, 'photo_user' => $photo_user, 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'equipe_fav' => $equipe_fav, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
 	}
 }

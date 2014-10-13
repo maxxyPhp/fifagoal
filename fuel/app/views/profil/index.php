@@ -1,5 +1,12 @@
 <div class="container">
-	<h1 class="page-header">Profil de <?= \Auth::get_screen_name() ?></h1>
+	<h1 class="page-header">
+		Profil de <?= \Auth::get_screen_name() ?>
+		<div class="club_pref">
+			<?php if ($equipe_fav): ?>
+				<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe_fav->championnat->nom)) . '/' . $equipe_fav->logo ?>" alt="<?= $equipe_fav->nom ?>" width="100px" class="logo_profil" /> 
+			<?php endif; ?>
+		</div>
+	</h1>
 
 	<?php if (\Messages::any()): ?>
 	    <br/>
@@ -18,15 +25,17 @@
 			<div class="profil_photo">
 				<div class="section_photo">
 					<?php if ($photo_user): ?>
-						<img src="<?= \Uri::base().\Config::get('users.photo.path') ?><?= $photo_user->photo ?>" alt="<?= \Auth::get('username') ?>" class="img-circle" width="300px" heigth="300px">
+						<img src="<?= \Uri::base().\Config::get('users.photo.path') ?><?= $photo_user->photo ?>" alt="<?= \Auth::get('username') ?>" class="img-circle img-responsive center-block" width="300px" heigth="300px">
 					<?php else: ?>
-						<img src="<?= \Uri::base().\Config::get('users.photo.path') ?>notfound.png" alt="<?= \Auth::get('username') ?>" class="img-circle" width="300px" heigth="300px">
+						<img src="<?= \Uri::base().\Config::get('users.photo.path') ?>notfound.png" alt="<?= \Auth::get('username') ?>" class="img-circle img-responsive center-block" width="300px" heigth="300px">
 					<?php endif; ?>
 				</div>
 				<a class="btn btn-info btn-upload center-block">Changer ma photo de profil</a>
 				<div class="btn-fileupload" style="display:none;">
 					<div id="fileuploader">Upload</div>
 				</div>
+				<br>
+				<a class="btn btn-info btn-equipefav center-block" data-toggle="modal" data-target="#myModal">Définir mon équipe favorite</a>
 			</div>
 		</div>
 		
@@ -89,10 +98,62 @@
 				</div>
 			<?php endif; ?>
 		</div>
-
-	
 	</div>
 </div>
+
+<!-- MODAL -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		        <h4 class="modal-title">Définir son équipe favorite</h4>
+      		</div>
+      		<div class="modal-body">
+      			<div class="row">
+      				<div class="col-md-8">
+		      			<!-- Div championnat -->
+						<div class="form-group animated fadeInUp">
+							<div class="col-sm-10">
+								<select id="form_championnat">
+									<option></option>
+									<?php foreach ($pays as $pay): ?>
+										<optgroup label="<?= $pay->nom ?>">
+										<?php foreach ($championnats as $championnat): ?>
+											<?php if ($championnat->id_pays == $pay->id): ?>
+												<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
+											<?php endif; ?>
+										<?php endforeach; ?>
+										</optgroup>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</div>
+						<br><br>
+						<!-- Div équipes -->
+						<div class="form-group" style="display:none;" id="div_equipes">
+							<div class="col-sm-10">
+								<select id="form_equipe" name="id_equipe">
+									<option></option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 equipe_fav">
+
+					</div>
+				</div>
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+        		<a class="btn btn-primary btn-save">Sauvegarder</a>
+      		</div>
+    	</div><!-- /.modal-content -->
+  	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -104,6 +165,7 @@
 			}
 		});
 
+		/* Uploader une image de profil */
 		$('.btn-upload').on('click', function(){
 			$('.btn-fileupload').show();
 		});
@@ -114,6 +176,113 @@
 			onSuccess: function(files, data, xhr){
 				$('.img-circle').attr('src', '<?= \Uri::base() . \Config::get("users.photo.path") ?>'+data);
 			}
+		});
+
+		/* Choisir équipe favorite */
+		$('#form_championnat').select2({
+			placeholder: "Selectionnez un championnat",
+			width: '300px'
+		});
+
+		$('#form_equipe').select2({
+			placeholder: "Selectionnez une équipe",
+			width: '300px'
+		});
+
+		$('#form_championnat').on('change', function(){
+			id_championnat = $(this).val();
+			afficherEquipes(id_championnat, $('#form_equipe'), $('#div_equipes'));
+		});
+
+		/**
+		 * afficherEquipes
+		 * Affiche le nom des équipes d'un championnat
+		 *
+		 * @param int id_championnat
+		 * @param Noeud select : le select contenant le nom des équipes
+		 * @param Noeud afficher : la div contenant le select
+		 */
+		function afficherEquipes (id_championnat, select, afficher){
+			$.ajax({
+				url : window.location.origin + '/equipe/api/getEquipes.json',
+				data: 'id_championnat='+id_championnat,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					if (data != 'KO'){
+						select.html('');
+						equipe = data;
+						for (var i in equipe){
+							select.append('<option value="'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
+						}
+						afficher.addClass('animated fadeInUp').show();
+					}
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				}
+			});
+		}
+
+		$('#form_equipe').on('change', function(){
+			clickEquipe ($(this).val(), $('.equipe_fav'), 'logo_club');
+		});
+
+		/**
+		 * ClickEquipe
+		 * Affiche le logo de l'équipe sélectionnée
+		 *
+		 * @param id_equipe : l'id de l'équipe sélectionnée
+		 * @param div_equipe : la div où l'image doit apparaître
+		 * @param classImg : la classe donnée à l'image
+		 */
+		function clickEquipe (id_equipe, div_equipe, classImg){
+			$('.'+classImg).remove();
+			$.ajax({
+				url: window.location.origin + '/equipe/api/getEquipe.json',
+				data: 'id_equipe=' + id_equipe,
+				dataType: 'json',
+				type: 'get',
+				success : function(data){
+					div_equipe.append(
+						'<img src="'+window.location.origin+'/upload/equipes/'+data[7]+'/'+data[2]+'" alt="'+data[0]+'" width="100px" class="'+classImg+'" />'
+					);
+
+					if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
+						$('.score').show();
+						$('input:submit').attr('disabled', false);
+					}
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				},
+			});
+		}
+
+		$('.btn-save').on('click', function(){
+			equipe = $('#form_equipe').val();
+			$.ajax({
+				url: window.location.origin + '/profil/api/equipefav.json',
+				data: 'equipe='+equipe,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					console.log(data);
+					$('#myModal').modal('hide');
+					if ($('.logo_profil').length != 0){
+						$('.logo_profil').remove();
+					}
+					if (data != 'KO'){
+						$('.club_pref').append(
+							'<img src="'+window.location.origin+'/upload/equipes/'+data['championnat']+'/'+data['logo']+'" alt="'+data['nom']+'" width="100px" class="logo_profil" />'
+						);
+					}
+					
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				},
+			});
 		});
 	});
 </script>

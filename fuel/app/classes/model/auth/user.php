@@ -112,4 +112,12 @@ class Auth_User extends \Auth\Model\Auth_User
             'cascade_delete' => false,
         ),
     );
+
+    // EAV User >> Equipe Favorite
+    protected static $_eav = array(
+        'equipe_favorite' => array(
+            'attribute' => 'equipe_fav',
+            'value' => 'nom',
+        )
+    );
 }

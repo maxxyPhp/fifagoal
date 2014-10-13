@@ -1,5 +1,12 @@
 <div class="container">
-	<h1 class="page-header">Profil de <?= $user->username ?></h1>
+	<h1 class="page-header">
+		Profil de <?= $user->username ?>
+		<div class="club_pref">
+			<?php if ($equipe_fav): ?>
+				<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe_fav->championnat->nom)) . '/' . $equipe_fav->logo ?>" alt="<?= $equipe_fav->nom ?>" width="100px" class="logo_profil" /> 
+			<?php endif; ?>
+		</div>
+	</h1>
 
 	<?php if (\Messages::any()): ?>
 	    <br/>
