@@ -185,6 +185,7 @@ class Controller_Matchs extends \Controller_Front
 			$match->id_equipe2 = $equipe2->id;
 			$match->score_joueur1 = \Input::post('score_joueur_1');
 			$match->score_joueur2 = \Input::post('score_joueur_2');
+			if (\Input::post('prolongation')) $match->prolongation = 1;
 			$match->save();
 
 			if (\Input::post('createur') == $defier->id){
@@ -524,8 +525,9 @@ class Controller_Matchs extends \Controller_Front
 				\Messages::success('Le rapport du match a bien été modifié. Votre adversaire recevra une notification pour le valider');
 				\Response::redirect('/defis');
 			}
-		}
+		}//ADD
 		
+
 		$match = \Model_Matchs::find($id);
 		if (empty($match)){
 			\Messages::error('Ce match n\'existe pas');
@@ -549,7 +551,7 @@ class Controller_Matchs extends \Controller_Front
 		$defier = \Model\Auth_User::find($match->id_joueur2);
 
 		// Verification si match pas encore validé que seuls les joueurs puissent y accéder
-		if ($match->defis->match_valider1 == 0 || $match->match_valider2 == 0){
+		if ($match->defis->match_valider1 == 0 || $match->defis->match_valider2 == 0){
 			if ((\Auth::get('id') != $defieur->id) && (\Auth::get('id') != $defier->id)){
 				\Response::redirect('/');
 			}
@@ -589,7 +591,19 @@ class Controller_Matchs extends \Controller_Front
 			\Response::redirect('/defis');
 		}
 
-		return $this->view('matchs/modif', array('match' => $match, 'defi' => $defi, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'pays' => $pays, 'championnats' => $championnats, 'match_valider' => false));
+		$buteurs = \Model_Buteurs::query()->where('id_match', '=', $match->id)->order_by('minute')->get();
+		$array_but = array();
+		if (empty($buteurs)){
+			foreach ($buteurs as $buteur){
+				$joueur = \Model_Joueur::find($buteur->id_joueur);
+				$array_but[] = array(
+					'but' => $buteur,
+					'joueur' => $joueur,
+				);
+			}
+		}
+
+		return $this->view('matchs/modif', array('match' => $match, 'defi' => $defi, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'pays' => $pays, 'championnats' => $championnats, 'match_valider' => false, 'buteurs' => $buteurs));
 	}
 
 }

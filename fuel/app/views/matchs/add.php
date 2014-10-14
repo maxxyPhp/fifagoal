@@ -152,11 +152,20 @@
 			size: 'normal',
 			onText: 'Oui',
 			offText: 'Non',
-			labelText: 'Prolongation',
+			labelText: 'Prolong',
 			onSwitchChange: function (event, state){
 				if (state){
 					max_minute = 120;
-				}
+					$(':input[type="number"]').attr('max', 120);
+				} else {
+					max_minute = 90;
+					$(':input[type="number"]').attr('max', 90);
+					$(':input[type="number"]').each(function(index){
+						if ($(this).val() > 90){
+							$(this).val(90);
+						}
+					});
+				} 
 			}
 		});
 
@@ -270,6 +279,7 @@
 		 *
 		 */
 		$('#score_joueur1').on('click blur', function(){
+			console.log(max_minute);
 			actionScore($(this).val(), $('.list-buteurs-defieur > div').length, 'list-buteurs-defieur', 'buteurs-domicile', 'dom', $('#form_equipe_defieur').val());
 		});
 

@@ -62,6 +62,9 @@
 
 					<div class="score center-block center">
 						<h1 class="score_defis"><?= $match->score_joueur1 ?> - <?= $match->score_joueur2 ?></h1>
+						<?php if ($match->prolongation == 1): ?>
+							<h4>après prolongation</h4>
+						<?php endif; ?>
 					</div>
 				</div>
 
@@ -107,6 +110,17 @@
 	                    </div>
                 	</div>
 					<?php foreach ($buteurs as $buteur):  ?>
+						<?php if ($buteur['but']->minute > 90): ?>
+							<div class="ss-row">
+			                    <div class="ss-left">
+			                        <h2 id="november">Début de la</h2>
+			                    </div>
+			                    <div class="ss-right">
+			                        <h2>prolongation</h2>
+			                    </div>
+		                	</div>
+						<?php endif; ?>
+
 						<?php if ($buteur['joueur']->id_equipe == $equipe1->id): ?>
 							<div class="ss-row ss-medium">
 								<div class="ss-left">
@@ -120,7 +134,7 @@
 			                    <div class="ss-right">
 			                        <h3>
 			                            <span><i class="fa fa-futbol-o"></i> GOAL</span>
-			                            <?= ucfirst($buteur['joueur']->prenom) .' '. strtoupper($buteur['joueur']->nom). ' !  (' . $buteur['but']->minute .'ème)' ?>
+			                            <div class="buteurs_view"><?= ucfirst($buteur['joueur']->prenom) .' '. strtoupper($buteur['joueur']->nom). ' ! '?><small><?= '(' . $buteur['but']->minute .'ème)' ?></small></div>
 			                        </h3>
 			                    </div>
 							</div>
@@ -129,7 +143,7 @@
 								<div class="ss-left">
 									<h3>
 			                            <span>GOAL <i class="fa fa-futbol-o"></i></span>
-			                             <?= ucfirst($buteur['joueur']->prenom) .' '. strtoupper($buteur['joueur']->nom). ' !  (' . $buteur['but']->minute .'ème)' ?>
+			                            <div class="buteurs_view"><?= ucfirst($buteur['joueur']->prenom) .' '. strtoupper($buteur['joueur']->nom). ' ! '?><small><?= '(' . $buteur['but']->minute .'ème)' ?></small></div>
 			                        </h3>
 			                    </div>
 			                    <div class="ss-right">
