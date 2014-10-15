@@ -592,18 +592,26 @@ class Controller_Matchs extends \Controller_Front
 		}
 
 		$buteurs = \Model_Buteurs::query()->where('id_match', '=', $match->id)->order_by('minute')->get();
-		$array_but = array();
-		if (empty($buteurs)){
+		$array_but_dom = $array_but_ext = array();
+		if (!empty($buteurs)){
 			foreach ($buteurs as $buteur){
 				$joueur = \Model_Joueur::find($buteur->id_joueur);
-				$array_but[] = array(
-					'but' => $buteur,
-					'joueur' => $joueur,
-				);
+				if ($buteur->joueur->equipe->id == $equipe1->id) {
+					$array_but_dom[] = array(
+						'but' => $buteur,
+						'joueur' => $joueur,
+					);
+				} else {
+					$array_but_ext[] = array(
+						'but' => $buteur,
+						'joueur' => $joueur,
+					);
+				}
 			}
 		}
+		// var_dump($array_but_dom);die();
 
-		return $this->view('matchs/modif', array('match' => $match, 'defi' => $defi, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'pays' => $pays, 'championnats' => $championnats, 'match_valider' => false, 'buteurs' => $buteurs));
+		return $this->view('matchs/modif', array('match' => $match, 'defi' => $defi, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'pays' => $pays, 'championnats' => $championnats, 'match_valider' => false, 'buteurs_dom' => $array_but_dom, 'buteurs_ext' => $array_but_ext));
 	}
 
 }

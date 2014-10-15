@@ -51,6 +51,45 @@
 					</select>
 				</div>
 			</div>
+
+			<?php //var_dump($equipe1->joueurs);die(); ?>
+			<!-- Div buteurs -->
+			<div class="list-buteurs-defieur">
+				<h4>Liste des buteurs :</h4>
+
+				<?php// var_dump($buteurs_dom);die(); ?>
+				<?php foreach ($buteurs_dom as $score => $buteur): ?>
+					<div class="form-group animated fadeInUp buteurs-domicile buteurs-dom-.$i">
+						<div class="col-sm-8">
+							<select id="buteurs-dom-<?= $score+1 ?>" name="buteurs-dom[<?= $score+1 ?>]" class="buteurs">
+								<option></option>
+								<?php foreach ($equipe1->joueurs as $joueur): ?>
+									<?php if ($buteur['joueur']->id == $joueur->id): ?>
+										<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
+									<?php else: ?>
+										<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
+									<?php endif; ?>
+								<?php endforeach; ?>
+							</select>
+						</div>
+						<div class="col-sm-4">
+							<?php if ($match->prolongation == 1): ?>
+								<input type="number" name="minute_dom_buteur[<?= $score+1 ?>]" min="1" max="120" value="<?= $buteur['but']->minute ?>" class="form-control buteurs-dom-<?= $score+1 ?>" placeholder="Minute">
+							<?php else: ?>
+								<input type="number" name="minute_dom_buteur[<?= $score+1 ?>]" min="1" max="90" value="<?= $buteur['but']->minute ?>" class="form-control buteurs-dom-<?= $score+1 ?>" placeholder="Minute">
+							<?php endif; ?>
+						</div>
+					</div>
+				<?php endforeach; ?>
+			</div>
+
+			<div class="form-group" style="display:none;" id="div_joueurs_defieur">
+				<div class="col-sm-10">
+					<select id="form_joueur_defieur" name="id_joueur_defieur">
+						<option></option>
+					</select>
+				</div>
+			</div>
 		</div>
 
 		<!-- SCORE -->
@@ -75,6 +114,14 @@
 					<div class="col-md-6">
 						<input type="number" class="form-control" id="score_joueur2" name="score_joueur_2" min="0" max="20" value="<?= $match->score_joueur2 ?>">
 					</div>
+				</div>
+
+				<div class="center-block center" style="margin-top:10px;">
+					<?php if ($match->prolongation == 1): ?>
+						<input type="checkbox" name="prolongation" id="prolong" checked>
+					<?php else: ?>
+						<input type="checkbox" name="prolongation" id="prolong">
+					<?php endif; ?>
 				</div>
 			</div>
 
@@ -131,6 +178,17 @@
 					</select>
 				</div>
 			</div>
+
+			<!-- Div buteurs -->
+			<div class="list-buteurs-defier" style="display:none;"></div>
+
+			<div class="form-group" style="display:none;" id="div_joueurs_defier">
+				<div class="col-sm-10">
+					<select id="form_joueur_defier" name="id_joueur_defier">
+						<option></option>
+					</select>
+				</div>
+			</div>
 		</div>
 		<?= \Form::close(); ?>
 	</div>
@@ -138,12 +196,39 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('#form_championnat_defieur').select2({
+		var max_minute = 90;
+
+		$('.buteurs').select2({
+			width: '240px'
+		});
+
+		$('#prolong').bootstrapSwitch({
+			size: 'normal',
+			onText: 'Oui',
+			offText: 'Non',
+			labelText: 'Prolong',
+			onSwitchChange: function (event, state){
+				if (state){
+					max_minute = 120;
+					$(':input[type="number"]').attr('max', 120);
+				} else {
+					max_minute = 90;
+					$(':input[type="number"]').attr('max', 90);
+					$(':input[type="number"]').each(function(index){
+						if ($(this).val() > 90){
+							$(this).val(90);
+						}
+					});
+				} 
+			}
+		});
+
+		$('#form_championnat_defieur, #form_championnat_defier').select2({
 			placeholder: "Selectionnez un championnat",
 			width: '300px'
 		});
 
-		$('#form_equipe_defieur').select2({
+		$('#form_equipe_defieur, #form_equipe_defier').select2({
 			placeholder: "Selectionnez une équipe",
 			width: '300px'
 		});
@@ -153,15 +238,6 @@
 			afficherEquipes(id_championnat, $('#form_equipe_defieur'), $('#div_equipes_defieur'));
 		});
 
-		$('#form_championnat_defier').select2({
-			placeholder: "Selectionnez un championnat",
-			width: '300px'
-		});
-
-		$('#form_equipe_defier').select2({
-			placeholder: "Selectionnez une équipe",
-			width: '300px'
-		});
 
 		$('#form_championnat_defier').on('change', function(){
 			id_championnat = $(this).val();
