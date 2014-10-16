@@ -113,6 +113,20 @@ class Model_Matchs extends \Orm\Model
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
 	    ),
+	    'joueur1' => array(
+	        'key_from' => 'id_joueur1',
+	        'model_to' => 'Model\Auth_User',
+	        'key_to' => 'id',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    ),
+	    'joueur2' => array(
+	        'key_from' => 'id_joueur2',
+	        'model_to' => 'Model\Auth_User',
+	        'key_to' => 'id',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    ),
 	);
 
 	// Relation Matchs >> Commentaires

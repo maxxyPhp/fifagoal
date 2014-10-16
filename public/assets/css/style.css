@@ -175,6 +175,7 @@ body {
 
 .score_defis {
 	font-family: 'Montserrat', sans-serif;
+	margin-top: 10px;
 }
 
 .btn-rapport {
@@ -196,6 +197,10 @@ body {
 
 .menu-defis {
 	margin-bottom : 30px;
+}
+
+.div_resultat {
+	margin-top : 10px;
 }
 
 /***************************************************************************************************************

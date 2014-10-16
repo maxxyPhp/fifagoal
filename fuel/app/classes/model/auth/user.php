@@ -111,6 +111,34 @@ class Auth_User extends \Auth\Model\Auth_User
             'cascade_save' => true,
             'cascade_delete' => false,
         ),
+        'defis_defieur' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Defis',
+            'key_to' => 'id_joueur_defieur',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        ),
+        'defis_defier' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Defis',
+            'key_to' => 'id_joueur_defier',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        ),
+        'joueur_match1' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Matchs',
+            'key_to' => 'id_joueur1',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        ),
+        'joueur_match2' => array(
+            'key_from' => 'id',
+            'model_to' => 'Model_Matchs',
+            'key_to' => 'id_joueur2',
+            'cascade_save' => true,
+            'cascade_delete' => false,
+        ),
     );
 
     // EAV User >> Equipe Favorite

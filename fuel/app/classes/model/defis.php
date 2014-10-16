@@ -88,6 +88,20 @@ class Model_Defis extends \Orm\Model
 	        'key_to' => 'id',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
-	    )
+	    ),
+	    'defieur' => array(
+	        'key_from' => 'id_joueur_defieur',
+	        'model_to' => 'Model\Auth_User',
+	        'key_to' => 'id',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    ),
+	    'defier' => array(
+	        'key_from' => 'id_joueur_defier',
+	        'model_to' => 'Model\Auth_User',
+	        'key_to' => 'id',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
+	    ),
 	);
 }

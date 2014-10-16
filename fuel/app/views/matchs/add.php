@@ -14,10 +14,10 @@
 				<?php if ($photo_defieur): ?>
 					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php else: ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi->defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php endif; ?>
 			</div>	
-			<input type="hidden" name="joueur1" value="<?= $defieur->id ?>">
+			<input type="hidden" name="joueur1" value="<?= $defi->defieur->id ?>">
 
 			<!-- Div championnat -->
 			<div class="form-group animated fadeInUp">
@@ -95,12 +95,12 @@
 		<div class="col-md-4 center-block">
 			<div class="thumbnail-profil">
 				<?php if ($photo_defier): ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defier->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defi->defier->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php else: ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi->defier->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php endif; ?>
 			</div>
-			<input type="hidden" name="joueur2" value="<?= $defier->id ?>">
+			<input type="hidden" name="joueur2" value="<?= $defi->defier->id ?>">
 
 			<!-- Div championnat -->
 			<div class="form-group animated fadeInUp center-block">
@@ -279,7 +279,6 @@
 		 *
 		 */
 		$('#score_joueur1').on('click blur', function(){
-			console.log(max_minute);
 			actionScore($(this).val(), $('.list-buteurs-defieur > div').length, 'list-buteurs-defieur', 'buteurs-domicile', 'dom', $('#form_equipe_defieur').val());
 		});
 
