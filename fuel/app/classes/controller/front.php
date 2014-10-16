@@ -150,6 +150,10 @@ class Controller_Front extends \Controller
 				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-check"></i> <strong>'.$username.'</strong> a validé le rapport de votre match !</h5></a>';
 				break;
 
+			case 'modifRapport':
+				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-edit"></i> <strong>'.$username.'</strong> a modifié le rapport de votre match !</h5></a>';
+				break;
+
 			case 'addComment':
 				return '<a href="/matchs/view/'.$id.'"><h5><i class="fa fa-comment-o"></i> <strong>'.$username.'</strong> vient de commenter un de vos rapports de matchs !</h5></a>';
 				break;
