@@ -13,7 +13,7 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li><a href="/"><i class="fa fa-home"></i> Accueil</a></li>
-				<li><a href="#"><i class="fa fa-line-chart"></i> Statistiques</a></li>
+				<li><a href="/classement"><i class="fa fa-list-ol"></i> Classement</a></li>
 				<?php if (\Auth::check()): ?>
 					<li><a href="/profil"><i class="fa fa-desktop"></i> Profil</a>
 					<li><a href="/membre"><i class="fa fa-male"></i> Membres</a></li>
@@ -33,10 +33,12 @@
 							<li><a href="/pays"><i class="fa fa-flag"></i> Pays</a></li>
 							<li><a href="/championnat"><i class="fa fa-cubes"></i> Championnat</a></li>
 							<li><a href="/equipe"><i class="fa fa-cube"></i> Equipes</a></li>
-							<li><a href="/joueur"><i class="fa fa-male"></i> Joueurs</a></li>
+							<li><a href="/joueur/import"><i class="fa fa-male"></i> Import de joueurs</a></li>
 							<li><a href="/poste"><i class="fa fa-arrows-alt"></i> Poste</a></li>
 							<li><a href="/selection"><i class="fa fa-heart"></i> Selections</a></li>
 							<li><a href="/transfert"><i class="fa fa-arrows-h"></i> Transferts</a></li>
+							<li class="divider"></li>
+							<li><a href="/migrations"><i class="fa fa-exchange"></i> Migrations</a></li>
 						</ul>
 					</li>
 				<?php endif; ?>
