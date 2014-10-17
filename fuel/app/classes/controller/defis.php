@@ -134,18 +134,10 @@ class Controller_Defis extends \Controller_Front
 			
 			$array = array();
 			foreach ($defis as $defi){
-				$defieur = \Model\Auth_User::find($defi->id_joueur_defieur);
-				if (!empty($defieur)){
-					$photouser = \Model_Photousers::query()->where('id_users', '=', $defieur->id)->get();
-					(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-
-
-					$array[] = array(
-						'defieur' => $defieur,
-						'photouser' => ($photouser != null) ? $photouser->photo : null,
-						'defi' => $defi,
-					);
-				}
+				$array[] = array(
+					'photouser' => $this->photo($defi->defieur->id),
+					'defi' => $defi,
+				);
 			}
 
 			$defis_new = \Model_Defis::find('all', array(
@@ -171,46 +163,10 @@ class Controller_Defis extends \Controller_Front
 
 			$array_acp = array();
 			foreach ($defis_accepte as $acp){
-				$defieur = \Model\Auth_User::find($acp->id_joueur_defieur);
-				if (!empty($defieur)){
-					$photouser = \Model_Photousers::query()->where('id_users', '=', $defieur->id)->get();
-					(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-
-					if ($acp->id_match != 0){
-						$match = \Model_Matchs::find($acp->id_match);
-						if (empty($match)) break;
-
-						$equipe1 = \Model_Equipe::find($match->id_equipe1);
-						if (empty($equipe1)) break;
-
-						$equipe2 = \Model_Equipe::find($match->id_equipe2);
-						if (empty($equipe2)) break;
-
-						$championnat1 = \Model_Championnat::find($equipe1->id_championnat);
-						if (empty($championnat1)) break;
-
-						$championnat2 = \Model_Championnat::find($equipe2->id_championnat);
-						if (empty($championnat2)) break;
-
-						$array_acp[] = array(
-							'defieur' => $defieur,
-							'photouser' => ($photouser != null) ? $photouser->photo : null,
-							'defi' => $acp,
-							'match' => $match,
-							'equipe1' => $equipe1,
-							'equipe2' => $equipe2,
-							'championnat1' => str_replace(' ', '_', strtolower($championnat1->nom)),
-							'championnat2' => str_replace(' ', '_', strtolower($championnat2->nom)),
-						);
-					} else {
-						$array_acp[] = array(
-							'defieur' => $defieur,
-							'photouser' => ($photouser != null) ? $photouser->photo : null,
-							'defi' => $acp,
-						);
-					}
-					
-				}
+				$array_acp[] = array(
+					'photouser' => $this->photo($acp->defieur->id),
+					'defi' => $acp,	
+				);
 			}
 		}
 		
@@ -228,20 +184,13 @@ class Controller_Defis extends \Controller_Front
 
 			$array_ref = array();
 			foreach ($defis_refuses as $ref){
-				$defieur = \Model\Auth_User::find($ref->id_joueur_defieur);
-				if (!empty($defieur)){
-					$photouser = \Model_Photousers::query()->where('id_users', '=', $defieur->id)->get();
-					(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-
-
-					$array_ref[] = array(
-						'defieur' => $defieur,
-						'photouser' => ($photouser != null) ? $photouser->photo : null,
-						'defi' => $ref,
-					);
-				}
+				$array_ref[] = array(
+					'photouser' => $this->photo($ref->defieur->id),
+					'defi' => $ref,
+				);
 			}
 		}
+
 
 		/** DEFIS LANCES */
 		$defis_lances = \Model_Defis::find('all', array(
@@ -252,32 +201,16 @@ class Controller_Defis extends \Controller_Front
 		));
 
 
-			
 		$array_env = array();
 		foreach ($defis_lances as $env){
-			$status = \Model_Status::find($env->status_demande);
-
-			$defier = \Model\Auth_User::find($env->id_joueur_defier);
-			if (!empty($defier)){
-				$photouser = \Model_Photousers::query()->where('id_users', '=', $defier->id)->get();
-				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-
-				$array_env[] = array(
-					'defier' => $defier,
-					'photouser' => ($photouser != null) ? $photouser->photo : null,
-					'defi' => $env,
-					'status' => $status->code,
-				);
-			}
+			$array_env[] = array(
+				'photouser' => $this->photo($env->defier->id),
+				'defi' => $env,
+			);
 		}
 
+
 		/** DEFIS TERMINES */
-		// $defis_termines = \Model_Defis::find('all', array(
-		// 	'where' => array(
-		// 		array('id_joueur_defieur', \Auth::get('id')),
-		// 		array('id_match', null, \DB::expr('IS NOT NULL')),
-		// 	),
-		// ));
 
 		$defis_termines = \DB::query("SELECT * FROM defis
 			WHERE (id_joueur_defieur = ".\Auth::get('id')."
@@ -288,28 +221,20 @@ class Controller_Defis extends \Controller_Front
 		$array_termines = $array_avalider = array();
 		foreach ($defis_termines as $ter){
 			if ($ter->id_joueur_defier == \Auth::get('id') && $ter->match_valider1 == 1 && $ter->match_valider2 == 0){
-				$photo = $this->photo($ter->id_joueur_defieur);
 				$array_avalider[] = array(
-					'photouser' => $photo,
+					'photouser' => $this->photo($ter->id_joueur_defieur),
 					'defi' => $ter,
 				);
 			} else if ($ter->id_joueur_defieur == \Auth::get('id') && $ter->match_valider1 == 0 && $ter->match_valider2 == 1){
-				$photo = $this->photo($ter->id_joueur_defier);
 				$array_avalider[] = array(
-					'photouser' => $photo,
+					'photouser' => $this->photo($ter->id_joueur_defier),
 					'defi' => $ter,
 				);
 			} else {
-				$defier = \Model\Auth_User::find($ter->id_joueur_defier);
-				if (!empty($defier)){
-					$photouser = \Model_Photousers::query()->where('id_users', '=', $ter->defier->id)->get();
-					(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-
-					$array_termines[] = array(
-						'photouser' => ($photouser != null) ? $photouser->photo : null,
-						'defi' => $ter,
-					);
-				}
+				$array_termines[] = array(
+					'photouser' => $this->photo($ter->defier->id),
+					'defi' => $ter,
+				);
 			}
 		}//FOREACH
 

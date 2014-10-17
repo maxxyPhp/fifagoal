@@ -28,18 +28,11 @@ class Controller_Home extends Controller_Front
 			
 			$array = array();
 			foreach ($matchs as $match){
-				if ($match->defis->match_valider1 == 1 && $match->defis->match_valider2 == 1){
-					$defieur = \Model\Auth_User::find($match->id_joueur1);
-					$photouser1 = $this->photo($defieur->id);
-					$defier = \Model\Auth_User::find($match->id_joueur2);
-					$photouser2 = $this->photo($defier->id);
-
+				if ($match->defi->match_valider1 == 1 && $match->defi->match_valider2 == 1){
 					$array[] = array(
 						'match' => $match,
-						'defieur' => $defieur,
-						'defier' => $defier,
-						'photouser1' => $photouser1,
-						'photouser2' => $photouser2,
+						'photouser1' => $this->photo($match->defi->defieur->id),
+						'photouser2' => $this->photo($match->defi->defier->id),
 					);
 				}
 			}

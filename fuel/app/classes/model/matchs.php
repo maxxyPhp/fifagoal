@@ -88,7 +88,7 @@ class Model_Matchs extends \Orm\Model
 
 	// Relation Matchs >> Defis
 	protected static $_has_one = array(
-	    'defis' => array(
+	    'defi' => array(
 	        'key_from' => 'id',
 	        'model_to' => 'Model_Defis',
 	        'key_to' => 'id_match',
