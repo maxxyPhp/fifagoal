@@ -35,49 +35,39 @@ class Controller_Matchs extends \Controller_Front
 				break;
 
 			case 'addComment':
-				if (!is_numeric(\Input::get('user')) || !is_numeric(\Input::get('match'))){
+				if (!is_numeric(\Input::get('match'))){
 					return 'KO';
 				}
-
-				$user = \Model\Auth_User::find(\Input::get('user'));
-				if (empty($user)) return 'KO';
 
 				$match = \Model_Matchs::find(\Input::get('match'));
 				if (empty($match)) return 'KO';
 
-				$content = htmlspecialchars(\Input::get('content'));
 				$commentaire = \Model_Commentaires::forge();
-				$commentaire->id_user = $user->id;
+				$commentaire->id_user = \Auth::get('id');
 				$commentaire->id_match = $match->id;
-				$commentaire->commentaire = $content;
+				$commentaire->commentaire = htmlspecialchars(\Input::get('content'));
 				$commentaire->save();
 
 				/**
 				 *
 				 * NOTIFICATIONS
 				 */
-				if ($user->id != $match->id_joueur1){
-					$message = $this->modelMessage('addComment', $user->username, $match->id);
-					$this->newNotify($match->id_joueur1, $message);
+				if (\Auth::get('id') != $match->id_joueur1){
+					$this->newNotify($match->id_joueur1, $this->modelMessage('addComment', \Auth::get('username'), $match->id));
 				}
 
-				if ($user->id != $match->id_joueur2){
-					$message = $this->modelMessage('addComment', $user->username, $match->id);
-					$this->newNotify($match->id_joueur2, $message);
+				if (\Auth::get('id') != $match->id_joueur2){
+					$this->newNotify($match->id_joueur2, $this->modelMessage('addComment', \Auth::get('username'), $match->id));
 				}
 
-				$photouser = \Model_Photousers::query()->where('id_users', '=', $user->id)->get();
-				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
 
 				$array = array(
-					'user' => $user,
-					'photouser' => $photouser,
+					'user' => \Model\Auth_User::find(\Auth::get('id')),
+					'photouser' => $this->photo(\Auth::get('id')),
 					'commentaire' => $commentaire->commentaire,
 				);
 
-				$array = $this->object_to_array($array);
-
-				return json_encode($array);
+				return json_encode($this->object_to_array($array));
 				break;
 
 			case 'like':
@@ -108,18 +98,13 @@ class Controller_Matchs extends \Controller_Front
 
 				$array = array();
 				foreach ($match->like as $like){
-					$user = \Model\Auth_User::find($like->id_user);
-					$photouser = \Model_Photousers::query()->where('id_users', '=', $user->id)->get();
-					(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-					// $user->photo = (!empty($photouser)) ? $photouser->photo : null;
 					$array[] = array(
-						'user' => $user,
-						'photouser' => $photouser,
+						'user' => $like->user,
+						'photouser' => $this->photo ($like->user->id),
 					);
 				}
-				$array = $this->object_to_array($array);
 
-				return json_encode($array);
+				return json_encode($this->object_to_array($array));
 				break;
 		}
 	}
@@ -240,11 +225,10 @@ class Controller_Matchs extends \Controller_Front
 				/**
 				 * NOTIFICATION
 				 */
-				$message = $this->modelMessage('addRapport', \Auth::get('username'), $match->id);
 				if (\Auth::get('id') == $defi->id_joueur_defier){
-					$this->newNotify($defi->id_joueur_defieur, $message);
+					$this->newNotify($defi->id_joueur_defieur, $this->modelMessage('addRapport', \Auth::get('username'), $match->id));
 				} elseif (\Auth::get('id') == $defi->id_joueur_defieur){
-					$this->newNotify($defi->id_joueur_defier, $message);
+					$this->newNotify($defi->id_joueur_defier, $this->modelMessage('addRapport', \Auth::get('username'), $match->id));
 				}
 
 				\Messages::success('Le rapport du match a bien été enregistré. Votre adversaire recevra une notification pour le valider');
@@ -310,7 +294,7 @@ class Controller_Matchs extends \Controller_Front
 		 */
 
 		// Verification si match pas encore validé que seuls les joueurs puissent y accéder
-		if ($match->defis->match_valider1 == 0 || $match->defis->match_valider2 == 0){
+		if ($match->defi->match_valider1 == 0 || $match->defi->match_valider2 == 0){
 			if ((\Auth::get('id') != $match->joueur1->id) && (\Auth::get('id') != $match->joueur2->id)){
 				\Response::redirect('/');
 			}
@@ -333,6 +317,7 @@ class Controller_Matchs extends \Controller_Front
 		 *
 		 */
 		//Trie des buteurs par minute
+		$minute = array();
 		foreach ($match->buteurs as $key => $row):
 			$minute[$key] = $row['minute'];
 		endforeach;
@@ -358,8 +343,9 @@ class Controller_Matchs extends \Controller_Front
 		 * COMMENTAIRES
 		 *
 		 */
-		if ($match->defis->match_valider1 != 0 && $match->defis->match_valider2 != 0){
+		if ($match->defi->match_valider1 != 0 && $match->defi->match_valider2 != 0){
 			//Trie des commentaires par date décroissante
+			$created = array();
 			foreach ($match->commentaires as $key => $row):
 				$created[$key] = $row['created_at'];
 			endforeach;
@@ -373,10 +359,10 @@ class Controller_Matchs extends \Controller_Front
 					'photouser' => $this->photo($commentaire->user->id),
 				);
 			}
-			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'jaime' => $jaime, 'commentaires' => $array_comments));
+			return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'jaime' => $jaime, 'commentaires' => $array_comments));
 		}
 		else {
-			return $this->view('matchs/view', array('match' => $match, 'defi' => $match->defis, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'jaime' => $jaime, 'commentaires' => ''));
+			return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'jaime' => $jaime, 'commentaires' => array()));
 		}
 
 		
@@ -575,35 +561,12 @@ class Controller_Matchs extends \Controller_Front
 			\Response::redirect('/defis');
 		}
 
-		$defi = \Model_Defis::query()->where('id_match', '=', $match->id)->get();
-		if (!empty($defi)){
-			$defi = current($defi);
-		} else {
-			\Messages::error('Problème de défi');
-			\Response::redirect('/defis');
-		}
-
-		/**
-		 *
-		 * ZONE USER
-		 *
-		 */
-		$defieur = \Model\Auth_User::find($match->id_joueur1);
-		$defier = \Model\Auth_User::find($match->id_joueur2);
-
 		// Verification si match pas encore validé que seuls les joueurs puissent y accéder
-		if ($match->defis->match_valider1 == 0 || $match->defis->match_valider2 == 0){
-			if ((\Auth::get('id') != $defieur->id) && (\Auth::get('id') != $defier->id)){
+		if ($match->defi->match_valider1 == 0 || $match->defi->match_valider2 == 0){
+			if ((\Auth::get('id') != $match->defi->defieur->id) && (\Auth::get('id') != $match->defi->defier->id)){
 				\Response::redirect('/');
 			}
 		}
-
-
-		$photo_defieur = \Model_Photousers::query()->where('id_users', '=', $defieur->id)->get();
-		(!empty($photo_defieur)) ? $photo_defieur = current($photo_defieur) : $photo_defieur = null;
-
-		$photo_defier = \Model_Photousers::query()->where('id_users', '=', $defier->id)->get();
-		(!empty($photo_defier)) ? $photo_defier = current($photo_defier) : $photo_defier = null;
 
 
 		/**
@@ -620,39 +583,15 @@ class Controller_Matchs extends \Controller_Front
 
 		$championnats = \Model_Championnat::find('all');
 
-		$equipe1 = \Model_Equipe::find($match->id_equipe1);
-		if (empty($equipe1)){
-			\Messages::error('L\'équipe domicile n\'existe pas');
-			\Response::redirect('/defis');
-		}
+		$minute = array();
+		foreach ($match->buteurs as $key => $row):
+			$minute[$key] = $row['minute'];
+		endforeach;
 
-		$equipe2 = \Model_Equipe::find($match->id_equipe2);
-		if (empty($equipe2)){
-			\Messages::error('L\'équipe extérieure n\'existe pas');
-			\Response::redirect('/defis');
-		}
+		array_multisort($minute, SORT_ASC, $match->buteurs);
 
-		$buteurs = \Model_Buteurs::query()->where('id_match', '=', $match->id)->order_by('minute')->get();
-		$array_but_dom = $array_but_ext = array();
-		if (!empty($buteurs)){
-			foreach ($buteurs as $buteur){
-				$joueur = \Model_Joueur::find($buteur->id_joueur);
-				if ($buteur->joueur->equipe->id == $equipe1->id) {
-					$array_but_dom[] = array(
-						'but' => $buteur,
-						'joueur' => $joueur,
-					);
-				} else {
-					$array_but_ext[] = array(
-						'but' => $buteur,
-						'joueur' => $joueur,
-					);
-				}
-			}
-		}
-		// var_dump($array_but_dom);die();
 
-		return $this->view('matchs/modif', array('match' => $match, 'defi' => $defi, 'defieur' => $defieur, 'defier' => $defier, 'photo_defieur' => $photo_defieur, 'photo_defier' => $photo_defier, 'equipe1' => $equipe1, 'equipe2' => $equipe2, 'pays' => $pays, 'championnats' => $championnats, 'match_valider' => false, 'buteurs_dom' => $array_but_dom, 'buteurs_ext' => $array_but_ext));
+		return $this->view('matchs/modif', array('match' => $match, 'photo_defieur' => $this->photo($match->defi->defieur->id), 'photo_defier' => $this->photo($match->defi->defier->id), 'pays' => $pays, 'championnats' => $championnats, 'buteurs' => $match->buteurs));
 	}
 
 

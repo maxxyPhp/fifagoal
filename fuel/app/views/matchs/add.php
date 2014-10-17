@@ -12,7 +12,7 @@
 		<div class="col-md-4">
 			<div class="thumbnail-profil">
 				<?php if ($photo_defieur): ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
+					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defi->defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php else: ?>
 					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi->defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
 				<?php endif; ?>

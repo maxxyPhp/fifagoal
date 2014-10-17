@@ -1,5 +1,5 @@
 <div class="container">
-	<?php if (($defi->match_valider2 == 0 && (\Auth::get('id') == $match->joueur2->id)) || $defi->match_valider1 == 0 && (\Auth::get('id') == $match->joueur1->id)): ?>
+	<?php if (($match->defi->match_valider2 == 0 && (\Auth::get('id') == $match->joueur2->id)) || $match->defi->match_valider1 == 0 && (\Auth::get('id') == $match->joueur1->id)): ?>
 		<div class="alert alert-danger alert-no-valid" role="alert">
 			<h4><i class="fa fa-exclamation-triangle"></i> Ce match n'est pas encore validé</h4>
 			<p>Il ne sera pas publié tant que les deux joueurs ne valident pas le rapport.</p>
