@@ -35,14 +35,13 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Les derniers matchs joués</div>
 				<div class="panel-body">
-					<?php //var_dump($matchs);die(); ?>
 					<?php foreach ($matchs as $match): ?>
 						<div class="row" style="margin-bottom:15px;">
 							<div class="col-md-4">
 								<?php if ($match['photouser1']): ?>
-									<a href="/profil/view/<?= $match['defieur']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser1']->photo ?>" alt="<?= $match['defieur']->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['defieur']->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
+									<a href="/profil/view/<?= $match['match']->defi->defieur->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser1']->photo ?>" alt="<?= $match['match']->defi->defieur->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defieur->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
 								<?php else: ?>
-									<a href="/profil/view/<?= $match['defieur']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['defieur']->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['defieur']->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
+									<a href="/profil/view/<?= $match['match']->defi->defieur->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['match']->defi->defieur->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defieur->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
 								<?php endif; ?>
 							</div>
 							<div class="col-md-4">
@@ -52,9 +51,9 @@
 							</div>
 							<div class="col-md-4">
 								<?php if ($match['photouser2']): ?>
-									<a href="/profil/view/<?= $match['defier']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser2']->photo ?>" alt="<?= $match['defier']->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['defier']->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
+									<a href="/profil/view/<?= $match['match']->defi->defier->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser2']->photo ?>" alt="<?= $match['match']->defi->defier->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defier->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
 								<?php else: ?>
-									<a href="/profil/view/<?= $match['defier']->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['defier']->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['defier']->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
+									<a href="/profil/view/<?= $match['match']->defi->defier->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['match']->defi->defier->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defier->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
 								<?php endif; ?>
 							</div>
 						</div>
