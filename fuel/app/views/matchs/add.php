@@ -70,7 +70,6 @@
 			<div class="score" >
 				<div class="row"><h2 class="center-block center">Score</h2></div>
 				<div class="row">
-					
 					<div class="col-md-6">
 						<input type="number" class="form-control" id="score_joueur1" name="score_joueur_1" min="0" max="20" value="0">
 					</div>
@@ -81,6 +80,31 @@
 
 				<div class="center-block center" style="margin-top:10px;">
 					<input type="checkbox" name="prolongation" id="prolong">
+				</div>
+
+				<div class="center-block center" style="margin-top:10px;">
+					<input type="checkbox" name="tab" id="tab">
+				</div>
+
+				<div id="rapp_tab" class="center-block center" style="display:none;margin-top:10px;">
+					<div class="row"><h3 class="center-block center">Tirs aux buts</h3></div>
+					<div class="row">
+						<div class="col-md-6">
+							<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="0" max="20" value="0">
+						</div>
+						<div class="col-md-6">
+							<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="0" max="20" value="0">
+						</div>
+					</div>
+
+					<div class="row" style="margin-top:10px;">
+						<div class="col-md-6">
+							<div class="list-tireurs-defieur" style="display:none;"></div>
+						</div>
+						<div class="col-md-6">
+							<div class="list-tireurs-defier" style="display:none;"></div>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -165,6 +189,21 @@
 							$(this).val(90);
 						}
 					});
+				} 
+			}
+		});
+
+		$('#tab').bootstrapSwitch({
+			size: 'normal',
+			onText: 'Oui',
+			offText: 'Non',
+			labelText: 'TAB ?',
+			onSwitchChange: function (event, state){
+				//OUI
+				if (state){
+					$('#rapp_tab').show();
+				} else {
+					$('#rapp_tab').hide();
 				} 
 			}
 		});
@@ -393,5 +432,63 @@
 			$('.'+id).show().focus();
 		});
 
+
+		/**
+		 *
+		 * GESTION DES TAB
+		 *
+		 */
+		$('#score_tab_joueur1').on('click blur', function(){
+			actionTAB($(this).val(), $('.list-tireurs-defieur > div').length, 'list-tireurs-defieur', 'tireurs-domicile', 'dom', $('#form_equipe_defieur').val());
+		});
+
+		$('#score_tab_joueur2').on('click blur', function(){
+			actionTAB($(this).val(), $('.list-tireurs-defier > div').length, 'list-tireurs-defier', 'tireurs-exterieur', 'ext', $('#form_equipe_defier').val());
+		});
+
+		function actionTAB (score, nb_element, listeJoueur, nomDivGen, ordre, idEquipe){
+			if (score == nb_element){
+				return false;
+			} else if (score < nb_element){
+				for (var i = nb_element; i > score; i--){
+					$('.'+listeJoueur).children().each(function(){
+						if ($(this).hasClass('buteurs-'+ordre+'-'+i) || i == 1){
+							$(this).remove();
+						}
+					});
+				}
+			} else {
+				for (var i = nb_element+1; i <= score; i++){
+					afficherChoixTireurs(i, listeJoueur, nomDivGen, ordre, idEquipe);
+				}
+			}
+		}
+
+		function afficherChoixTireurs (score, listeJoueur, nomDivGen, ordre, idEquipe){
+			if (score > 0){
+				$('.'+listeJoueur).append(
+					'<div class="form-group '+nomDivGen+' tireurs-'+ordre+'-'+score+' animated fadeInUp" style="display:none;">'
+						+'<div class="col-sm-10">'
+							+'<select id="tireurs-'+ordre+'-'+score+'" name="tireurs-'+ordre+'['+score+']" class="tireurs">'
+								+'<option></option>'
+							+'</select>'
+						+'</div>'
+						+'<div class="col-sm-2">'
+							+'<input type="checkbox" name="tireurs_'+ordre+'_reussite['+score+']" class="tireurs-'+ordre+'_'+score+'">'
+						+'</div>'
+					+'</div>'
+				);
+
+				afficherJoueurs(idEquipe, $('#tireurs-'+ordre+'-'+score));
+
+				$('#tireurs-'+ordre+'-'+score).select2({
+					placeholder: "Tireur #"+score,
+					width: '140px'
+				});
+
+				$('.'+nomDivGen).show();
+				$('.'+listeJoueur).show();
+			}
+		}
 	});
 </script>

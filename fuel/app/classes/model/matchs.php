@@ -94,6 +94,14 @@ class Model_Matchs extends \Orm\Model
 	        'key_to' => 'id_match',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
+	    ),
+	    // Relation Matchs >> Tab
+	    'tab' => array(
+	        'key_from' => 'id',
+	        'model_to' => 'Model_Tab',
+	        'key_to' => 'id_match',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
 	    )
 	);
 

@@ -238,5 +238,22 @@ body {
 }
 
 
+/***************************************************************************************************************
+* 							CLASSEMENT	
+***************************************************************************************************************/
+.numero {
+	font-family: 'Montserrat', sans-serif;
+	border-right : outset black 1px;
+}
+
+.table-classement {
+	text-align: center;
+}
+
+.classement_pseudo > a {
+	float : left;
+}
+
+
 
 

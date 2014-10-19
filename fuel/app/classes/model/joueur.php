@@ -106,6 +106,13 @@ class Model_Joueur extends \Orm\Model
 	        'key_to' => 'id_joueur',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
+	    ),
+	    'tireurs' => array(
+	        'key_from' => 'id',
+	        'model_to' => 'Model_Joueurstab',
+	        'key_to' => 'id_joueur',
+	        'cascade_save' => true,
+	        'cascade_delete' => false,
 	    )
 	);
 

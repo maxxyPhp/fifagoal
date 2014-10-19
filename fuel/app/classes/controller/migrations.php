@@ -264,6 +264,39 @@ class Controller_Migrations extends \Controller_Gestion
 			), array('id'));
 		}
 
+		/**
+		 *
+		 * TAB
+		 *
+		 */
+		if (!\DBUtil::table_exists('tab')){
+			\DBUtil::create_table('tab', array(
+				'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),
+				'id_match' => array('constraint' => 11, 'type' => 'int'),
+				'score_joueur1' => array('constraint' => 11, 'type' => 'int'),
+				'score_joueur2' => array('constraint' => 11, 'type' => 'int'),
+				'created_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
+				'updated_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
+			), array('id'));
+		}
+
+		/**
+		 *
+		 * JOUEURSTAB
+		 *
+		 */
+		if (!\DBUtil::table_exists('joueurs_tab')){
+			\DBUtil::create_table('joueurs_tab', array(
+				'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),
+				'id_joueur' => array('constraint' => 11, 'type' => 'int'),
+				'id_tab' => array('constraint' => 11, 'type' => 'int'),
+				'ordre' => array('constraint' => 11, 'type' => 'int'),
+				'reussi' => array('constraint' => 4, 'type' => 'tinyint'),
+				'created_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
+				'updated_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
+			), array('id'));
+		}
+
 		\Response::redirect('/');
 	}
 }
