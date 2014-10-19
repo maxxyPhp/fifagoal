@@ -231,10 +231,17 @@ class Controller_Defis extends \Controller_Front
 					'defi' => $ter,
 				);
 			} else {
-				$array_termines[] = array(
-					'photouser' => $this->photo($ter->defier->id),
-					'defi' => $ter,
-				);
+				if ($ter->defieur->id == \Auth::get('id')){
+					$array_termines[] = array(
+						'photouser' => $this->photo($ter->defier->id),
+						'defi' => $ter,
+					);
+				} else {
+					$array_termines[] = array(
+						'photouser' => $this->photo($ter->defieur->id),
+						'defi' => $ter,
+					);
+				}
 			}
 		}//FOREACH
 
