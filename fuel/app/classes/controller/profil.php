@@ -34,99 +34,61 @@ class Controller_Profil extends Controller_Front
 	public function action_index (){
 		$this->verifAutorisation();
 
-		$photo_user = \Model_Photousers::find('all', array(
-			'where' => array(
-				array('id_users', \Auth::get('id')),
-			),
-		));
-
-		if (!empty($photo_user)) $photo_user = current($photo_user);
-
 		/**
 		 *
-		 * VICTOIRES
+		 * STATS
 		 *
 		 */
-
-		$victoires = 0;
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
+		
+		$query = \DB::query('SELECT * FROM defis
 			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur1 = '.\Auth::get('id').'
-			AND score_joueur1 > score_joueur2
-			AND match_valider1 = 1
-			AND match_valider2 = 1
+			WHERE (
+				id_joueur1 = '.\Auth::get('id').'
+				AND match_valider1 = 1
+				AND match_valider2 = 1
+			) OR (
+				id_joueur2 = '.\Auth::get('id').'
+				AND match_valider1 = 1
+				AND match_valider2 = 1
+			)
+			ORDER BY matchs.created_at DESC
 		')->execute();
 
-		foreach ($query as $result){
-			$victoires += intval($result['nb']);
-		}
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur2 = '.\Auth::get('id').'
-			AND score_joueur2 > score_joueur1
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
+		$victoires = $nuls = $defaites = 0;
+		$i = 1;
+		$derniers_matchs = array();
 
 		foreach ($query as $result){
-			$victoires += intval($result['nb']);
-		}
-
-		/**
-		 *
-		 * NULS
-		 *
-		 */
-		$nuls = 0;
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur2 = '.\Auth::get('id').'
-			OR id_joueur1 = '.\Auth::get('id').'
-			AND score_joueur2 = score_joueur1
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
-
-		foreach ($query as $result){
-			$nuls += intval($result['nb']);
-		}
-
-		/**
-		 *
-		 * DEFAITES
-		 *
-		 */
-		$defaites = 0;
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur1 = '.\Auth::get('id').'
-			AND score_joueur1 < score_joueur2
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
-
-		foreach ($query as $result){
-			$defaites += intval($result['nb']);
-		}
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur2 = '.\Auth::get('id').'
-			AND score_joueur2 < score_joueur1
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
-
-		foreach ($query as $result){
-			$defaites += intval($result['nb']);
+			//DEFIEUR
+			if ($result['id_joueur1'] == \Auth::get('id')){
+				if (intval($result['score_joueur1']) > intval($result['score_joueur2'])) $victoires += 1;
+				else if (intval($result['id_joueur1']) == intval($result['score_joueur2'])) $nuls += 1;
+				else $defaites += 1;
+			}
+			//DEFIER
+			else {
+				if (intval($result['score_joueur2']) > intval($result['score_joueur1'])) $victoires += 1;
+				else if (intval($result['score_joueur2']) == intval($result['score_joueur1'])) $nuls += 1;
+				else $defaites += 1;
+			}
+			if ($i <= 5){
+				if ($result['id_joueur1'] == \Auth::get('id')){
+					$derniers_matchs[] = array(
+						'equipe1' => \Model_Equipe::find($result['id_equipe1']),
+						'equipe2' => \Model_Equipe::find($result['id_equipe2']),
+						'match' => $result,
+						'status' => $this->statusMatch('defieur', $result['score_joueur1'], $result['score_joueur2']),
+					);
+				} else {
+					$derniers_matchs[] = array(
+						'equipe1' => \Model_Equipe::find($result['id_equipe1']),
+						'equipe2' => \Model_Equipe::find($result['id_equipe2']),
+						'match' => $result,
+						'status' => $this->statusMatch('defier', $result['score_joueur1'], $result['score_joueur2']),
+					);
+				}
+			}
+			$i++;
 		}
 
 		$stats = array(
@@ -135,66 +97,18 @@ class Controller_Profil extends Controller_Front
 			'defaites' => $defaites,
 		);
 
-
 		/**
-		 *
-		 * DERNIERS MATCHS
+		 * AMIS
 		 *
 		 */
-		$derniers_matchs = array();
-
-		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
-			JOIN defis ON defis.id_match = matchs.id
-			WHERE id_joueur1 ='.\Auth::get('id').'
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-			ORDER BY matchs.created_at DESC
-			LIMIT 3
-		')->as_object('Model_Matchs')->execute();
-
-		foreach ($query as $result){
-			$derniers_matchs[] = array(
-				'id' => $result->id,
-				'equipe1' => $result->equipe1,
-				'equipe2' => $result->equipe2,
-				'score1' => $result->score_joueur1,
-				'score2' => $result->score_joueur2,
-				'status' => $this->statusMatch($result->score_joueur1, $result->score_joueur2),
-			);
-		}
-
-		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
-			JOIN defis ON defis.id_match = matchs.id
-			WHERE id_joueur2 ='.\Auth::get('id').'
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-			ORDER BY matchs.created_at DESC
-			LIMIT 3
-		')->as_object('Model_Matchs')->execute();
-
-		foreach ($query as $result){
-			$derniers_matchs[] = array(
-				'id' => $result->id,
-				'equipe1' => $result->equipe1,
-				'equipe2' => $result->equipe2,
-				'score1' => $result->score_joueur1,
-				'score2' => $result->score_joueur2,
-				'status' => $this->statusMatch($result->score_joueur2, $result->score_joueur1),
-			);
-		}
-
 		$liste_amis = array();
 		$amis = \Model_Amis::query()->where('id_user1', '=', \Auth::get('id'))->get();
 		if (!empty($amis)){
 			
 			foreach ($amis as $am){
-				$users = \Model\Auth_User::find($am->id_user2);
-				$photouser = \Model_Photousers::query()->where('id_users', '=', $users->id)->get();
-				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-
 				$liste_amis[] = array(
-					'users' => $users,
-					'photouser' => $photouser,
+					'users' => $am->user_inverse,
+					'photouser' => $this->photo($am->user_inverse->id),
 				);
 			}
 		}
@@ -207,6 +121,7 @@ class Controller_Profil extends Controller_Front
 		$equipe_fav = \Model_Equipe::find(\Auth::get('equipe_fav'));
 		if (empty($equipe_fav)) $equipe_fav = null;
 
+
 		// Pays qui ont un championnat
 		$query = \DB::query('SELECT DISTINCT pays.nom, pays.id, drapeau FROM pays JOIN championnat ON championnat.id_pays = pays.id ORDER BY pays.nom')->as_object('Model_Pays')->execute();
 		$pays = array();
@@ -218,7 +133,7 @@ class Controller_Profil extends Controller_Front
 
 
 
-        return $this->view('profil/index', array('photo_user' => $photo_user, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs, 'equipe_fav' => $equipe_fav, 'pays' => $pays, 'championnats' => $championnats));
+        return $this->view('profil/index', array('photo_user' => $this->photo(\Auth::get('id')), 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs, 'equipe_fav' => $equipe_fav, 'pays' => $pays, 'championnats' => $championnats));
 	}
 
 
@@ -230,10 +145,17 @@ class Controller_Profil extends Controller_Front
 	 * @param int $score2
 	 * @return String
 	 */
-	public function statusMatch ($score1, $score2){
-		if ($score1 > $score2) return 'V';
-		elseif ($score1 == $score2) return 'N';
-		else return 'D';
+	public function statusMatch ($ordre, $score1, $score2){
+		if ($ordre == 'defieur'){
+			if ($score1 > $score2) return 'V';
+			elseif ($score1 == $score2) return 'N';
+			else return 'D';
+		} else {
+			if ($score1 > $score2) return 'D';
+			elseif ($score1 == $score2) return 'N';
+			else return 'V';
+		}
+		
 	}
 
 
@@ -255,96 +177,63 @@ class Controller_Profil extends Controller_Front
 		if ($user->id == \Auth::get('id')){
 			\Response::redirect('/profil');
 		}
-
-		$photo_user = \Model_Photousers::query()->where('id_users', $user->id)->get();
-		(!empty($photo_user)) ? $photo_user = current($photo_user) : $photo_user = null;
 		
-
 		/**
 		 *
-		 * VICTOIRES
+		 * STATS
 		 *
 		 */
-
-		$victoires = 0;
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
+		
+		$query = \DB::query('SELECT * FROM defis
 			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur1 = '.$user->id.'
-			AND score_joueur1 > score_joueur2
-			AND match_valider1 = 1
-			AND match_valider2 = 1
+			WHERE (
+				id_joueur1 = '.$user->id.'
+				AND match_valider1 = 1
+				AND match_valider2 = 1
+			) OR (
+				id_joueur2 = '.$user->id.'
+				AND match_valider1 = 1
+				AND match_valider2 = 1
+			)
+			ORDER BY matchs.created_at DESC
 		')->execute();
 
-		foreach ($query as $result){
-			$victoires += intval($result['nb']);
-		}
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur2 = '.$user->id.'
-			AND score_joueur2 > score_joueur1
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
+		$victoires = $nuls = $defaites = 0;
+		$i = 1;
+		$derniers_matchs = array();
 
 		foreach ($query as $result){
-			$victoires += intval($result['nb']);
-		}
-
-		/**
-		 *
-		 * NULS
-		 *
-		 */
-		$nuls = 0;
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur2 = '.$user->id.'
-			OR id_joueur1 = '.$user->id.'
-			AND score_joueur2 = score_joueur1
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
-
-		foreach ($query as $result){
-			$nuls += intval($result['nb']);
-		}
-
-		/**
-		 *
-		 * DEFAITES
-		 *
-		 */
-		$defaites = 0;
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur1 = '.$user->id.'
-			AND score_joueur1 < score_joueur2
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
-
-		foreach ($query as $result){
-			$defaites += intval($result['nb']);
-		}
-
-		$query = \DB::query('SELECT COUNT(*) as nb FROM defis
-			JOIN matchs ON defis.id_match = matchs.id
-			WHERE id_joueur2 = '.$user->id.'
-			AND score_joueur2 < score_joueur1
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-		')->execute();
-
-
-		foreach ($query as $result){
-			$defaites += intval($result['nb']);
+			//DEFIEUR
+			if ($result['id_joueur1'] == $user->id){
+				if (intval($result['score_joueur1']) > intval($result['score_joueur2'])) $victoires += 1;
+				else if (intval($result['id_joueur1']) == intval($result['score_joueur2'])) $nuls += 1;
+				else $defaites += 1;
+			}
+			//DEFIER
+			else {
+				if (intval($result['score_joueur2']) > intval($result['score_joueur1'])) $victoires += 1;
+				else if (intval($result['score_joueur2']) == intval($result['score_joueur1'])) $nuls += 1;
+				else $defaites += 1;
+			}
+			// DERNIERS MATCHS
+			if ($i <= 5){
+				if ($result['id_joueur1'] == $user->id){
+					$derniers_matchs[] = array(
+						'equipe1' => \Model_Equipe::find($result['id_equipe1']),
+						'equipe2' => \Model_Equipe::find($result['id_equipe2']),
+						'match' => $result,
+						'status' => $this->statusMatch('defieur', $result['score_joueur1'], $result['score_joueur2']),
+					);
+				} else {
+					$derniers_matchs[] = array(
+						'equipe1' => \Model_Equipe::find($result['id_equipe1']),
+						'equipe2' => \Model_Equipe::find($result['id_equipe2']),
+						'match' => $result,
+						'status' => $this->statusMatch('defier', $result['score_joueur1'], $result['score_joueur2']),
+					);
+				}
+			}
+			$i++;
 		}
 
 		$stats = array(
@@ -353,53 +242,6 @@ class Controller_Profil extends Controller_Front
 			'defaites' => $defaites,
 		);
 
-
-		/**
-		 *
-		 * DERNIERS MATCHS
-		 *
-		 */
-		$derniers_matchs = array();
-
-		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
-			JOIN defis ON defis.id_match = matchs.id
-			WHERE id_joueur1 ='.$user->id.'
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-			ORDER BY matchs.created_at DESC
-			LIMIT 3
-		')->as_object('Model_Matchs')->execute();
-
-		foreach ($query as $result){
-			$derniers_matchs[] = array(
-				'id' => $result->id,
-				'equipe1' => $result->equipe1,
-				'equipe2' => $result->equipe2,
-				'score1' => $result->score_joueur1,
-				'score2' => $result->score_joueur2,
-				'status' => $this->statusMatch($result->score_joueur1, $result->score_joueur2),
-			);
-		}
-
-		$query = \DB::query('SELECT matchs.id, id_equipe1, id_equipe2, score_joueur1, score_joueur2, matchs.created_at FROM matchs
-			JOIN defis ON defis.id_match = matchs.id
-			WHERE id_joueur2 ='.$user->id.'
-			AND match_valider1 = 1
-			AND match_valider2 = 1
-			ORDER BY matchs.created_at DESC
-			LIMIT 3
-		')->as_object('Model_Matchs')->execute();
-
-		foreach ($query as $result){
-			$derniers_matchs[] = array(
-				'id' => $result->id,
-				'equipe1' => $result->equipe1,
-				'equipe2' => $result->equipe2,
-				'score1' => $result->score_joueur1,
-				'score2' => $result->score_joueur2,
-				'status' => $this->statusMatch($result->score_joueur2, $result->score_joueur1),
-			);
-		}
 
 		/**
 		 *
@@ -432,8 +274,10 @@ class Controller_Profil extends Controller_Front
 			else $ami_inverse = 0;
 		} else $ami_inverse = 0;
 
+		/**
+		 * LISTE DES AMIS
+		 */
 		$liste_amis = array();
-		// $amis = \Model_Amis::query()->where('id_user1', '=', $user->id)->get();
 		$amis = \Model_Amis::find('all', array(
 			'where' => array(
 				array('id_user1', $user->id),
@@ -441,15 +285,10 @@ class Controller_Profil extends Controller_Front
 			),
 		));
 		if (!empty($amis)){
-			
 			foreach ($amis as $am){
-				$users = \Model\Auth_User::find($am->id_user2);
-				$photouser = \Model_Photousers::query()->where('id_users', '=', $users->id)->get();
-				(!empty($photouser)) ? $photouser = current($photouser) : $photouser = null;
-
 				$liste_amis[] = array(
-					'users' => $users,
-					'photouser' => $photouser,
+					'users' => $am->user_inverse,
+					'photouser' => $this->photo($am->user_inverse->id),
 				);
 			}
 		}
@@ -460,11 +299,12 @@ class Controller_Profil extends Controller_Front
 		 *
 		 */
 		$equipe_fav;
-		if (!empty($user->equipe_favorite)){
-			$equipe_fav = \Model_Equipe::find($user->equipe_favorite);
+		if (!empty($user->equipe_fav)){
+			$equipe_fav = \Model_Equipe::find($user->equipe_fav);
 		}
 		else $equipe_fav = null;
 
-		return $this->view('profil/view', array('user' => $user, 'photo_user' => $photo_user, 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'equipe_fav' => $equipe_fav, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
+
+		return $this->view('profil/view', array('user' => $user, 'photo_user' => $this->photo($user->id), 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'equipe_fav' => $equipe_fav, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
 	}
 }

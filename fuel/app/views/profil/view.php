@@ -3,7 +3,7 @@
 		Profil de <?= $user->username ?>
 		<div class="club_pref">
 			<?php if ($equipe_fav): ?>
-				<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe_fav->championnat->nom)) . '/' . $equipe_fav->logo ?>" alt="<?= $equipe_fav->nom ?>" width="100px" class="logo_profil" /> 
+				<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe_fav->championnat->nom)) . '/' . $equipe_fav->logo ?>" alt="<?= $equipe_fav->nom ?>" width="100px" class="logo_profil" data-toggle="tooltip" data-placement="top" title="<?= $equipe_fav->nom ?>" /> 
 			<?php endif; ?>
 		</div>
 	</h1>
@@ -73,7 +73,7 @@
 								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['equipe1']->championnat->nom)) . '/' . $match['equipe1']->logo ?>" alt="<?= $match['equipe1']->nom ?>" width="50px" >
 							</div>
 							<div class="col-md-4">
-								<a href="/matchs/view/<?= $match['id'] ?>"><div class="score_defis score-<?= $match['status'] ?>"><?= $match['score1'] ?>-<?= $match['score2'] ?></div></a>
+								<a href="/matchs/view/<?= $match['match']['id_match'] ?>"><div class="score_defis score-<?= $match['status'] ?>"><?= $match['match']['score_joueur1'] ?>-<?= $match['match']['score_joueur2'] ?></div></a>
 							</div>
 							<div class="col-md-4">
 								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['equipe2']->championnat->nom)) . '/' . $match['equipe2']->logo ?>" alt="<?= $match['equipe2']->nom ?>" width="50px" >
@@ -112,8 +112,9 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('.photo-amis').tooltip();
+		$('.photo-amis, .logo_profil').tooltip();
 
+		// DEMANDE EN AMI
 		$('.btn-ami').on('click', function(){
 			user = $(this).attr('data-user');
 			$.ajax({
@@ -132,6 +133,7 @@
 			});
 		});
 
+		// ACCEPTER UNE DEMANDE EN AMI
 		$('.btn-acp-ami').on('click', function(){
 			user = $(this).attr('data-user');
 			console.log(user);

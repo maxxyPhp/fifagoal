@@ -67,7 +67,7 @@
 								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['equipe1']->championnat->nom)) . '/' . $match['equipe1']->logo ?>" alt="<?= $match['equipe1']->nom ?>" width="50px" >
 							</div>
 							<div class="col-md-4">
-								<a href="/matchs/view/<?= $match['id'] ?>"><div class="score_defis score-<?= $match['status'] ?>"><?= $match['score1'] ?>-<?= $match['score2'] ?></div></a>
+								<a href="/matchs/view/<?= $match['match']['id_match'] ?>"><div class="score_defis score-<?= $match['status'] ?>"><?= $match['match']['score_joueur1'] ?>-<?= $match['match']['score_joueur2'] ?></div></a>
 							</div>
 							<div class="col-md-4">
 								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['equipe2']->championnat->nom)) . '/' . $match['equipe2']->logo ?>" alt="<?= $match['equipe2']->nom ?>" width="50px" >
