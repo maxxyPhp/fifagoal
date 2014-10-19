@@ -15,7 +15,7 @@ class Controller_Classement extends \Controller_Front
 				/**
 				 * VICTOIRES
 				 */
-				$query_vic = \DB::query("SELECT * FROM defis
+				$query = \DB::query("SELECT * FROM defis
 					JOIN matchs On defis.id_match = matchs.id
 					WHERE (
 						id_joueur1 = ".$user->id."
@@ -30,8 +30,8 @@ class Controller_Classement extends \Controller_Front
 				")->execute();
 
 
-				$victoires = $nuls = $defaites = $bonus = $malus = 0;
-				foreach ($query_vic as $result){
+				$victoires = $nuls = $defaites = $bonus = $malus = $butsm = $butse = 0;
+				foreach ($query as $result){
 					// DEFIEUR
 					if ($result['id_joueur1'] == $user->id){
 						if (intval($result['score_joueur1']) > intval($result['score_joueur2'])){
@@ -43,6 +43,8 @@ class Controller_Classement extends \Controller_Front
 							$defaites += 1;
 							if (intval($result['score_joueur2']) - intval($result['score_joueur1']) >= 3) $malus += 1;
 						}
+						$butsm += intval($result['score_joueur1']);
+						$butse += intval($result['score_joueur2']);
 					}
 					// DEFIER
 					else {
@@ -55,6 +57,8 @@ class Controller_Classement extends \Controller_Front
 							$victoires += 1;
 							if (intval($result['score_joueur2']) - intval($result['score_joueur1']) >= 3) $bonus += 1;
 						}
+						$butsm += intval($result['score_joueur2']);
+						$butse += intval($result['score_joueur1']);
 					}
 				}
 
@@ -71,15 +75,18 @@ class Controller_Classement extends \Controller_Front
 					'defaites' => $defaites,
 					'bonus' => $bonus,
 					'malus' => $malus,
+					'butsm' => $butsm,
+					'butse' => $butse,
 				);
 			}
 
 			$points = array();
 			foreach ($array as $key => $row):
 				$points[$key] = $row['points'];
+				$diff[$key] = $row['butsm'] - $row['butse'];
 			endforeach;
 
-			array_multisort($points, SORT_DESC, $array);
+			array_multisort($points, SORT_DESC, $diff, SORT_ASC, $array);
 
 			// \Cache::set('classementPlayers', $array);
 		// }
