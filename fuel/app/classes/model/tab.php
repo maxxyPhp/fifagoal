@@ -59,7 +59,7 @@ class Model_Tab extends \Orm\Model
 	    'tireurs' => array(
 	        'key_from' => 'id',
 	        'model_to' => 'Model_Joueurstab',
-	        'key_to' => 'id_joueur',
+	        'key_to' => 'id_tab',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
 	    ),
