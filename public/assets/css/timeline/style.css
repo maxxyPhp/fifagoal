@@ -121,6 +121,27 @@ h2.ss-subtitle:after{
 	background-position: center center;
 	position: static;
 }
+
+.tab-circle-rate{
+	border-radius : 50%;
+	display: block;
+	position: static;
+	height : 20px;
+	width : 20px;
+	background-color: red;
+	margin-top: 4px;
+}
+
+.tab-circle-ok{
+	border-radius : 50%;
+	display: block;
+	position: static;
+	height : 20px;
+	width : 20px;
+	background-color: green;
+	margin-top: 4px;
+}
+
 .ss-small .ss-circle{
 	width: 100px;
 	height: 100px;
