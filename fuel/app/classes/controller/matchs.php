@@ -219,6 +219,57 @@ class Controller_Matchs extends \Controller_Front
 				}
 			}
 
+			/**
+			 *
+			 * GESTION DES TAB
+			 *
+			 */
+			// var_dump($_POST);die();
+			if (\Input::post('tireurs-dom')){
+				$tab = \Model_Tab::forge();
+				$tab->id_match = $match->id;
+				$tab->score_joueur1 = count(\Input::post('tireurs_dom_reussite'));
+				$tab->score_joueur2 = count(\Input::post('tireurs_ext_reussite'));
+				$tab->save();
+
+				$match->id_tab = $tab->id;
+				$match->save();
+
+				foreach (\Input::post('tireurs-dom') as $i => $idj){
+					$joueur = \Model_Joueur::find($idj);
+					if (empty($joueur)){
+						\Messages::error('Un des tireurs de penaltys n\' existe pas');
+						\Response::redirect_back();
+					}
+
+					$jtab = \Model_Joueurstab::forge();
+					$jtab->id_joueur = $joueur->id;
+					$jtab->id_tab = $tab->id;
+					$jtab->ordre = $i;
+					if (!empty(\Input::post('tireurs_dom_reussite')[$i])){
+						$jtab->reussi = 1;
+					} else $jtab->reussi = 0;
+					$jtab->save();
+				}
+
+				foreach (\Input::post('tireurs-ext') as $i => $idj){
+					$joueur = \Model_Joueur::find($idj);
+					if (empty($joueur)){
+						\Messages::error('Un des tireurs de penaltys n\' existe pas');
+						\Response::redirect_back();
+					}
+
+					$jtab = \Model_Joueurstab::forge();
+					$jtab->id_joueur = $joueur->id;
+					$jtab->id_tab = $tab->id;
+					$jtab->ordre = $i;
+					if (!empty(\Input::post('tireurs_ext_reussite')[$i])){
+						$jtab->reussi = 1;
+					} else $jtab->reussi = 0;
+					$jtab->save();
+				}
+			}
+
 			$defi->id_match = $match->id;
 
 			if ($defi->save()){
@@ -326,6 +377,20 @@ class Controller_Matchs extends \Controller_Front
 
 		/**
 		 *
+		 * TIREURS
+		 *
+		 */
+		if ($match->id_tab != 0){
+			$ordre = array();
+			foreach ($match->tab->tireurs as $key => $row):
+				$ordre[$key] = $row['ordre'];
+			endforeach;
+
+			array_multisort($ordre, SORT_ASC, $match->tab->tireurs);
+		}
+
+		/**
+		 *
 		 * LIKE
 		 *
 		 */
@@ -359,10 +424,14 @@ class Controller_Matchs extends \Controller_Front
 					'photouser' => $this->photo($commentaire->user->id),
 				);
 			}
-			return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'jaime' => $jaime, 'commentaires' => $array_comments));
+
+			if ($match->id_tab != 0){
+				return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'tireurs' => $match->tab->tireurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'jaime' => $jaime, 'commentaires' => $array_comments));
+			}
+			else return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'tireurs' => '', 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'jaime' => $jaime, 'commentaires' => $array_comments));
 		}
 		else {
-			return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'jaime' => $jaime, 'commentaires' => array()));
+			return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'tireurs' => $match->tab->tireurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'jaime' => $jaime, 'commentaires' => array()));
 		}
 
 		
@@ -583,6 +652,11 @@ class Controller_Matchs extends \Controller_Front
 
 		$championnats = \Model_Championnat::find('all');
 
+		/**
+		 *
+		 * BUTEURS
+		 *
+		 */
 		$minute = array();
 		foreach ($match->buteurs as $key => $row):
 			$minute[$key] = $row['minute'];
@@ -590,8 +664,26 @@ class Controller_Matchs extends \Controller_Front
 
 		array_multisort($minute, SORT_ASC, $match->buteurs);
 
+		/**
+		 *
+		 * TIREURS
+		 *
+		 */
+		if ($match->id_tab != 0){
+			$ordre = array();
+			$nb_tireurs_dom = $nb_tireurs_ext = 0;
+			foreach ($match->tab->tireurs as $key => $row):
+				$ordre[$key] = $row['ordre'];
+				if ($row->joueur->equipe->id == $match->id_equipe1){
+					$nb_tireurs_dom += 1;
+				} else $nb_tireurs_ext += 1;
+			endforeach;
 
-		return $this->view('matchs/modif', array('match' => $match, 'photo_defieur' => $this->photo($match->defi->defieur->id), 'photo_defier' => $this->photo($match->defi->defier->id), 'pays' => $pays, 'championnats' => $championnats, 'buteurs' => $match->buteurs));
+			array_multisort($ordre, SORT_ASC, $match->tab->tireurs);
+		}
+
+
+		return $this->view('matchs/modif', array('match' => $match, 'photo_defieur' => $this->photo($match->defi->defieur->id), 'photo_defier' => $this->photo($match->defi->defier->id), 'pays' => $pays, 'championnats' => $championnats, 'buteurs' => $match->buteurs, 'tireurs' => $match->tab->tireurs, 'nb_tireurs_dom' => $nb_tireurs_dom, 'nb_tireurs_ext' => $nb_tireurs_ext));
 	}
 
 

@@ -126,6 +126,91 @@
 						<input type="checkbox" name="prolongation" id="prolong">
 					<?php endif; ?>
 				</div>
+
+				<div class="center-block center" style="margin-top:10px;">
+					<?php if ($match->id_tab != 0): ?>
+						<input type="checkbox" name="tab" id="tab" checked>
+					<?php else: ?>
+						<input type="checkbox" name="tab" id="tab">
+					<?php endif; ?>
+				</div>
+
+				<div id="rapp_tab" class="center-block center" style="margin-top:10px;">
+					<div class="row"><h3 class="center-block center">Tirs aux buts</h3></div>
+					<div class="row">
+						<div class="col-md-6">
+							<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" value="<?= $nb_tireurs_dom ?>" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
+						</div>
+						<div class="col-md-6">
+							<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" value="<?= $nb_tireurs_ext ?>" placeholder="Nb tirs">
+						</div>
+					</div>
+
+					<div class="row" style="margin-top:10px;">
+						<div class="col-md-6">
+							<div class="list-tireurs-defieur">
+								<?php $i = 0; ?>
+								<?php foreach ($tireurs as $tireur): ?>
+									<?php if ($tireur->joueur->equipe->id == $match->id_equipe1): ?>
+										<?php $i++; ?>
+										<div class="form-group tireurs-domicile tireurs-dom-<?= $i ?> animated fadeInUp">
+											<div class="col-sm-10">
+												<select id="tireurs-dom-<?= $i ?>" name="tireurs-dom[<?= $i ?>]" class="tireurs">
+													<option></option>
+													<?php foreach ($match->equipe1->joueurs as $joueur): ?>
+														<?php if ($joueur->id == $tireur->id_joueur): ?>
+															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+														<?php else: ?>
+															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+														<?php endif; ?>
+													<?php endforeach; ?>
+												</select>
+											</div>
+											<div class="col-sm-2">
+												<?php if ($tireur->reussi == 1): ?>
+													<input type="checkbox" name="tireurs_dom_reussite[<?= $i ?>]" class="tireurs-dom-<?= $i ?>" checked>
+												<?php else: ?>
+													<input type="checkbox" name="tireurs_dom_reussite[<?= $i ?>]" class="tireurs-dom-<?= $i ?>">
+												<?php endif; ?>
+											</div>
+										</div>
+									<?php endif; ?>
+								<?php endforeach; ?>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="list-tireurs-defier">
+								<?php $i = 0; ?>
+								<?php foreach ($tireurs as $tireur): ?>
+									<?php if ($tireur->joueur->equipe->id == $match->id_equipe2): ?>
+										<?php $i++; ?>
+										<div class="form-group tireurs-exterieur tireurs-ext-<?= $i ?> animated fadeInUp">
+											<div class="col-sm-10">
+												<select id="tireurs-ext-<?= $i ?>" name="tireurs-ext[<?= $i ?>]" class="tireurs">
+													<option></option>
+													<?php foreach ($match->equipe2->joueurs as $joueur): ?>
+														<?php if ($joueur->id == $tireur->id_joueur): ?>
+															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+														<?php else: ?>
+															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+														<?php endif; ?>
+													<?php endforeach; ?>
+												</select>
+											</div>
+											<div class="col-sm-2">
+												<?php if ($tireur->reussi == 1): ?>
+													<input type="checkbox" name="tireurs_ext_reussite[<?= $i ?>]" class="tireurs-ext-<?= $i ?>" checked>
+												<?php else: ?>
+													<input type="checkbox" name="tireurs_ext_reussite[<?= $i ?>]" class="tireurs-ext-<?= $i ?>">
+												<?php endif; ?>
+											</div>
+										</div>
+									<?php endif; ?>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 
 
@@ -230,6 +315,11 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		var max_minute;
+
+		$('#score_tab_joueur1').popover({
+			animation: true,
+			placement: 'top',
+		});
 		
 		if (<?= $match->prolongation ?> == 1){
 			max_minute = 120;
@@ -238,6 +328,10 @@
 		$('.buteurs').select2({
 			width: '240px'
 		});
+
+		$('.tireurs').select2({
+			width: '140px'
+		})
 
 		$('#prolong').bootstrapSwitch({
 			size: 'normal',
@@ -256,6 +350,21 @@
 							$(this).val(90);
 						}
 					});
+				} 
+			}
+		});
+
+		$('#tab').bootstrapSwitch({
+			size: 'normal',
+			onText: 'Oui',
+			offText: 'Non',
+			labelText: 'TAB ?',
+			onSwitchChange: function (event, state){
+				//OUI
+				if (state){
+					$('#rapp_tab').show();
+				} else {
+					$('#rapp_tab').hide();
 				} 
 			}
 		});
