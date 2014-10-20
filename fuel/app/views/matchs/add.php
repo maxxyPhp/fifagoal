@@ -90,10 +90,10 @@
 					<div class="row"><h3 class="center-block center">Tirs aux buts</h3></div>
 					<div class="row">
 						<div class="col-md-6">
-							<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="0" max="20" value="0">
+							<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" value="0" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
 						</div>
 						<div class="col-md-6">
-							<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="0" max="20" value="0">
+							<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" value="0" placeholder="Nb tirs">
 						</div>
 					</div>
 
@@ -171,6 +171,11 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		var max_minute = 90;
+
+		$('#score_tab_joueur1').popover({
+			animation: true,
+			placement: 'top',
+		});
 
 		$('#prolong').bootstrapSwitch({
 			size: 'normal',
@@ -490,5 +495,11 @@
 				$('.'+listeJoueur).show();
 			}
 		}
+
+		$('body').on('change', '.tireurs', function(){
+			id = $(this).attr('id');
+			console.log(id);
+			console.log($('#'+id).val());
+		});
 	});
 </script>
