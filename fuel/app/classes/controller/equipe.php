@@ -127,6 +127,7 @@ class Controller_Equipe extends \Controller_Gestion
 				'path' => DOCROOT . \Config::get('upload.equipes.path'),
 				'normalize' => true,
 				'ext_whitelist' => array('jpg', 'jpeg', 'png', 'bmp', 'gif', 'pdf'),
+				'new_name' => str_replace(' ', '_', strtolower($_FILES['myfile']['name'])),
 			);
 			
 			\Upload::process($uploadConfig);

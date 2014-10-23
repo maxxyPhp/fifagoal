@@ -145,57 +145,24 @@
 	$(document).ready(function(){
 		$('#form_poste').select2({
 			placeholder: "Selectionnez un poste",
-			allowClear: true,
 			width: '300px'
 		});
 
 		$('#form_selection').select2({
 			placeholder: "Selectionnez une selection",
-			allowClear: true,
 			width: '300px'
 		});
 
-		$('#form_championnat').select2({
+		$('#form_championnat, #form_championnat_update').select2({
 			placeholder: "Selectionnez un championnat",
-			allowClear: true,
 			width: '300px'
 		});
 
-		$('#form_equipe').select2({
+		$('#form_equipe, #form_equipe_update').select2({
 			placeholder: "Selectionnez une équipe",
-			allowClear: true,
 			width: '300px'
 		});
 
-		$('#form_championnat_update').select2({
-			placeholder: "Selectionnez une équipe",
-			allowClear: true,
-			width: '300px'
-		});
-
-		$('#form_equipe_update').select2({
-			placeholder: "Selectionnez une équipe",
-			allowClear: true,
-			width: '300px'
-		});
-		
-		/**
-		 * UPLOADIFY
-		 */
-		// $('#form_photo').uploadify({
-		// 	'buttonText' : 'Choissir un fichier',
-		// 	'buttonClass' : 'btn btn-info btn-upload-photo',
-		// 	'swf' : window.location.origin+'/assets/js/uploadify/uploadify.swf',
-		// 	'uploader' : window.location.origin+'/joueur/uploadPhoto',
-		// 	'fileDesc' : 'Image Files',
-		// 	'fileExt' : '*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.pdf',
-		// 	'onUploadSuccess' : function(file, data, response){
-		// 		$('#hidden_photo').attr('value', file.name);
-		// 		console.log(file.name);
-		// 	}
-		// });
-		// $('#form_photo-button').removeClass('uploadify-button');
-		// $('#form_photo-button').css('height', '');
 
 		$('#form_championnat').on('change', function(){
 			id_championnat = $(this).val();
