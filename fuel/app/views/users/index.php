@@ -1,7 +1,7 @@
 <div class="container">
 	<h1 class="page-header">Liste des users</h1>
 	<div class="table-responsive">
-		<table class="table table-hover table-striped">
+		<table id="myTab" class="table table-hover table-striped">
 			<thead>
 				<tr>
 					<th>ID</th>
@@ -38,3 +38,9 @@
 		</table>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function(){ 
+		$('#myTab').DataTable();  
+	});
+</script> 
