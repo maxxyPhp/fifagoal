@@ -248,12 +248,42 @@
 		$('#form_championnat_defieur').on('change', function(){
 			id_championnat = $(this).val();
 			afficherEquipes(id_championnat, $('#form_equipe_defieur'), $('#div_equipes_defieur'));
+			$('.logo_club_defieur').remove();
+			resetAll ($('.list-buteurs-defieur > div').length, $('.list-tireurs-defieur > div').length, '#buteurs-dom-', '#tireurs-dom-');
 		});
 
 		$('#form_championnat_defier').on('change', function(){
 			id_championnat = $(this).val();
 			afficherEquipes(id_championnat, $('#form_equipe_defier'), $('#div_equipes_defier'));
+			$('.logo_club_defier').remove();
+			resetAll ($('.list-buteurs-defier > div').length, $('.list-tireurs-defier > div').length, '#buteurs-ext-', '#tireurs-ext-');
 		});
+
+		function resetAll (nb_element_buteurs, nb_element_tireurs, select_buteurs, select_tireurs){
+			for (var i = 1; i <= nb_element_buteurs; i++){
+				select = $(select_buteurs+i);
+				select.html('');
+				select.select2('val', '');
+				select.append('<option></option>');
+				select.select2({
+					placeholder: "Selectionnez un joueur",
+					width: '230px'
+				});
+			}
+
+			for (var i = 1; i <= nb_element_tireurs; i++){
+				select = $(select_tireurs+i);
+				select.html('');
+				select.select2('val', '');
+				select.append('<option></option>');
+				select.select2({
+					placeholder: "Tireur #"+i,
+					width: '140px'
+				});
+			}
+
+			$('input:submit').attr('disabled', true);
+		}
 
 		/**
 		 * afficherEquipes
@@ -271,7 +301,13 @@
 				dataType: 'json',
 				success: function(data){
 					if (data != 'KO'){
+						select.select2('val', '');
 						select.html('');
+						select.append('<option></option>');
+						select.select2({
+							placeholder: "Selectionnez une équipe",
+							width: '300px'
+						});
 						equipe = data;
 						for (var i in equipe){
 							select.append('<option value="'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
@@ -294,11 +330,43 @@
 		 */
 		$('#form_equipe_defieur').on('change', function(){
 			clickEquipe ($(this).val(), $('.club_defieur'), 'logo_club_defieur');
+			resetButeurs ($('.list-buteurs-defieur > div').length, $('#form_equipe_defieur').val(), '#buteurs-dom-');
+			resetTireurs($('.list-tireurs-defieur > div').length, $('#form_equipe_defieur').val(), '#tireurs-dom-');
 		});
 
 		$('#form_equipe_defier').on('change', function(){
 			clickEquipe ($(this).val(), $('.club_defier'), 'logo_club_defier');
+			resetButeurs ($('.list-buteurs-defier > div').length, $('#form_equipe_defier').val(), '#buteurs-ext-');
+			resetTireurs($('.list-tireurs-defier > div').length, $('#form_equipe_defier').val(), '#tireurs-ext-');
 		});
+
+		/**
+		 * resetButeurs
+		 * Change le noms des buteurs dans les listes déroulantes
+		 *
+		 * @param int nb_element
+		 * @param int idEquipe
+		 * @param String select
+		 */
+		function resetButeurs (nb_element, idEquipe, select){
+			for (var i = 1; i <= nb_element; i++){
+				afficherJoueurs(idEquipe, $(select+i), 'but');
+			}
+		}
+
+		/**
+		 * resetTireurs
+		 * Change les nomrs des tireurs dans les listes déroulantes
+		 *
+		 * @param int nb_element
+		 * @param int idEquipe
+		 * @param String select
+		 */
+		function resetTireurs (nb_element, idEquipe, select){
+			for (var i = 1; i <= nb_element; i++){
+				afficherJoueurs(idEquipe, $(select+i), 'tir_reset');
+			}
+		}
 
 		/**
 		 * ClickEquipe
@@ -401,7 +469,7 @@
 					+'</div>'
 				);
 
-				afficherJoueurs(selectEquipe, $('#buteurs-'+ordre+'-'+score));
+				afficherJoueurs(selectEquipe, $('#buteurs-'+ordre+'-'+score), 'but');
 
 				$('#buteurs-'+ordre+'-'+score).select2({
 					placeholder: "Selectionnez un joueur",
@@ -425,7 +493,7 @@
 		 * @param int id_equipe
 		 * @param element select : le select qui contiendra les noms des joueurs
 		 */
-		function afficherJoueurs (id_equipe, select){
+		function afficherJoueurs (id_equipe, select, context){
 			$.ajax({
 				url : window.location.origin + '/joueur/api/getJoueurs.json',
 				data: 'id_equipe='+id_equipe,
@@ -434,6 +502,23 @@
 				success: function(data){
 					if (data != 'KO'){
 						select.html('');
+						
+						if (context == 'but'){
+							select.select2('val', '');
+							select.append('<option></option>');
+							select.select2({
+								placeholder: "Selectionnez un joueur",
+								width: '230px'
+							});
+						}
+						else if (context == 'tir_reset'){
+							select.select2('val', '');
+							select.append('<option></option>');
+							select.select2({
+								placeholder: "Tireur",
+								width: '140px'
+							});
+						}
 						joueur = data;
 						for (var i in joueur){
 							select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
@@ -522,7 +607,7 @@
 					+'</div>'
 				);
 
-				afficherJoueurs(idEquipe, $('#tireurs-'+ordre+'-'+score));
+				afficherJoueurs(idEquipe, $('#tireurs-'+ordre+'-'+score), 'tir');
 
 				$('#tireurs-'+ordre+'-'+score).select2({
 					placeholder: "Tireur #"+score,
