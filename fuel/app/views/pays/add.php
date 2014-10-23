@@ -19,9 +19,11 @@
 		<div class="form-group">
 			<label for="form_drapeau" class="col-sm-2 control-label">Drapeau</label>
 			<div class="col-sm-10">
-				<input type="file" class="form-control" id="form_drapeau">
+				<!-- <input type="file" class="form-control" id="form_drapeau"> -->
+				<div id="form_drapeau">Upload</div>
 			</div>
 		</div>
+
 
 		<input type="hidden" name="drapeau" id="hidden_drapeau" <?php if($pays->drapeau): ?> value="<?= $pays->drapeau ?>" <?php endif; ?>>
 
@@ -36,19 +38,12 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('#form_drapeau').uploadify({
-			'buttonText' : 'Choissir un fichier',
-			'buttonClass' : 'btn btn-info btn-upload-photo',
-			'swf' : window.location.origin+'/assets/js/uploadify/uploadify.swf',
-			'uploader' : window.location.origin+'/pays/uploadDrapeau',
-			'fileDesc' : 'Image Files',
-			'fileExt' : '*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.pdf',
-			'onUploadSuccess' : function(file, data, response){
-				$('#hidden_drapeau').attr('value', file.name);
-				console.log(file.name);
+		$("#form_drapeau").uploadFile({
+			url:window.location.origin+'/pays/uploadDrapeau',
+			fileName:"myfile",
+			onSuccess: function(files, data, xhr){
+				$('#hidden_drapeau').attr('value', data);
 			}
 		});
-		$('#form_drapeau-button').removeClass('uploadify-button');
-		$('#form_drapeau-button').css('height', '');
 	});
 </script>

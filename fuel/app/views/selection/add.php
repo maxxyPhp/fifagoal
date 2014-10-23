@@ -19,7 +19,7 @@
 		<div class="form-group">
 			<label for="form_logo" class="col-sm-2 control-label">Logo</label>
 			<div class="col-sm-10">
-				<input type="file" class="form-control" id="form_logo">
+				<div id="form_logo">Upload</div>
 			</div>
 		</div>
 
@@ -58,19 +58,12 @@
 			width: 'element'
 		});
 
-		$('#form_logo').uploadify({
-			'buttonText' : 'Choissir un fichier',
-			'buttonClass' : 'btn btn-info btn-upload-photo',
-			'swf' : window.location.origin+'/assets/js/uploadify/uploadify.swf',
-			'uploader' : window.location.origin+'/selection/uploadLogo',
-			'fileDesc' : 'Image Files',
-			'fileExt' : '*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.pdf',
-			'onUploadSuccess' : function(file, data, response){
-				$('#hidden_logo').attr('value', file.name);
-				console.log(file.name);
+		$("#form_logo").uploadFile({
+			url:window.location.origin+'/selection/uploadLogo',
+			fileName:"myfile",
+			onSuccess: function(files, data, xhr){
+				$('#hidden_logo').attr('value', data);
 			}
 		});
-		$('#form_logo-button').removeClass('uploadify-button');
-		$('#form_logo-button').css('height', '');
 	});
 </script>

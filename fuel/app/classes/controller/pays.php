@@ -66,6 +66,7 @@ class Controller_Pays extends Controller_Gestion
 				'path' => DOCROOT . \Config::get('upload.pays.path'),
 				'normalize' => true,
 				'ext_whitelist' => array('jpg', 'jpeg', 'png', 'bmp', 'gif', 'pdf'),
+				'new_name' => str_replace(' ', '_', strtolower($_FILES['myfile']['name'])),
 			);
 			
 			\Upload::process($uploadConfig);
