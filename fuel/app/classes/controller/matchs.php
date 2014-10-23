@@ -224,51 +224,64 @@ class Controller_Matchs extends \Controller_Front
 			 * GESTION DES TAB
 			 *
 			 */
-			// var_dump($_POST);die();
-			if (\Input::post('tireurs-dom')){
-				$tab = \Model_Tab::forge();
-				$tab->id_match = $match->id;
-				$tab->score_joueur1 = count(\Input::post('tireurs_dom_reussite'));
-				$tab->score_joueur2 = count(\Input::post('tireurs_ext_reussite'));
-				$tab->save();
+			if (\Input::post('tab')){
+				if (\Input::post('mode_tab') == 'score'){
+					$tab = \Model_Tab::forge();
+					$tab->id_match = $match->id;
+					$tab->score_joueur1 = \Input::post('tab_joueur_1');
+					$tab->score_joueur2 = \Input::post('tab_joueur_2');
+					$tab->save();
 
-				$match->id_tab = $tab->id;
-				$match->save();
+					$match->id_tab = $tab->id;
+					$match->save();
+				} else {
+					if (\Input::post('tireurs-dom')){
+						$tab = \Model_Tab::forge();
+						$tab->id_match = $match->id;
+						$tab->score_joueur1 = count(\Input::post('tireurs_dom_reussite'));
+						$tab->score_joueur2 = count(\Input::post('tireurs_ext_reussite'));
+						$tab->save();
 
-				foreach (\Input::post('tireurs-dom') as $i => $idj){
-					$joueur = \Model_Joueur::find($idj);
-					if (empty($joueur)){
-						\Messages::error('Un des tireurs de penaltys n\' existe pas');
-						\Response::redirect_back();
-					}
+						$match->id_tab = $tab->id;
+						$match->save();
 
-					$jtab = \Model_Joueurstab::forge();
-					$jtab->id_joueur = $joueur->id;
-					$jtab->id_tab = $tab->id;
-					$jtab->ordre = $i;
-					if (!empty(\Input::post('tireurs_dom_reussite')[$i])){
-						$jtab->reussi = 1;
-					} else $jtab->reussi = 0;
-					$jtab->save();
-				}
+						foreach (\Input::post('tireurs-dom') as $i => $idj){
+							$joueur = \Model_Joueur::find($idj);
+							if (empty($joueur)){
+								\Messages::error('Un des tireurs de penaltys n\' existe pas');
+								\Response::redirect_back();
+							}
 
-				foreach (\Input::post('tireurs-ext') as $i => $idj){
-					$joueur = \Model_Joueur::find($idj);
-					if (empty($joueur)){
-						\Messages::error('Un des tireurs de penaltys n\' existe pas');
-						\Response::redirect_back();
-					}
+							$jtab = \Model_Joueurstab::forge();
+							$jtab->id_joueur = $joueur->id;
+							$jtab->id_tab = $tab->id;
+							$jtab->ordre = $i;
+							if (!empty(\Input::post('tireurs_dom_reussite')[$i])){
+								$jtab->reussi = 1;
+							} else $jtab->reussi = 0;
+							$jtab->save();
+						}
 
-					$jtab = \Model_Joueurstab::forge();
-					$jtab->id_joueur = $joueur->id;
-					$jtab->id_tab = $tab->id;
-					$jtab->ordre = $i;
-					if (!empty(\Input::post('tireurs_ext_reussite')[$i])){
-						$jtab->reussi = 1;
-					} else $jtab->reussi = 0;
-					$jtab->save();
-				}
-			}
+						foreach (\Input::post('tireurs-ext') as $i => $idj){
+							$joueur = \Model_Joueur::find($idj);
+							if (empty($joueur)){
+								\Messages::error('Un des tireurs de penaltys n\' existe pas');
+								\Response::redirect_back();
+							}
+
+							$jtab = \Model_Joueurstab::forge();
+							$jtab->id_joueur = $joueur->id;
+							$jtab->id_tab = $tab->id;
+							$jtab->ordre = $i;
+							if (!empty(\Input::post('tireurs_ext_reussite')[$i])){
+								$jtab->reussi = 1;
+							} else $jtab->reussi = 0;
+							$jtab->save();
+						}
+					}// IF TIREURS DOM
+				}// ELSE
+			}// IF TAB
+			
 
 			$defi->id_match = $match->id;
 
@@ -431,7 +444,9 @@ class Controller_Matchs extends \Controller_Front
 			else return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'tireurs' => '', 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => true, 'jaime' => $jaime, 'commentaires' => $array_comments));
 		}
 		else {
-			return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'tireurs' => $match->tab->tireurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'jaime' => $jaime, 'commentaires' => array()));
+			if ($match->id_tab){
+				return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'tireurs' => $match->tab->tireurs, 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'jaime' => $jaime, 'commentaires' => array()));
+			} else return $this->view('matchs/view', array('match' => $match, 'photo_defieur' => $this->photo ($match->joueur1->id), 'photo_defier' => $this->photo ($match->joueur2->id), 'buteurs' => $match->buteurs, 'tireurs' => '', 'derniers_matchs_1' => $derniers_matchs_1, 'derniers_matchs_2' => $derniers_matchs_2, 'match_valider' => false, 'jaime' => $jaime, 'commentaires' => array()));
 		}
 
 		
@@ -473,6 +488,7 @@ class Controller_Matchs extends \Controller_Front
 		$this->verifAutorisation();
 
 		if (\Input::post('add')){
+			// var_dump($_POST);die();
 			if (!is_numeric(\Input::post('joueur1')) || !is_numeric(\Input::post('joueur2')) || !is_numeric(\Input::post('defi')) || !is_numeric(\Input::post('match')) || !is_numeric(\Input::post('modifieur'))){
 				\Messages::error('Problèmes avec les joueurs');
 				\Response::redirect('/defis');
@@ -610,6 +626,129 @@ class Controller_Matchs extends \Controller_Front
 			} else if (\Input::post('buteurs-ext')){
 				$this->deleteOldButeurs($match, \Input::post('buteurs-ext'));
 			}
+
+			/**
+			 *
+			 * GESTION DES TAB
+			 *
+			 */
+			if (\Input::post('tab')){
+				// var_dump(\Input::post('mode_tab'));die();
+				if (\Input::post('mode_tab') == 'score'){
+					// var_dump('score');die();
+					$tab = \Model_Tab::query()->where('id_match', '=', $match->id)->get();
+					if (empty($tab)){
+						$tab = \Model_Tab::forge();
+						$tab->id_match = $match->id;
+						$tab->score_joueur1 = \Input::post('tab_joueur_1');
+						$tab->score_joueur2 = \Input::post('tab_joueur_2');
+						$tab->save();
+
+						$match->id_tab = $tab->id;
+						$match->save();
+					} else {
+						$tab = current($tab);
+						$tab->score_joueur1 = \Input::post('tab_joueur_1');
+						$tab->score_joueur2 = \Input::post('tab_joueur_2');
+						$tab->save();
+					}
+				} elseif (\Input::post('mode_tab') == 'detaille'){
+					if (\Input::post('tireurs-dom')){
+						$tab = \Model_Tab::query()->where('id_match', '=', $match->id)->get();
+						if (empty($tab)){
+							$tab = \Model_Tab::forge();
+							$tab->id_match = $match->id;
+							$tab->score_joueur1 = count(\Input::post('tireurs_dom_reussite'));
+							$tab->score_joueur2 = count(\Input::post('tireurs_ext_reussite'));
+							$tab->save();
+
+							$match->id_tab = $tab->id;
+							$match->save();
+						} else {
+							$tab = current($tab);
+							$tab->score_joueur1 = count(\Input::post('tireurs_dom_reussite'));
+							$tab->score_joueur2 = count(\Input::post('tireurs_ext_reussite'));
+							$tab->save();
+						}
+
+						
+
+						foreach (\Input::post('tireurs-dom') as $i => $idj){
+							if (count(\Input::post('tireurs_dom')) <= 11){
+								$jtab = \Model_Joueurstab::find('all', array(
+									'where' => array(
+										array('id_joueur', $idj),
+										array('id_tab', $tab->id),
+										array('ordre', $i),
+									),
+								));
+
+								if (empty($jtab)){
+									$joueur = \Model_Joueur::find($idj);
+									if (empty($joueur)){
+										\Messages::error('Un des tireurs de penaltys n\' existe pas');
+										\Response::redirect_back();
+									}
+
+									$jtab = \Model_Joueurstab::forge();
+									$jtab->id_joueur = $joueur->id;
+									$jtab->id_tab = $tab->id;
+									$jtab->ordre = $i;
+									if (!empty(\Input::post('tireurs_dom_reussite')[$i])){
+										$jtab->reussi = 1;
+									} else $jtab->reussi = 0;
+									$jtab->save();
+								} else {
+									$jtab = current($jtab);
+									$jtab->ordre = $i;
+									if (!empty(\Input::post('tireurs_dom_reussite')[$i])){
+										$jtab->reussi = 1;
+									} else $jtab->reussi = 0;
+									$jtab->save();
+								}
+							}
+							
+						}
+
+						foreach (\Input::post('tireurs-ext') as $i => $idj){
+							if (count(\Input::post('tireurs_ext')) <= 11){
+								$jtab = \Model_Joueurstab::find('all', array(
+									'where' => array(
+										array('id_joueur', $idj),
+										array('id_tab', $tab->id),
+										array('ordre', $i),
+									),
+								));
+
+								if (empty($jtab)){
+									$joueur = \Model_Joueur::find($idj);
+									if (empty($joueur)){
+										\Messages::error('Un des tireurs de penaltys n\' existe pas');
+										\Response::redirect_back();
+									}
+
+									$jtab = \Model_Joueurstab::forge();
+									$jtab->id_joueur = $joueur->id;
+									$jtab->id_tab = $tab->id;
+									$jtab->ordre = $i;
+									if (!empty(\Input::post('tireurs_ext_reussite')[$i])){
+										$jtab->reussi = 1;
+									} else $jtab->reussi = 0;
+									$jtab->save();
+								} else {
+									$jtab = current($jtab);
+									$jtab->ordre = $i;
+									if (!empty(\Input::post('tireurs_ext_reussite')[$i])){
+										$jtab->reussi = 1;
+									} else $jtab->reussi = 0;
+									$jtab->save();
+								}
+							}//IF COUNT < 11
+						}// FOREACH
+					}//IF TIREURS-DOM
+				}
+			}//IF TAB
+			
 
 			if ($defi->save()){
 				if (\Input::post('modifieur') == $defier->id){

@@ -137,16 +137,57 @@
 
 				<div id="rapp_tab" class="center-block center" style="margin-top:10px;">
 					<div class="row"><h3 class="center-block center">Tirs aux buts</h3></div>
-					<div class="row">
-						<div class="col-md-6">
-							<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" value="<?= $nb_tireurs_dom ?>" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
-						</div>
-						<div class="col-md-6">
-							<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" value="<?= $nb_tireurs_ext ?>" placeholder="Nb tirs">
-						</div>
-					</div>
+					<?php if ($match->tab->tireurs): ?>
+						<input type="hidden" id="mode_tab" name="mode_tab" value="detaille">
+					<?php else: ?>
+						<input type="hidden" id="mode_tab" name="mode_tab" value="score">
+					<?php endif; ?>
+					<a class="btn btn-primary btn-lg btn-score-tab" data-mode="score"><i class="fa fa-tag fa-2x pull-left"></i> Score</a>
+					<a class="btn btn-primary btn-lg btn-score-tab" data-mode="detaille"><i class="fa fa-newspaper-o fa-2x pull-left"></i> Descriptif détaillé</a>
 
-					<div class="row" style="margin-top:10px;">
+					<?php if (!$match->tab->tireurs): ?>
+						<!-- SCORE -->
+						<div class="row tab-score">
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" value="<?= $match->tab->score_joueur1 ?>" placeholder="Score J1">
+							</div>
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="tab_joueur2" name="tab_joueur_2" min="3" max="20" value="<?= $match->tab->score_joueur2 ?>" placeholder="Score J2">
+							</div>
+						</div>
+
+						<!-- DETAILLE -->
+						<div class="row tab-detaille" style="display:none;">
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
+							</div>
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" placeholder="Nb tirs">
+							</div>
+						</div>
+					<?php else: ?>
+						<!-- SCORE -->
+						<div class="row tab-score">
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" placeholder="Score J1">
+							</div>
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="tab_joueur2" name="tab_joueur_2" min="3" max="20" placeholder="Score J2">
+							</div>
+						</div>
+
+						<!-- DETAILLE -->
+						<div class="row tab-detaille" style="display:none;">
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" value="<?= $nb_tireurs_dom ?>" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
+							</div>
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" value="<?= $nb_tireurs_ext ?>" placeholder="Nb tirs">
+							</div>
+						</div>
+					<?php endif; ?>
+
+					<div class="row tab-tireurs-detail" style="margin-top:10px;">
 						<div class="col-md-6">
 							<div class="list-tireurs-defieur">
 								<?php $i = 0; ?>
@@ -369,6 +410,21 @@
 			}
 		});
 
+		if ($('#mode_tab').val() == 'detaille'){
+			$('.btn-score-tab').each(function(){
+				if ($(this).attr('data-mode') == 'detaille'){
+					$(this).addClass('btn-success').removeClass('btn-primary');
+				} else $(this).addClass('btn-primary').removeClass('btn-success');
+			});
+		} else {
+			$('.btn-score-tab').each(function(){
+				if ($(this).attr('data-mode') == 'score'){
+					$(this).addClass('btn-success').removeClass('btn-primary');
+				} else $(this).addClass('btn-primary').removeClass('btn-success');
+			});
+		}
+
+
 		$('#form_championnat_defieur, #form_championnat_defier').select2({
 			placeholder: "Selectionnez un championnat",
 			width: '300px'
@@ -583,6 +639,93 @@
 		$('body').on('change', '.buteurs', function(){
 			id = $(this).attr('id');
 			$('.'+id).show().focus();
+		});
+
+		/**
+		 *
+		 * GESTION DES TAB
+		 *
+		 */
+		 // Choix du mode de TAB
+		$('.btn-score-tab').on('click', function(){
+			mode = $(this).attr('data-mode');
+			btn = $(this);
+			if (mode == 'score'){
+				$('.tab-detaille').hide();
+				$('.tab-tireurs-detail').hide();
+				$('.tab-score').show();
+				$('#mode_tab').attr('value', 'score');
+			} else {
+				$('.tab-score').hide();
+				$('.tab-detaille').show();
+				$('.tab-tireurs-detail').show();
+				$('#mode_tab').attr('value', 'detaille');
+			}
+
+			$('.btn-score-tab').each(function(){
+				if ($(this).attr('data-mode') == mode){
+					$(this).addClass('btn-success').removeClass('btn-primary');
+				} else $(this).addClass('btn-primary').removeClass('btn-success');
+			});
+		});
+
+		$('#score_tab_joueur1').on('click blur', function(){
+			actionTAB($(this).val(), $('.list-tireurs-defieur > div').length, 'list-tireurs-defieur', 'tireurs-domicile', 'dom', $('#form_equipe_defieur').val());
+		});
+
+		$('#score_tab_joueur2').on('click blur', function(){
+			actionTAB($(this).val(), $('.list-tireurs-defier > div').length, 'list-tireurs-defier', 'tireurs-exterieur', 'ext', $('#form_equipe_defier').val());
+		});
+
+		function actionTAB (score, nb_element, listeJoueur, nomDivGen, ordre, idEquipe){
+			if (score == nb_element){
+				return false;
+			} else if (score < nb_element){
+				for (var i = nb_element; i > score; i--){
+					$('.'+listeJoueur).children().each(function(){
+						if ($(this).hasClass('tireurs-'+ordre+'-'+i) || i == 1){
+							$(this).remove();
+						}
+					});
+				}
+			} else {
+				for (var i = nb_element+1; i <= score; i++){
+					afficherChoixTireurs(i, listeJoueur, nomDivGen, ordre, idEquipe);
+				}
+			}
+		}
+
+		function afficherChoixTireurs (score, listeJoueur, nomDivGen, ordre, idEquipe){
+			if (score > 0){
+				$('.'+listeJoueur).append(
+					'<div class="form-group '+nomDivGen+' tireurs-'+ordre+'-'+score+' animated fadeInUp" style="display:none;">'
+						+'<div class="col-sm-10">'
+							+'<select id="tireurs-'+ordre+'-'+score+'" name="tireurs-'+ordre+'['+score+']" class="tireurs">'
+								+'<option></option>'
+							+'</select>'
+						+'</div>'
+						+'<div class="col-sm-2">'
+							+'<input type="checkbox" name="tireurs_'+ordre+'_reussite['+score+']" class="tireurs-'+ordre+'_'+score+'">'
+						+'</div>'
+					+'</div>'
+				);
+
+				afficherJoueurs(idEquipe, $('#tireurs-'+ordre+'-'+score));
+
+				$('#tireurs-'+ordre+'-'+score).select2({
+					placeholder: "Tireur #"+score,
+					width: '140px'
+				});
+
+				$('.'+nomDivGen).show();
+				$('.'+listeJoueur).show();
+			}
+		}
+
+		$('body').on('change', '.tireurs', function(){
+			id = $(this).attr('id');
+			console.log(id);
+			console.log($('#'+id).val());
 		});
 	});
 </script>
