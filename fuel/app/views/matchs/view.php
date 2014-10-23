@@ -19,6 +19,7 @@
 		</div>
 
 		<div class="panel-body">
+			<div id="fb-root"></div>
 			<div class="row">
 				<div class="col-md-2">
 					<?php if (!$jaime): ?>
@@ -30,6 +31,10 @@
 				<div class="col-md-10 nb_like" data-like="<?= count($match->like) ?>">
 					<a class="btn-jaime" data-toggle="modal" data-target="#myModal"><i class="fa fa-thumbs-up"></i> <?= count($match->like) ?><?php if ($jaime): ?>  Vous applaudissez.<?php endif; ?></a>
 					<a href="#panel-commentaires" style="margin-left:30px;"><i class="fa fa-comments"></i> <?= count($commentaires) ?></a>
+					<div style="margin-left:20px;" class="fb-share-button" data-href="<?= \Uri::base() ?>matchs/view/<?= $match->id ?>" data-layout="button_count"></div>
+					<div class="bouton-twitter">
+						<a href="https://twitter.com/share" class="twitter-share-button" data-lang="fr" data-hashtags="FIFAGOAL">Tweeter</a>
+					</div>
 				</div>
 			</div>
 			<hr>
@@ -89,13 +94,24 @@
 			</div>
 
 			<!-- TIMELINE -->
-			<?php if ($buteurs): ?>
+			<?php if ($buteurs || $match->tab): ?>
 			
 				<div class="row" style="margin-top:20px;">
+					<div id="ss-links" class="ss-links">
+						<a href="#match">M</a>
+						<?php if ($match->prolongation == 1): ?>
+							<a href="#prolong">Pr</a>
+						<?php endif; ?>
+
+						<?php if ($match->id_tab != 0): ?>
+							<a href="#tab">TAB</a>
+						<?php endif; ?>
+					</div>
+
 					<div id="ss-container" class="ss-container">
 						<div class="ss-row">
 		                    <div class="ss-left">
-		                        <h2 id="november">Début</h2>
+		                        <h2 id="match">Début</h2>
 		                    </div>
 		                    <div class="ss-right">
 		                        <h2>du match</h2>
@@ -123,7 +139,7 @@
 								<?php if ($buteur->minute > 90): ?>
 									<div class="ss-row">
 					                    <div class="ss-left">
-					                        <h2>Début de la</h2>
+					                        <h2 id="prolong">Début de la</h2>
 					                    </div>
 					                    <div class="ss-right">
 					                        <h2>prolongation</h2>
@@ -185,7 +201,7 @@
 						<?php if ($match->tab): ?>
 							<div class="ss-row">
 			                    <div class="ss-left">
-			                        <h2>Tirs aux</h2>
+			                        <h2 id="tab">Tirs aux</h2>
 			                    </div>
 			                    <div class="ss-right">
 			                        <h2>buts</h2>
@@ -194,6 +210,16 @@
 		                	<?php $i = 0; ?>
 		                	<?php foreach ($tireurs as $i => $tireur): ?>
 		                		<?php $i++; ?>
+		                		<?php if ($i == 11): ?>
+		                			<div class="ss-row">
+					                    <div class="ss-left">
+					                        <h2>Mort</h2>
+					                    </div>
+					                    <div class="ss-right">
+					                        <h2>subite</h2>
+					                    </div>
+				                	</div>
+		                		<?php endif; ?>
 		                			<div class="ss-row ss-small">
 		                			<?php if ($tireur->joueur->equipe->id == $match->id_equipe1): ?>
 					                    <div class="ss-left">
@@ -275,9 +301,9 @@
 				</div><!-- end timeline -->
 			<?php endif; ?>
 			<?php if ($match->score_joueur1 > $match->score_joueur2): ?>
-				Bravo à <?= $match->joueur1->username ?>
+				<i class="fa fa-thumbs-up"></i> Bravo à <?= $match->joueur1->username ?>
 			<?php elseif ($match->score_joueur2 > $match->score_joueur1): ?>
-				Bravo à <?= $match->joueur2->username ?>
+				<i class="fa fa-thumbs-up"></i> Bravo à <?= $match->joueur2->username ?>
 			<?php endif; ?>
 		</div>
 	</div>
@@ -380,20 +406,24 @@
 				dataType: 'json',
 				success: function(data){
 					if (data != 'KO'){
-						console.log(data);
 						$('.modal-table').html('');
 						user = data;
-						for (var i in user){
-							if (user[i]['photouser']){
-								var photo = user[i]['photouser']['photo'];
-							} else var photo = 'notfound.png';
-							$('.modal-table').append(
-								'<tr>'
-									+'<td><img src="<?= \Uri::base() . \Config::get("users.photo.path") ?>'+photo+'" width="50" /></td>'
-									+'<td>'+user[i]['user']['username']+'</td>'
-									+'<td><a href="/profil/view/'+user[i]['user']['id']+'" class="btn btn-success"><i class="fa fa-eye"></i> Voir son profil</a></td>'+
-								+'</tr>'	
-							);
+						if (user == ''){
+							$('.modal-table').append('Personne n\'applaudit ce match pour l\'instant. Soyez le premier !');
+						} else {
+							for (var i in user){
+								if (user[i]['photouser']){
+									var photo = user[i]['photouser']['photo'];
+								} else var photo = 'notfound.png';
+
+								$('.modal-table').append(
+									'<tr>'
+										+'<td><img src="<?= \Uri::base() . \Config::get("users.photo.path") ?>'+photo+'" width="50" /></td>'
+										+'<td>'+user[i]['user']['username']+'</td>'
+										+'<td><a href="/profil/view/'+user[i]['user']['id']+'" class="btn btn-success"><i class="fa fa-eye"></i> Voir son profil</a></td>'+
+									+'</tr>'	
+								);
+							}
 						}
 					}
 				},
@@ -726,3 +756,12 @@
 			
 		});
 		</script>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v2.0";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
+
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
