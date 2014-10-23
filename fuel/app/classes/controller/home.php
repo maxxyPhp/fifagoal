@@ -42,7 +42,7 @@ class Controller_Home extends Controller_Front
         } else {
         	$view = View::forge('layout_default');
 
-	        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
+	        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description'), 'notifs' => 0));
 	   		$view->content = View::forge('home/default', array('title' => \Config::get('application.title')));
 	   		$view->footer = View::forge('home/footer', array('title' => \Config::get('application.title')));
 	        return $view;

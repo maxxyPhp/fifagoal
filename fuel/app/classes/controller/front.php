@@ -74,7 +74,7 @@ class Controller_Front extends \Controller
 		$view = View::forge('layout');
 
         //local view variables, lazy rendering
-        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
+        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description'), 'notifs' => $news));
         if (\Auth::check()){
         	$view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => $demande, 'photouser' => $photouser, 'notifys' => $notifys, 'news' => $news));
         } else {

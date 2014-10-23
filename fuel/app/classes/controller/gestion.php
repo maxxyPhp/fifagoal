@@ -35,7 +35,7 @@ class Controller_Gestion extends \Controller
 		$view = View::forge('layout');
 
         //local view variables, lazy rendering
-        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description')));
+        $view->head = View::forge('home/head', array('title' => \Config::get('application.title'), 'description' => \Config::get('application.description'), 'notifs' => 0));
         $view->header = View::forge('home/header', array('site_title' => \Config::get('application.title'), 'defis' => '', 'news' => '', 'notifys' => '', 'photouser' => $photouser));
         $view->content = View::forge($content, $array);
         $view->footer = View::forge('home/footer', array('title' => \Config::get('application.title')));
