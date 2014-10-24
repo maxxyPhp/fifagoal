@@ -61,6 +61,15 @@
 				</div>
 			</div>
 			<?php endif; ?>
+		</div><!-- derniers matchs -->
+
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">FIFA 15 Soundtrack</div>
+				<div class="panel-body">
+					<iframe src="https://embed.spotify.com/?uri=https://play.spotify.com/user/easportsaudio/playlist/00i82lDzMDdiHWNjrIGAyw" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
