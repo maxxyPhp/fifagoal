@@ -52,38 +52,38 @@
 				</div>
 			</div>
 
-			<?php //var_dump($equipe1->joueurs);die(); ?>
 			<!-- Div buteurs -->
 			<div class="list-buteurs-defieur">
-				<h4>Liste des buteurs :</h4>
-
-				<?php $i = 0; ?>
-				<?php foreach ($buteurs as $score => $buteur): ?>
-					<?php if ($buteur->joueur->equipe->id == $match->equipe1->id): ?>
-						<?php $i++; ?>
-						<div class="form-group animated fadeInUp buteurs-domicile buteurs-dom-.$i">
-							<div class="col-sm-8">
-								<select id="buteurs-dom-<?= $i ?>" name="buteurs-dom[<?= $i ?>]" class="buteurs">
-									<option></option>
-									<?php foreach ($match->equipe1->joueurs as $joueur): ?>
-										<?php if ($buteur->joueur->id == $joueur->id): ?>
-											<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
-										<?php else: ?>
-											<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
-										<?php endif; ?>
-									<?php endforeach; ?>
-								</select>
+				<?php if ($buteurs): ?>
+					<h4>Liste des buteurs :</h4>
+					<?php $i = 0; ?>
+					<?php foreach ($buteurs as $score => $buteur): ?>
+						<?php if ($buteur->joueur->equipe->id == $match->equipe1->id): ?>
+							<?php $i++; ?>
+							<div class="form-group animated fadeInUp buteurs-domicile buteurs-dom-.$i">
+								<div class="col-sm-8">
+									<select id="buteurs-dom-<?= $i ?>" name="buteurs-dom[<?= $i ?>]" class="buteurs">
+										<option></option>
+										<?php foreach ($match->equipe1->joueurs as $joueur): ?>
+											<?php if ($buteur->joueur->id == $joueur->id): ?>
+												<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
+											<?php else: ?>
+												<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
+											<?php endif; ?>
+										<?php endforeach; ?>
+									</select>
+								</div>
+								<div class="col-sm-4">
+									<?php if ($match->prolongation == 1): ?>
+										<input type="number" name="minute_dom_buteur[<?= $i ?>]" min="1" max="120" value="<?= $buteur->minute ?>" class="form-control buteurs-dom-<?= $i ?>" placeholder="Minute">
+									<?php else: ?>
+										<input type="number" name="minute_dom_buteur[<?= $i ?>]" min="1" max="90" value="<?= $buteur->minute ?>" class="form-control buteurs-dom-<?= $i ?>" placeholder="Minute">
+									<?php endif; ?>
+								</div>
 							</div>
-							<div class="col-sm-4">
-								<?php if ($match->prolongation == 1): ?>
-									<input type="number" name="minute_dom_buteur[<?= $i ?>]" min="1" max="120" value="<?= $buteur->minute ?>" class="form-control buteurs-dom-<?= $i ?>" placeholder="Minute">
-								<?php else: ?>
-									<input type="number" name="minute_dom_buteur[<?= $i ?>]" min="1" max="90" value="<?= $buteur->minute ?>" class="form-control buteurs-dom-<?= $i ?>" placeholder="Minute">
-								<?php endif; ?>
-							</div>
-						</div>
-					<?php endif; ?>
-				<?php endforeach; ?>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				<?php endif; ?>
 			</div>
 
 			<div class="form-group" style="display:none;" id="div_joueurs_defieur">
@@ -135,123 +135,131 @@
 					<?php endif; ?>
 				</div>
 
-				<div id="rapp_tab" class="center-block center" style="margin-top:10px;">
-					<div class="row"><h3 class="center-block center">Tirs aux buts</h3></div>
-					<?php if ($match->tab->tireurs): ?>
-						<input type="hidden" id="mode_tab" name="mode_tab" value="detaille">
-					<?php else: ?>
-						<input type="hidden" id="mode_tab" name="mode_tab" value="score">
-					<?php endif; ?>
-					<a class="btn btn-primary btn-lg btn-score-tab" data-mode="score"><i class="fa fa-tag fa-2x pull-left"></i> Score</a>
-					<a class="btn btn-primary btn-lg btn-score-tab" data-mode="detaille"><i class="fa fa-newspaper-o fa-2x pull-left"></i> Descriptif détaillé</a>
+				<?php if ($match->id_tab == 0): ?>
+					<div id="rapp_tab" class="center-block center" style="display:none;margin-top:10px;">
+				<?php else: ?>
+					<div id="rapp_tab" class="center-block center" style="margin-top:10px;">
+				<?php endif; ?>
+						<div class="row"><h3 class="center-block center">Tirs aux buts</h3></div>
+						<?php if (!empty($match->tab->tireurs)): ?>
+							<input type="hidden" id="mode_tab" name="mode_tab" value="detaille">
+						<?php else: ?>
+							<input type="hidden" id="mode_tab" name="mode_tab" value="score">
+						<?php endif; ?>
+						<a class="btn btn-primary btn-lg btn-score-tab" data-mode="score"><i class="fa fa-tag fa-2x pull-left"></i> Score</a>
+						<a class="btn btn-primary btn-lg btn-score-tab" data-mode="detaille"><i class="fa fa-newspaper-o fa-2x pull-left"></i> Descriptif détaillé</a>
 
-					<?php if (!$match->tab->tireurs): ?>
-						<!-- SCORE -->
-						<div class="row tab-score">
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" value="<?= $match->tab->score_joueur1 ?>" placeholder="Score J1">
+						<?php if (empty($match->tab->tireurs)): ?>
+							<!-- SCORE -->
+							<div class="row tab-score">
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" value="<?php if (!empty($match->tab->score_joueur1)): echo $match->tab->score_joueur1; endif; ?>" placeholder="Score J1">
+								</div>
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="tab_joueur2" name="tab_joueur_2" min="3" max="20" value="<?php if (!empty($match->tab->score_joueur2)): echo $match->tab->score_joueur2; endif; ?>" placeholder="Score J2">
+								</div>
 							</div>
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="tab_joueur2" name="tab_joueur_2" min="3" max="20" value="<?= $match->tab->score_joueur2 ?>" placeholder="Score J2">
-							</div>
-						</div>
 
-						<!-- DETAILLE -->
-						<div class="row tab-detaille" style="display:none;">
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
+							<!-- DETAILLE -->
+							<div class="row tab-detaille" style="display:none;">
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
+								</div>
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" placeholder="Nb tirs">
+								</div>
 							</div>
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" placeholder="Nb tirs">
+						<?php else: ?>
+							<!-- SCORE -->
+							<div class="row tab-score">
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" placeholder="Score J1">
+								</div>
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="tab_joueur2" name="tab_joueur_2" min="3" max="20" placeholder="Score J2">
+								</div>
 							</div>
-						</div>
-					<?php else: ?>
-						<!-- SCORE -->
-						<div class="row tab-score">
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" placeholder="Score J1">
-							</div>
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="tab_joueur2" name="tab_joueur_2" min="3" max="20" placeholder="Score J2">
-							</div>
-						</div>
 
-						<!-- DETAILLE -->
-						<div class="row tab-detaille" style="display:none;">
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" value="<?= $nb_tireurs_dom ?>" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
+							<!-- DETAILLE -->
+							<div class="row tab-detaille" style="display:none;">
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" value="<?php if ($nb_tireurs_dom): echo $nb_tireurs_dom; endif; ?>" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
+								</div>
+								<div class="col-md-6">
+									<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" value="<?php if ($nb_tireurs_ext): echo $nb_tireurs_ext; endif; ?>" placeholder="Nb tirs">
+								</div>
 							</div>
-							<div class="col-md-6">
-								<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" value="<?= $nb_tireurs_ext ?>" placeholder="Nb tirs">
-							</div>
-						</div>
-					<?php endif; ?>
+						<?php endif; ?>
 
-					<div class="row tab-tireurs-detail" style="margin-top:10px;">
-						<div class="col-md-6">
-							<div class="list-tireurs-defieur">
-								<?php $i = 0; ?>
-								<?php foreach ($tireurs as $tireur): ?>
-									<?php if ($tireur->joueur->equipe->id == $match->id_equipe1): ?>
-										<?php $i++; ?>
-										<div class="form-group tireurs-domicile tireurs-dom-<?= $i ?> animated fadeInUp">
-											<div class="col-sm-10">
-												<select id="tireurs-dom-<?= $i ?>" name="tireurs-dom[<?= $i ?>]" class="tireurs">
-													<option></option>
-													<?php foreach ($match->equipe1->joueurs as $joueur): ?>
-														<?php if ($joueur->id == $tireur->id_joueur): ?>
-															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+						<div class="row tab-tireurs-detail" style="margin-top:10px;">
+							<div class="col-md-6">
+								<div class="list-tireurs-defieur">
+									<?php if ($tireurs): ?>
+										<?php $i = 0; ?>
+										<?php foreach ($tireurs as $tireur): ?>
+											<?php if ($tireur->joueur->equipe->id == $match->id_equipe1): ?>
+												<?php $i++; ?>
+												<div class="form-group tireurs-domicile tireurs-dom-<?= $i ?> animated fadeInUp">
+													<div class="col-sm-10">
+														<select id="tireurs-dom-<?= $i ?>" name="tireurs-dom[<?= $i ?>]" class="tireurs">
+															<option></option>
+															<?php foreach ($match->equipe1->joueurs as $joueur): ?>
+																<?php if ($joueur->id == $tireur->id_joueur): ?>
+																	<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+																<?php else: ?>
+																	<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+														</select>
+													</div>
+													<div class="col-sm-2">
+														<?php if ($tireur->reussi == 1): ?>
+															<input type="checkbox" name="tireurs_dom_reussite[<?= $i ?>]" class="tireurs-dom-<?= $i ?>" checked>
 														<?php else: ?>
-															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<input type="checkbox" name="tireurs_dom_reussite[<?= $i ?>]" class="tireurs-dom-<?= $i ?>">
 														<?php endif; ?>
-													<?php endforeach; ?>
-												</select>
-											</div>
-											<div class="col-sm-2">
-												<?php if ($tireur->reussi == 1): ?>
-													<input type="checkbox" name="tireurs_dom_reussite[<?= $i ?>]" class="tireurs-dom-<?= $i ?>" checked>
-												<?php else: ?>
-													<input type="checkbox" name="tireurs_dom_reussite[<?= $i ?>]" class="tireurs-dom-<?= $i ?>">
-												<?php endif; ?>
-											</div>
-										</div>
+													</div>
+												</div>
+											<?php endif; ?>
+										<?php endforeach; ?>
 									<?php endif; ?>
-								<?php endforeach; ?>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="list-tireurs-defier">
-								<?php $i = 0; ?>
-								<?php foreach ($tireurs as $tireur): ?>
-									<?php if ($tireur->joueur->equipe->id == $match->id_equipe2): ?>
-										<?php $i++; ?>
-										<div class="form-group tireurs-exterieur tireurs-ext-<?= $i ?> animated fadeInUp">
-											<div class="col-sm-10">
-												<select id="tireurs-ext-<?= $i ?>" name="tireurs-ext[<?= $i ?>]" class="tireurs">
-													<option></option>
-													<?php foreach ($match->equipe2->joueurs as $joueur): ?>
-														<?php if ($joueur->id == $tireur->id_joueur): ?>
-															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+							<div class="col-md-6">
+								<div class="list-tireurs-defier">
+									<?php if ($tireurs): ?>
+										<?php $i = 0; ?>
+										<?php foreach ($tireurs as $tireur): ?>
+											<?php if ($tireur->joueur->equipe->id == $match->id_equipe2): ?>
+												<?php $i++; ?>
+												<div class="form-group tireurs-exterieur tireurs-ext-<?= $i ?> animated fadeInUp">
+													<div class="col-sm-10">
+														<select id="tireurs-ext-<?= $i ?>" name="tireurs-ext[<?= $i ?>]" class="tireurs">
+															<option></option>
+															<?php foreach ($match->equipe2->joueurs as $joueur): ?>
+																<?php if ($joueur->id == $tireur->id_joueur): ?>
+																	<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+																<?php else: ?>
+																	<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+														</select>
+													</div>
+													<div class="col-sm-2">
+														<?php if ($tireur->reussi == 1): ?>
+															<input type="checkbox" name="tireurs_ext_reussite[<?= $i ?>]" class="tireurs-ext-<?= $i ?>" checked>
 														<?php else: ?>
-															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<input type="checkbox" name="tireurs_ext_reussite[<?= $i ?>]" class="tireurs-ext-<?= $i ?>">
 														<?php endif; ?>
-													<?php endforeach; ?>
-												</select>
-											</div>
-											<div class="col-sm-2">
-												<?php if ($tireur->reussi == 1): ?>
-													<input type="checkbox" name="tireurs_ext_reussite[<?= $i ?>]" class="tireurs-ext-<?= $i ?>" checked>
-												<?php else: ?>
-													<input type="checkbox" name="tireurs_ext_reussite[<?= $i ?>]" class="tireurs-ext-<?= $i ?>">
-												<?php endif; ?>
-											</div>
-										</div>
+													</div>
+												</div>
+											<?php endif; ?>
+										<?php endforeach; ?>
 									<?php endif; ?>
-								<?php endforeach; ?>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 			</div>
 
 
@@ -310,34 +318,36 @@
 
 			<!-- Div buteurs -->
 			<div class="list-buteurs-defier">
-				<h4>Liste des buteurs :</h4>
-				<?php $i = 0; ?>
-				<?php foreach ($buteurs as $score => $buteur): ?>
-					<?php if ($buteur->joueur->equipe->id == $match->equipe2->id): ?>
-						<?php $i++; ?>
-						<div class="form-group animated fadeInUp buteurs-exterieur buteurs-ext-<?= $i ?>">
-							<div class="col-sm-8">
-								<select id="buteurs-ext-<?= $i ?>" name="buteurs-ext[<?= $i ?>]" class="buteurs">
-									<option></option>
-									<?php foreach ($match->equipe2->joueurs as $joueur): ?>
-										<?php if ($buteur->joueur->id == $joueur->id): ?>
-											<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
-										<?php else: ?>
-											<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
-										<?php endif; ?>
-									<?php endforeach; ?>
-								</select>
+				<?php if ($buteurs): ?>
+					<h4>Liste des buteurs :</h4>
+					<?php $i = 0; ?>
+					<?php foreach ($buteurs as $score => $buteur): ?>
+						<?php if ($buteur->joueur->equipe->id == $match->equipe2->id): ?>
+							<?php $i++; ?>
+							<div class="form-group animated fadeInUp buteurs-exterieur buteurs-ext-<?= $i ?>">
+								<div class="col-sm-8">
+									<select id="buteurs-ext-<?= $i ?>" name="buteurs-ext[<?= $i ?>]" class="buteurs">
+										<option></option>
+										<?php foreach ($match->equipe2->joueurs as $joueur): ?>
+											<?php if ($buteur->joueur->id == $joueur->id): ?>
+												<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
+											<?php else: ?>
+												<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) . ' '.ucfirst($joueur->prenom) ?></option>
+											<?php endif; ?>
+										<?php endforeach; ?>
+									</select>
+								</div>
+								<div class="col-sm-4">
+									<?php if ($match->prolongation == 1): ?>
+										<input type="number" name="minute_ext_buteur[<?= $i ?>]" min="1" max="120" value="<?= $buteur->minute ?>" class="form-control buteurs-ext-<?= $i ?>" placeholder="Minute">
+									<?php else: ?>
+										<input type="number" name="minute_ext_buteur[<?= $i ?>]" min="1" max="90" value="<?= $buteur->minute ?>" class="form-control buteurs-ext-<?= $i ?>" placeholder="Minute">
+									<?php endif; ?>
+								</div>
 							</div>
-							<div class="col-sm-4">
-								<?php if ($match->prolongation == 1): ?>
-									<input type="number" name="minute_ext_buteur[<?= $i ?>]" min="1" max="120" value="<?= $buteur->minute ?>" class="form-control buteurs-ext-<?= $i ?>" placeholder="Minute">
-								<?php else: ?>
-									<input type="number" name="minute_ext_buteur[<?= $i ?>]" min="1" max="90" value="<?= $buteur->minute ?>" class="form-control buteurs-ext-<?= $i ?>" placeholder="Minute">
-								<?php endif; ?>
-							</div>
-						</div>
-					<?php endif; ?>
-				<?php endforeach; ?>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				<?php endif; ?>
 			</div>
 
 			<div class="form-group" style="display:none;" id="div_joueurs_defier">
@@ -438,13 +448,43 @@
 		$('#form_championnat_defieur').on('change', function(){
 			id_championnat = $(this).val();
 			afficherEquipes(id_championnat, $('#form_equipe_defieur'), $('#div_equipes_defieur'));
+			$('.logo_club_defieur').remove();
+			resetAll ($('.list-buteurs-defieur > div').length, $('.list-tireurs-defieur > div').length, '#buteurs-dom-', '#tireurs-dom-');
 		});
 
 
 		$('#form_championnat_defier').on('change', function(){
 			id_championnat = $(this).val();
 			afficherEquipes(id_championnat, $('#form_equipe_defier'), $('#div_equipes_defier'));
+			$('.logo_club_defier').remove();
+			resetAll ($('.list-buteurs-defier > div').length, $('.list-tireurs-defier > div').length, '#buteurs-ext-', '#tireurs-ext-');
 		});
+
+		function resetAll (nb_element_buteurs, nb_element_tireurs, select_buteurs, select_tireurs){
+			for (var i = 1; i <= nb_element_buteurs; i++){
+				select = $(select_buteurs+i);
+				select.html('');
+				select.select2('val', '');
+				select.append('<option></option>');
+				select.select2({
+					placeholder: "Selectionnez un joueur",
+					width: '230px'
+				});
+			}
+
+			for (var i = 1; i <= nb_element_tireurs; i++){
+				select = $(select_tireurs+i);
+				select.html('');
+				select.select2('val', '');
+				select.append('<option></option>');
+				select.select2({
+					placeholder: "Tireur #"+i,
+					width: '140px'
+				});
+			}
+
+			$('input:submit').attr('disabled', true);
+		}
 
 		/**
 		 * afficherEquipes
@@ -476,14 +516,50 @@
 			});
 		}
 
-
+		/**
+		 *
+		 * CHOIX D'UNE EQUIPE
+		 *
+		 */
 		$('#form_equipe_defieur').on('change', function(){
 			clickEquipe ($(this).val(), $('.club_defieur'), 'logo_club_defieur', 'list-buteurs-defieur', $('#score_joueur1').val(), 'buteurs-domicile', 'dom', 'defieur');
+			resetButeurs ($('.list-buteurs-defieur > div').length, $('#form_equipe_defieur').val(), '#buteurs-dom-');
+			resetTireurs($('.list-tireurs-defieur > div').length, $('#form_equipe_defieur').val(), '#tireurs-dom-');
 		});
 
 		$('#form_equipe_defier').on('change', function(){
 			clickEquipe ($(this).val(), $('.club_defier'), 'logo_club_defier', 'list-buteurs-defier', $('#score_joueur2').val(), 'buteurs-exterieur', 'ext', 'defier');
+			resetButeurs ($('.list-buteurs-defier > div').length, $('#form_equipe_defier').val(), '#buteurs-ext-');
+			resetTireurs($('.list-tireurs-defier > div').length, $('#form_equipe_defier').val(), '#tireurs-ext-');
 		});
+
+		/**
+		 * resetButeurs
+		 * Change le noms des buteurs dans les listes déroulantes
+		 *
+		 * @param int nb_element
+		 * @param int idEquipe
+		 * @param String select
+		 */
+		function resetButeurs (nb_element, idEquipe, select){
+			for (var i = 1; i <= nb_element; i++){
+				afficherJoueurs(idEquipe, $(select+i), 'but');
+			}
+		}
+
+		/**
+		 * resetTireurs
+		 * Change les nomrs des tireurs dans les listes déroulantes
+		 *
+		 * @param int nb_element
+		 * @param int idEquipe
+		 * @param String select
+		 */
+		function resetTireurs (nb_element, idEquipe, select){
+			for (var i = 1; i <= nb_element; i++){
+				afficherJoueurs(idEquipe, $(select+i), 'tir_reset');
+			}
+		}
 
 		/**
 		 * ClickEquipe
@@ -614,7 +690,7 @@
 		 * @param int id_equipe
 		 * @param element select : le select qui contiendra les noms des joueurs
 		 */
-		function afficherJoueurs (id_equipe, select){
+		function afficherJoueurs (id_equipe, select, context){
 			$.ajax({
 				url : window.location.origin + '/joueur/api/getJoueurs.json',
 				data: 'id_equipe='+id_equipe,
@@ -623,6 +699,23 @@
 				success: function(data){
 					if (data != 'KO'){
 						select.html('');
+						
+						if (context == 'but'){
+							select.select2('val', '');
+							select.append('<option></option>');
+							select.select2({
+								placeholder: "Selectionnez un joueur",
+								width: '230px'
+							});
+						}
+						else if (context == 'tir_reset'){
+							select.select2('val', '');
+							select.append('<option></option>');
+							select.select2({
+								placeholder: "Tireur",
+								width: '140px'
+							});
+						}
 						joueur = data;
 						for (var i in joueur){
 							select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
@@ -722,10 +815,10 @@
 			}
 		}
 
-		$('body').on('change', '.tireurs', function(){
-			id = $(this).attr('id');
-			console.log(id);
-			console.log($('#'+id).val());
-		});
+		// $('body').on('change', '.tireurs', function(){
+		// 	id = $(this).attr('id');
+		// 	console.log(id);
+		// 	console.log($('#'+id).val());
+		// });
 	});
 </script>
