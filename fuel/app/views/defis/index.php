@@ -155,7 +155,7 @@
 	</div>
 
 	<!-- DEFIS A VALIDER -->
-	<h1 id="defis_avalider" class="page-header">Vos défis à valider</h1><a class="btn btn-default btn-avalider" data-action="1">Voir les défis à valider</a>
+	<h1 id="defis_avalider" class="page-header">Vos défis à valider</h1><a class="btn btn-default btn-avalider" data-action="1"><span class="badge"><?= count($defis_avalider) ?></span> Voir les défis à valider</a>
 	<div class="defis_avalider animated" style="display:none;"?>
 		<?php if ($defis_avalider): ?>
 			<?php foreach ($defis_avalider as $defi): ?>
