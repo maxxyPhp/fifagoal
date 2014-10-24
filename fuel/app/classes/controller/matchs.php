@@ -490,7 +490,7 @@ class Controller_Matchs extends \Controller_Front
 		if (\Input::post('add')){
 			// var_dump($_POST);die();
 			if (!is_numeric(\Input::post('joueur1')) || !is_numeric(\Input::post('joueur2')) || !is_numeric(\Input::post('defi')) || !is_numeric(\Input::post('match')) || !is_numeric(\Input::post('modifieur'))){
-				\Messages::error('Problèmes avec les joueurs');
+				\Messages::error('Un problème a été détecté.');
 				\Response::redirect('/defis');
 			}
 
@@ -538,6 +538,7 @@ class Controller_Matchs extends \Controller_Front
 			$match->id_equipe2 = $equipe2->id;
 			$match->score_joueur1 = \Input::post('score_joueur_1');
 			$match->score_joueur2 = \Input::post('score_joueur_2');
+			if (\Input::post('prolongation')) $match->prolongation = 1;
 			$match->save();
 
 			if (\Input::post('modifieur') == $defier->id){
@@ -635,7 +636,6 @@ class Controller_Matchs extends \Controller_Front
 			if (\Input::post('tab')){
 				// var_dump(\Input::post('mode_tab'));die();
 				if (\Input::post('mode_tab') == 'score'){
-					// var_dump('score');die();
 					$tab = \Model_Tab::query()->where('id_match', '=', $match->id)->get();
 					if (empty($tab)){
 						$tab = \Model_Tab::forge();
@@ -746,7 +746,13 @@ class Controller_Matchs extends \Controller_Front
 							}//IF COUNT < 11
 						}// FOREACH
 					}//IF TIREURS-DOM
+					// Suppression des anciens tireurs
+					$array_tireurs = array_merge(\Input::post('tireurs-dom'), \Input::post('tireurs-ext'));
+					$this->deleteOldTireurs($match, $array_tireurs);
 				}
+
+				
+
 			}//IF TAB
 			
 
@@ -822,7 +828,7 @@ class Controller_Matchs extends \Controller_Front
 		}
 
 
-		return $this->view('matchs/modif', array('match' => $match, 'photo_defieur' => $this->photo($match->defi->defieur->id), 'photo_defier' => $this->photo($match->defi->defier->id), 'pays' => $pays, 'championnats' => $championnats, 'buteurs' => $match->buteurs, 'tireurs' => $match->tab->tireurs, 'nb_tireurs_dom' => $nb_tireurs_dom, 'nb_tireurs_ext' => $nb_tireurs_ext));
+		return $this->view('matchs/modif', array('match' => $match, 'photo_defieur' => $this->photo($match->defi->defieur->id), 'photo_defier' => $this->photo($match->defi->defier->id), 'pays' => $pays, 'championnats' => $championnats, 'buteurs' => (!empty($match->buteurs)) ? $match->buteurs : '', 'tireurs' => (!empty($match->tab->tireurs)) ? $match->tab->tireurs : '', 'nb_tireurs_dom' => (!empty($nb_tireurs_dom)) ? $nb_tireurs_dom : '', 'nb_tireurs_ext' => (!empty($nb_tireurs_ext)) ? $nb_tireurs_ext : ''));
 	}
 
 
@@ -847,6 +853,31 @@ class Controller_Matchs extends \Controller_Front
 			AND id_joueur NOT IN (".$notIn.")
 		")->as_object('Model_Buteurs')->execute();
 
+
+		foreach ($query as $result){
+			$result->delete();
+		}
+	}
+
+	/**
+	 * deleteOldTireurs
+	 * Supprime les anciens tireurs de match
+	 *
+	 * @param Object $match
+	 * @param Array $tireurs
+	 */
+	public function deleteOldTireurs ($match, $tireurs){
+		$notIn = '';
+		foreach ($tireurs as $key => $tireur){
+			if ($key+1 == count($tireurs)){
+				$notIn .= $tireur;
+			} else $notIn .= $tireur.',';
+		}
+
+		$query = \DB::query("SELECT * FROM joueurs_tab
+			WHERE id_tab = ".$match->id_tab."
+			AND id_joueur NOT IN (".$notIn.")
+		")->as_object('Model_Joueurstab')->execute();
 
 		foreach ($query as $result){
 			$result->delete();
