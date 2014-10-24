@@ -59,7 +59,7 @@ class Controller_Auth extends \Controller_Front
 				\Response::redirect('/auth/signin');
 			}
 			try {
-				$created = \Auth::create_user(htmlspecialchars(\Input::post('username')), \Input::post('password'), \Input::post('email'), 3, array('fullname' => htmlspecialchars(\Input::post('fullname'))));
+				$created = \Auth::create_user(htmlspecialchars(\Input::post('username')), \Input::post('password'), \Input::post('email'), 3, array('fullname' => htmlspecialchars(\Input::post('fullname')), 'naissance' => \Input::post('naissance')));
 
 				if ($created){
 					/* Notification */

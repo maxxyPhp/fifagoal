@@ -103,6 +103,13 @@
 					</div>
 
 					<div class="form-group">
+						<label id="label_naissance" for="form_naissance" class="col-sm-2 control-label">Naissance</label>
+						<div class="col-sm-8">
+							<input type="text" required="required" id="form_naissance" name="maissance" value="" class="form-control datepicker" />
+						</div>
+					</div>
+
+					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
 							<input type="submit" class="btn btn-primary btn-lg" id="form_register" name="register" value="S'inscrire" />
 						</div>
@@ -231,6 +238,20 @@
 				}
 				$("input[type=submit]").attr("disabled", "disabled");
 			}
+		});
+
+		$('#form_naissance').datepicker({
+			format: 'dd/mm/yyyy',
+			todayBtn: true,
+			todayHightlight: true,
+			language: 'fr-FR',
+			autoclose: true,
+			endDate: 'today',
+
+		});
+
+		$('#form_naissance').on('click', function(){
+			$('.datepicker-dropdown').css('z-index', 1050);
 		});
 	});
 </script>
