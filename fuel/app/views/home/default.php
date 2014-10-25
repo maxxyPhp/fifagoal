@@ -105,7 +105,7 @@
 					<div class="form-group">
 						<label id="label_naissance" for="form_naissance" class="col-sm-2 control-label">Naissance</label>
 						<div class="col-sm-8">
-							<input type="text" required="required" id="form_naissance" name="maissance" value="" class="form-control datepicker" />
+							<input type="text" required="required" id="form_naissance" name="naissance" value="" class="form-control datepicker" />
 						</div>
 					</div>
 
@@ -247,11 +247,10 @@
 			language: 'fr-FR',
 			autoclose: true,
 			endDate: 'today',
-
 		});
 
-		$('#form_naissance').on('click', function(){
-			$('.datepicker-dropdown').css('z-index', 1050);
-		});
+		// $('#form_naissance').on('click', function(){
+		// 	$('.datepicker-dropdown').css('z-index', 1050);
+		// });
 	});
 </script>
