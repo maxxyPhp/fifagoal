@@ -37,6 +37,9 @@ class Controller_Home extends Controller_Front
 				}
 			}
 
+			if (date('d/m') == date('d/m', \Auth::get('naissance'))){
+				$this->newNotify(\Auth::get('id'), $this->modelMessage('birthday', ''));
+			}
 			
         	return $this->view('home/content', array('photo' => $photouser, 'matchs' => $array));
         } else {

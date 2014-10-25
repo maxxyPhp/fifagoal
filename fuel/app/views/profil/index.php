@@ -1,5 +1,8 @@
 <div class="container">
 	<h1 class="page-header">
+		<?php if (date('d/m') == date('d/m', \Auth::get('naissance'))): ?>
+			<i class="fa fa-birthday-cake"></i>
+		<?php endif; ?>
 		Profil de <?= \Auth::get_screen_name() ?>
 		<div class="club_pref">
 			<?php if ($equipe_fav): ?>
@@ -18,6 +21,10 @@
 
 	    <?php endforeach; ?>
 	    <?php \Messages::reset(); ?>
+	<?php endif; ?>
+
+	<?php if (date('d/m') == date('d/m', \Auth::get('naissance'))): ?>
+		<div class="alert alert-success"><i class="fa fa-birthday-cake"></i> C'est son anniversaire !</div>
 	<?php endif; ?>
 	
 	<div class="row">
@@ -48,6 +55,9 @@
 					Administrateur
 				<?php endif; ?>
 				</strong><br>
+				<?= floor((time() - \Auth::get('naissance'))/((1461*24*60*60)/4)) ?> ans
+				<?= date('d/m'); ?>
+				<?= date('d/m', \Auth::get('naissance')) ?>
 				<hr>
 				Dernière connexion : <?= date('d/m/Y à H:i', \Auth::get('last_login')) ?><br>
 				Inscription : <?= date('d/m/Y à H:i', \Auth::get('created_at')) ?><br>

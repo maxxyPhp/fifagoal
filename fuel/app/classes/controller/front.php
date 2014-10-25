@@ -167,7 +167,7 @@ class Controller_Front extends \Controller
 				break;
 
 			case 'birthday':
-				return '<a href="/profil/view/'.$id.'"><h5><i class="fa fa-birthday-cake"></i> <strong>Joyeux Anniversaire !</strong><br>L\'équipe de FIFAGOAL vous souhaite une excellente journée !</h5></a>';
+				return '<a href="/profil"><h5><i class="fa fa-birthday-cake"></i> <strong>Joyeux Anniversaire !</strong><br>L\'équipe de FIFAGOAL vous souhaite une excellente journée !</h5></a>';
 				break;
 
 			case 'bienvenue':
