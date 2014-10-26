@@ -44,9 +44,9 @@
 				<?php endif; ?>
 			</ul>
 
-			<form class="navbar-form navbar-left" role="search">
+			<form action="/search" method="post" class="navbar-form navbar-left" role="search">
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Recherche">
+					<input type="text" name="search" pattern=".{3,}" class="form-control input-search" placeholder="Recherche" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Tu peux rechercher un membre, un championnat, une équipe, un joueur ou une selection. La recherche doit comporter trois caractères minimum. Elle peut être divisé en plusieurs mots. Ex: Hazard paris sg">
 				</div>
 				<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
 			</form>
@@ -100,6 +100,8 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('.input-search').popover();
+
 		$('.menu-notif').on('click', function(){
 			user = $(this).attr('data-id');
 			if ($('.badge-notif').length){
