@@ -14,21 +14,22 @@
 		<?php if ($users): ?>
 			<?php foreach ($users as $user): ?>
 				<div class="col-sm-6 col-md-4">
-					<div class="thumbnail">
+					<div class="thumbnail thumbnail-membre lazy">
 						<?php if($user['photo']): ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $user['photo'] ?>" alt="<?= $user['username'] ?>" width="200px">
+							<a href="/profil/view/<?= $user['user']->id ?>"><img data-original="<?= \Uri::base() . \Config::get('users.photo.path') . $user['photo']->photo ?>" alt="<?= $user['user']->username ?>" width="200px" class="lazy img-membre"></a>
 						<?php else: ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $user['username'] ?>" width="200px">
+							<a href="/profil/view/<?= $user['user']->id ?>"><img data-original="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $user['user']->username ?>" width="200px" class="lazy"></a>
 						<?php endif; ?>
 						<div class="caption">
-							<h3><?= $user['username'] ?></h3>
+							<a href="/profil/view/<?= $user['user']->id ?>" style="color:black;"><h3 class="h3-search-j"><?= $user['user']->username ?></h3></a>
+							<p><?= html_entity_decode($user['derniers_matchs']) ?></p>
 							<p>
 								<?php if ($user['defis'] != 0): ?>
-									<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user['id'] ?>" class="btn btn-success btn-defier-tooltip" role="button" disabled="disabled">Défier</a>
+									<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user['user']->id ?>" class="btn btn-success btn-defier-tooltip" role="button" disabled="disabled">Défier</a>
 								<?php else: ?>
-									<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user['id'] ?>" class="btn btn-success btn-defier" role="button" data-loading-text="Chargement...">Défier</a>
+									<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user['user']->id ?>" class="btn btn-success btn-defier" role="button" data-loading-text="Chargement...">Défier</a>
 								<?php endif; ?>
-								<a href="/profil/view/<?= $user['id'] ?>" class="btn btn-info" role="button">Profil</a>
+								<a href="/profil/view/<?= $user['user']->id ?>" class="btn btn-info" role="button">Profil</a>
 							</p>
 						</div>
 					</div>
@@ -40,6 +41,10 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		$("img.lazy").lazyload({
+		    effect : "fadeIn"
+		});
+
 		$('.btn-defier').on('click', function(){
 			btn = $(this);
 			btn.button('loading');

@@ -122,6 +122,7 @@ class Controller_Profil extends Controller_Front
 		if (empty($equipe_fav)) $equipe_fav = null;
 
 
+
 		// Pays qui ont un championnat
 		$query = \DB::query('SELECT DISTINCT pays.nom, pays.id, drapeau FROM pays JOIN championnat ON championnat.id_pays = pays.id ORDER BY pays.nom')->as_object('Model_Pays')->execute();
 		$pays = array();
@@ -295,6 +296,22 @@ class Controller_Profil extends Controller_Front
 
 		/**
 		 *
+		 * DEFIS EN COURS POUR BOUTON 'DEFIER'
+		 *
+		 */
+		$status = \Model_Status::query()->where('code', '=', 0)->get();
+		if (!empty($status)) $status = current($status);
+			
+		$defi = \Model_Defis::find('all', array(
+			'where' => array(
+				array('id_joueur_defieur', \Auth::get('id')),
+				array('id_joueur_defier', $user->id),
+				array('status_demande', $status->id),
+			),
+		));
+
+		/**
+		 *
 		 * DETERMINATION EQUIPE FAVORITE
 		 *
 		 */
@@ -305,6 +322,6 @@ class Controller_Profil extends Controller_Front
 		else $equipe_fav = null;
 
 
-		return $this->view('profil/view', array('user' => $user, 'photo_user' => $this->photo($user->id), 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'equipe_fav' => $equipe_fav, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
+		return $this->view('profil/view', array('user' => $user, 'photo_user' => $this->photo($user->id), 'defi' => (!empty($defi)) ? 1 : 0, 'ami' => $ami, 'ami_inverse' => $ami_inverse, 'equipe_fav' => $equipe_fav, 'liste_amis' => $liste_amis, 'stats' => $stats, 'derniers_matchs' => $derniers_matchs));
 	}
 }

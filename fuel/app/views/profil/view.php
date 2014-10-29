@@ -43,6 +43,12 @@
 				<?php endif; ?>
 				</strong>
 
+				<?php if ($defi != 0): ?>
+					<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user->id ?>" class="btn btn-success btn-defier-tooltip-profil" role="button" disabled="disabled"><i class="fa fa-flash"></i> Défier</a>
+				<?php else: ?>
+					<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user->id ?>" class="btn btn-success btn-defier-profil" role="button" data-loading-text="Chargement..."><i class="fa fa-flash"></i> Défier</a>
+				<?php endif; ?>
+
 				<?php if ($ami_inverse == 1): ?>
 					<a class="btn btn-primary btn-acp-ami" data-user="<?= $user->id ?>"><i class="fa fa-plus"></i> Accepter la demande d'ami</a>
 				<?php elseif ($ami === false): ?>

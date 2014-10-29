@@ -1,3 +1,4 @@
+
 <?php 
 
 class Controller_Membre extends \Controller_Front
@@ -81,6 +82,12 @@ class Controller_Membre extends \Controller_Front
 
 		$array = array();
 		foreach ($users as $user){
+			$derniers_matchs = '';
+			$stat1 = \DB::query("SELECT * FROM matchs WHERE id_joueur1 = ".$user->id." OR id_joueur2 = ".$user->id." ORDER BY updated_at LIMIT 5")->as_object('Model_Matchs')->execute();
+			foreach ($stat1 as $result){
+				$derniers_matchs .= $this->derniersMatchs ($result, $user);
+			}
+
 			$status = \Model_Status::query()->where('code', '=', 0)->get();
 			if (!empty($status)) $status = current($status);
 
@@ -92,28 +99,40 @@ class Controller_Membre extends \Controller_Front
 				),
 			));
 
-			$photouser = \Model_Photousers::query()->where('id_users', '=', $user->id)->get();
-			if (!empty($photouser)){
-				$photouser = current($photouser);
+			$array[] = array(
+				'user' => $user,
+				'photo' => $this->photo($user->id),
+				'derniers_matchs' => $derniers_matchs,
+				'defis' => (!empty($defis)) ? 1 : 0,
+			);
 
-				$array[] = array(
-					'id' => $user->id,
-					'username' => $user->username,
-					'photo' => $photouser->photo,
-					'defis' => (!empty($defis)) ? 1 : 0,
-				);
-			}
-			else {
-				$array[] = array(
-					'id' => $user->id,
-					'username' => $user->username,
-					'photo' => null,
-					'defis' => (!empty($defis)) ? 1 : 0,
-				);
-			}
 			
 		}
 
 		return $this->view('membre/index', array('users' => $array));
+	}
+
+	/**
+	 * derniers Matchs
+	 * Détermine si un match est gagné, perdu, ou nul
+	 *
+	 * @param Object $result : L'objet contenant les scores
+	 * @param Object $joueur : Le joueur
+	 * @return String : Le HTML avec le résultat
+	 */
+	function derniersMatchs ($result, $joueur){
+		if ($result->id_joueur1 == $joueur->id){
+			if ($result->score_joueur1 > $result->score_joueur2){
+				return '<span class="label label-success">V</span>';
+			} elseif ($result->score_joueur1 == $result->score_joueur2){
+				return '<span class="label label-default">N</span>';
+			} else return '<span class="label label-danger">D</span>';
+		} else {
+			if ($result->score_joueur1 > $result->score_joueur2){
+				return '<span class="label label-danger">D</span>';
+			} elseif ($result->score_joueur1 == $result->score_joueur2){
+				return '<span class="label label-default">N</span>';
+			} else return '<span class="label label-success">V</span>';
+		}
 	}
 }
