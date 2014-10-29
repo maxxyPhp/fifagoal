@@ -27,7 +27,31 @@ class Controller_Search extends \Controller_Front {
 			$selections = \Model_Selection::query()->where('nom', 'like', '%'.$requete.'%')->get();
 
 			foreach ($users as $user){
-				if (preg_match('/'.$requete.'/i', $user->username)) $tusers[] = $user;
+				if (preg_match('/'.$requete.'/i', $user->username)){
+					$photo = $this->photo ($user->id);
+
+					$status = \Model_Status::query()->where('code', '=', 0)->get();
+					if (!empty($status)) $status = current($status);
+					// var_dump($status);die();
+
+
+					$defi = \Model_Defis::find('all', array(
+						'where' => array(
+							array('id_joueur_defieur', \Auth::get('id')),
+							array('id_joueur_defier', $user->id),
+							array('status_demande', $status->id),
+						),
+					));
+
+
+						// var_dump($defi);die();
+
+					$tusers[] = array(
+						'user' => $user,
+						'photo' => $photo,
+						'defi' => (!empty($defi)) ? 1 : 0,
+					);
+				} 
 			}
 
 			foreach ($championnats as $champ){
