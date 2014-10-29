@@ -40,6 +40,8 @@
 
 	<article class="contenu">
 		<section class="tab-content">
+
+			<!-- USERS -->
 			<?php if (count($users) > 0): ?>
 				<section class="tab-pane active" id="users">
 			<?php else: ?>
@@ -47,13 +49,19 @@
 			<?php endif; ?>
 				<?php if(count($users) > 0): ?>
 					<div class="row">
-						<?php foreach ($equipes as $eq): ?>
+						<?php foreach ($users as $user): ?>
 							<div class="col-sm-6 col-sm-4">
 								<div class="thumbnail">
-									<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($eq->championnat->nom)) . '/' . $eq->logo ?>" alt="<?= $eq->nom ?>">
+									<img class="lazy" data-original="<?= \Uri::base() . \Config::get('users.photo.path') . $user['photo']->photo ?>" alt="<?= $user['user']->username ?>" width="80">
 									<div class="caption">
-										<h3><?= $eq->nom ?></h3>
-										<p><?= $eq->championnat->nom ?><br><?= count($eq->joueurs) ?> joueurs</p>
+										<h3 class="h3-search-j"><a href="/profil/view/<?= $user['user']->id ?>" style="color:black;"><?= $user['user']->username ?></a></h3>
+										<p><?= count($user['user']['defis_defieur']) + count($user['user']['defis_defier']) ?> matchs</p>
+										<p><?php if ($user['defi'] != 0): ?>
+											<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user['user']->id ?>" class="btn btn-success btn-defier-tooltip" role="button" disabled="disabled">Défier</a>
+										<?php else: ?>
+											<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user['user']->id ?>" class="btn btn-success btn-defier" role="button" data-loading-text="Chargement...">Défier</a>
+										<?php endif; ?>
+										<a href="/profil/view/<?= $user['user']->id ?>" class="btn btn-info" role="button">Profil</a></p>
 									</div>
 								</div>
 							</div>	
@@ -98,11 +106,15 @@
 					<div class="row">
 						<?php foreach ($equipes as $eq): ?>
 							<div class="col-sm-6 col-sm-4">
-								<div class="thumbnail">
-									<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($eq->championnat->nom)) . '/' . $eq->logo ?>" alt="<?= $eq->nom ?>">
+								<div class="thumbnail thumbnail-equipes">
+									<img class="lazy" data-original="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($eq->championnat->nom)) . '/' . $eq->logo ?>" alt="<?= $eq->nom ?>" width="80">
 									<div class="caption">
 										<h3 class="h3-search-j"><?= $eq->nom ?></h3>
-										<p><?= $eq->championnat->nom ?><br><?= count($eq->joueurs) ?> joueurs</p>
+										<p><?= $eq->championnat->nom ?><br><?= count($eq->joueurs) ?> joueurs.<br>
+										<?php if (count($eq->equipe1) + count($eq->equipe2) > 0): ?>
+											Utilisé dans <?= count($eq->equipe1) + count($eq->equipe2) ?> match(s)
+										<?php endif; ?>
+										</p>
 									</div>
 								</div>
 							</div>
@@ -125,9 +137,9 @@
 							<div class="col-sm-6 col-sm-4">
 								<div class="thumbnail div-thumbnail">
 									<?php if ($j->photo): ?>
-										<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($j->equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($j->equipe->nom)) . '/' . $j->photo ?>" alt="<?= strtoupper($j->nom).' '.lcfirst($j->prenom) ?>" width="80">
+										<img class="lazy" data-original="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($j->equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($j->equipe->nom)) . '/' . $j->photo ?>" alt="<?= strtoupper($j->nom).' '.lcfirst($j->prenom) ?>" width="80">
 									<?php else: ?>
-										<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/notfound.png'   ?>" alt="<?= strtoupper($j->nom).' '.lcfirst($j->prenom) ?>">
+										<img class="lazy" data-original="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/notfound.png'   ?>" alt="<?= strtoupper($j->nom).' '.lcfirst($j->prenom) ?>">
 									<?php endif; ?>
 									<div class="caption">
 										<div class="row">
@@ -169,7 +181,7 @@
 						<?php foreach ($selections as $s): ?>
 							<div class="col-sm-6 col-sm-4">
 								<div class="thumbnail">
-									<img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $s->logo ?>" alt="<?= $s->nom ?>">
+									<img class="lazy" data-original="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $s->logo ?>" alt="<?= $s->nom ?>">
 									<div class="caption">
 										<h3 class="h3-search-j"><?= $s->nom ?></h3>
 									</div>
@@ -188,5 +200,33 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('.photo-tooltip').tooltip();
+
+		$("img.lazy").lazyload({
+		    effect : "fadeIn"
+		});
+
+		$('.btn-defier').on('click', function(){
+			btn = $(this);
+			btn.button('loading');
+			id_defieur = $(this).attr('data-id-user');
+			id_defier = $(this).attr('data-id');
+
+			$.ajax({
+				url: window.location.origin+'/matchs/api/defier.json',
+				data: 'defieur='+id_defieur+'&defier='+id_defier,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					if (data == 'OK'){
+						// btn.button('reset');
+						btn.html('Défier').attr('disabled', 'disabled');
+						alert('Demande transmise. Le joueur défié recevra une notification de défis.');
+					} else alert('Une erreur est survenue pendant le traitement');
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				},
+			});
+		});
 	});
 </script>

@@ -232,8 +232,9 @@ body {
 	color : #d9534f;
 }
 
-.btn-ami, .btn-acp-ami {
+.btn-ami, .btn-acp-ami, .btn-defier-profil, .btn-defier-tooltip-profil {
 	float : right;
+	margin-left : 5px;
 }
 
 .club_pref {
@@ -280,6 +281,22 @@ body {
 
 .h3-search-j {
 	font-family: 'Hammersmith One', sans-serif;
+}
+
+.thumbnail-equipes {
+	min-height : 270px;
+}
+
+
+/***************************************************************************************************************
+* 							MEMBRE
+***************************************************************************************************************/
+.thumbnail-membre {
+	min-height : 360px;
+}
+
+.img-membre {
+	max-height : 230px;
 }
 
 
