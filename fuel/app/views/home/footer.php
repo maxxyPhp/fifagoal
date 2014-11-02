@@ -1,7 +1,14 @@
 <div class="panel panel-default">
 	<div class="panel-body">
-		&copy; Copyright <?php echo date('Y');?> <?php echo $title; ?>
-		2014 <i class="fa fa-soccer-ball-o"></i>
+		<?php echo $title; ?>
+		&copy; Copyright <?php echo date('Y');?> 
+		
+
+		<a href="http://www.easports.com/fr/fifa/features" class="footer-link partenaires" target="_blank"><i class="fa fa-soccer-ball-o"></i> FIFA 15</a>
+		<a href="http://sofifa.com" class="footer-link partenaires" target="_blank"><i class="fa fa-soccer-ball-o"></i> Plus de stats joueurs</a>
+	
+		<a href="/bug" class="footer-link contact"><i class="fa fa-bug"></i> Signaler un bug</a>
+		<a href="/contact" class="footer-link contact"><i class="fa fa-edit"></i> Contacter <?= $title ?></a>
 	</div>
 </div>
 
