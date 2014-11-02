@@ -84,7 +84,7 @@
 								<div class="thumbnail champ-thumbnail">
 									<img src="<?= \Uri::base() . \Config::get('upload.championnat.path') . '/' . $c->logo ?>" alt="<?= $c->nom ?>" width="80">
 									<div class="caption">
-										<h3 class="h3-search-j"><?= $c->nom ?></h3>
+										<a href="/ligue/view/<?= $c->id ?>" style="color:black;"><h3 class="h3-search-j"><?= $c->nom ?></h3></a>
 										<p><?= count($c->equipes) ?> équipes</p>
 									</div>
 								</div>
