@@ -13,7 +13,7 @@
 	<?php endif; ?>
 
 	
-	<h1 class="page-header"><i class="fa fa-bug"></i> Contacter FIFAGOAL</h1>
+	<h1 class="page-header"><i class="fa fa-edit"></i> Contacter FIFAGOAL</h1>
 
 	<form action="/contact/add" method="post" class="form-horizontal" role="form">
 		<div class="form-group">
