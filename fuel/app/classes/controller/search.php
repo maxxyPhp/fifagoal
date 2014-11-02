@@ -2,77 +2,82 @@
 
 class Controller_Search extends \Controller_Front {
 	public function action_index (){
-		$search = htmlspecialchars($this->wd_remove_accents(\Input::post('search')));
+		$search = trim($this->secure($this->wd_remove_accents(\Input::post('search'))));
 
 		(!empty($search)) ? \Session::set('recherche', $search) : $search = \Session::get('recherche');
 
-		$requetes = explode(' ', $search);
-		// var_dump($requetes);die();
+		$requetes = explode(' ', preg_replace('/\s+/', ' ', $search));
+
 
 		$tusers = $tchampionnats = $tequipes = $tjoueurs = $tselections = array();
 		foreach ($requetes as $requete){
-			$users = \Model\Auth_User::query()->where('username', 'like', '%'.$requete.'%')->get();
+			if ($requete !== ' ' && strlen($requete) >= 3){
+			
+				$users = \Model\Auth_User::query()->where('username', 'like', '%'.$requete.'%')->get();
 
-			$championnats = \Model_Championnat::query()->where('nom', 'like', '%'.$requete.'%')->get();
+				$championnats = \Model_Championnat::query()->where('nom', 'like', '%'.$requete.'%')->get();
 
-			$equipes = \Model_Equipe::query()->where('nom', 'like', '%'.$requete.'%')->get();
+				$equipes = \Model_Equipe::query()->where('nom', 'like', '%'.$requete.'%')->get();
 
-			$joueurs = \Model_Joueur::query()
-				->or_where_open()
-					->or_where('nom', 'like', '%'.$requete.'%')
-					->or_where('prenom', 'like', '%'.$requete.'%')
-				->or_where_close()
-				->get();
+				$joueurs = \Model_Joueur::query()
+					->or_where_open()
+						->or_where('nom', 'like', '%'.$requete.'%')
+						->or_where('prenom', 'like', '%'.$requete.'%')
+					->or_where_close()
+					->get();
 
-			$selections = \Model_Selection::query()->where('nom', 'like', '%'.$requete.'%')->get();
+				$selections = \Model_Selection::query()->where('nom', 'like', '%'.$requete.'%')->get();
 
-			foreach ($users as $user){
-				if (preg_match('/'.$requete.'/i', $user->username)){
-					$photo = $this->photo ($user->id);
+				foreach ($users as $user){
+					if (preg_match('/'.$requete.'/i', $user->username)){
+						$photo = $this->photo ($user->id);
 
-					$status = \Model_Status::query()->where('code', '=', 0)->get();
-					if (!empty($status)) $status = current($status);
-					// var_dump($status);die();
-
-
-					$defi = \Model_Defis::find('all', array(
-						'where' => array(
-							array('id_joueur_defieur', \Auth::get('id')),
-							array('id_joueur_defier', $user->id),
-							array('status_demande', $status->id),
-						),
-					));
+						$status = \Model_Status::query()->where('code', '=', 0)->get();
+						if (!empty($status)) $status = current($status);
 
 
-						// var_dump($defi);die();
+						$defi = \Model_Defis::find('all', array(
+							'where' => array(
+								array('id_joueur_defieur', \Auth::get('id')),
+								array('id_joueur_defier', $user->id),
+								array('status_demande', $status->id),
+							),
+						));
 
-					$tusers[] = array(
-						'user' => $user,
-						'photo' => $photo,
-						'defi' => (!empty($defi)) ? 1 : 0,
-					);
-				} 
-			}
 
-			foreach ($championnats as $champ){
-				if (preg_match('/'.$requete.'/i', $champ->nom)) $tchampionnats[] = $champ;
-			}
+						$tusers[] = array(
+							'user' => $user,
+							'photo' => $photo,
+							'defi' => (!empty($defi)) ? 1 : 0,
+						);
+					} 
+				}
+				// var_dump($tusers);die();
 
-			foreach ($equipes as $equipe){
-				if (preg_match('/'.$requete.'/i', $equipe->nom)) $tequipes[] = $equipe;
-			}
+				foreach ($championnats as $champ){
+					if (preg_match('/'.$requete.'/i', $champ->nom)) $tchampionnats[] = $champ;
+				}
 
-			foreach ($joueurs as $joueur){
-				if (preg_match('/'.$requete.'/i', $joueur->nom)) $tjoueurs[] = $joueur;
-				else if (preg_match('/'.$requete.'/i', $joueur->prenom)) $tjoueurs[] = $joueur;
-			}
+				foreach ($equipes as $equipe){
+					if (preg_match('/'.$requete.'/i', $equipe->nom)) $tequipes[] = $equipe;
+				}
 
-			foreach ($selections as $selection){
-				if (preg_match('/'.$requete.'/i', $selection->nom)) $tselections[] = $selection;
+				foreach ($joueurs as $joueur){
+					if (preg_match('/'.$requete.'/i', $joueur->nom)) $tjoueurs[] = $joueur;
+					else if (preg_match('/'.$requete.'/i', $joueur->prenom)) $tjoueurs[] = $joueur;
+				}
+
+				foreach ($selections as $selection){
+					if (preg_match('/'.$requete.'/i', $selection->nom)) $tselections[] = $selection;
+				}
 			}
 		}
 
 		return $this->view('search/index', array('users' => array_unique($tusers, SORT_REGULAR), 'championnats' => array_unique($tchampionnats, SORT_REGULAR), 'equipes' => array_unique($tequipes, SORT_REGULAR), 'joueurs' => array_unique($tjoueurs, SORT_REGULAR), 'selections' => array_unique($tselections, SORT_REGULAR)));
+	}
+
+	public function trim_value(&$value){
+		$value = trim($value);
 	}
 
 
