@@ -37,11 +37,27 @@ class Controller_Home extends Controller_Front
 				}
 			}
 
+			$arr_but = array();
+			$query = \DB::query("SELECT COUNT(*) AS nb, joueurs.id, joueurs.nom as nomj, prenom, photo, equipes.nom as nome, championnat.nom as nomc FROM buteurs
+				JOIN joueurs ON joueurs.id = buteurs.id_joueur
+				JOIN equipes ON equipes.id = joueurs.id_equipe
+				JOIN championnat ON championnat.id = equipes.id_championnat
+				GROUP BY id_joueur
+				ORDER BY nb desc
+				LIMIT 5
+			")->as_object('Model_Joueur')->execute();
+
+			foreach ($query as $result){
+				$arr_but[] = $result;
+			}
+
+			
+
 			if (date('d/m') == date('d/m', \Auth::get('naissance'))){
 				$this->newNotify(\Auth::get('id'), $this->modelMessage('birthday', ''));
 			}
 			
-        	return $this->view('home/content', array('photo' => $photouser, 'matchs' => $array));
+        	return $this->view('home/content', array('photo' => $photouser, 'matchs' => $array, 'buteurs' => $arr_but));
         } else {
         	$view = View::forge('layout_default');
 

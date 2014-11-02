@@ -1,4 +1,16 @@
 <div class="container">
+	<?php if (\Messages::any()): ?>
+	    <br/>
+	    <?php foreach (array('success', 'info', 'warning', 'error') as $type): ?>
+
+	        <?php foreach (\Messages::instance()->get($type) as $message): ?>
+	            <div class="alert alert-<?= $message['type']; ?>"><?= $message['body']; ?></div>
+	        <?php endforeach; ?>
+
+	    <?php endforeach; ?>
+	    <?php \Messages::reset(); ?>
+	<?php endif; ?>
+
 	<div class="well">
 		<div class="row">
 			<div class="col-md-6" style="font-family: 'Ubuntu', sans-serif;">
@@ -71,11 +83,35 @@
 				</div>
 			</div>
 		</div>
+<?php //var_dump($buteurs);die(); ?>
+		<div class="col-md-2">
+			<div class="panel panel-default">
+				<div class="panel-heading">Top Buteurs</div>
+				<div class="panel-body">
+					<ul class="media-list">
+						<?php foreach ($buteurs as $buteur): ?>
+							<li class="media">
+								<a class="media-left">
+									<?php if ($buteur->photo): ?>
+										<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($buteur->nomc)) . '/' . str_replace(' ', '_', strtolower($buteur->nome)) . '/' . $buteur->photo ?>" alt="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?>" width="50" data-toggle="tooltip" data-placement="top" title="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?> (<?= $buteur->nome ?>)" class="top_buteurs">
+									<?php else: ?>
+										<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/notfound.png' ?>" alt="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?>" width="40" data-toggle="tooltip" data-placement="top" title="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom)?> (<?= $buteur->nome ?>)" class="top_buteurs">
+									<?php endif; ?>
+								</a>
+								<div class="media-body" style="float:right;margin-top:10px;">
+									<?= $buteur->nb ?> buts
+								</div>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('.photos_derniers_match_accueil').tooltip();
+		$('.photos_derniers_match_accueil, .top_buteurs').tooltip();
 	});
 </script>
