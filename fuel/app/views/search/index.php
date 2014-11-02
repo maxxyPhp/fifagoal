@@ -52,7 +52,11 @@
 						<?php foreach ($users as $user): ?>
 							<div class="col-sm-6 col-sm-4">
 								<div class="thumbnail">
-									<img class="lazy" data-original="<?= \Uri::base() . \Config::get('users.photo.path') . $user['photo']->photo ?>" alt="<?= $user['user']->username ?>" width="80">
+									<?php if ($user['photo']): ?>
+										<img class="lazy" data-original="<?= \Uri::base() . \Config::get('users.photo.path') . $user['photo']->photo ?>" alt="<?= $user['user']->username ?>" width="80">
+									<?php else: ?>
+										<img class="lazy" data-original="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $user['user']->username ?>" width="80">
+									<?php endif; ?>
 									<div class="caption">
 										<h3 class="h3-search-j"><a href="/profil/view/<?= $user['user']->id ?>" style="color:black;"><?= $user['user']->username ?></a></h3>
 										<p><?= count($user['user']['defis_defieur']) + count($user['user']['defis_defier']) ?> matchs</p>
@@ -109,7 +113,7 @@
 								<div class="thumbnail thumbnail-equipes">
 									<img class="lazy" data-original="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($eq->championnat->nom)) . '/' . $eq->logo ?>" alt="<?= $eq->nom ?>" width="80">
 									<div class="caption">
-										<h3 class="h3-search-j"><?= $eq->nom ?></h3>
+										<a href="/club/view/<?= $eq->id ?>" style="color:black;"><h3 class="h3-search-j"><?= $eq->nom ?></h3></a>
 										<p><?= $eq->championnat->nom ?><br><?= count($eq->joueurs) ?> joueurs.<br>
 										<?php if (count($eq->equipe1) + count($eq->equipe2) > 0): ?>
 											Utilisé dans <?= count($eq->equipe1) + count($eq->equipe2) ?> match(s)
