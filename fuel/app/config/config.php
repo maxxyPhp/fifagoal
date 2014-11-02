@@ -45,6 +45,21 @@ return array(
 		'path' => 'upload',
 	),
 
+	'bug' => array(
+		'path' => 'upload/bug',
+		'mail' => array(
+			'address' => 'maximilien.beaussart@gmail.com',
+			'name' => 'Admin de FIFAGOAL',
+		),
+	),
+
+	'contact' => array(
+		'mail' => array(
+			'address' => 'maximilien.beaussart@gmail.com',
+			'name' => 'Admin de FIFAGOAL',
+		),
+	),
+
 	/**
 	 * base_url - The base URL of the application.
 	 * MUST contain a trailing slash (/)
@@ -306,7 +321,7 @@ return array(
 		 * );
 		 */
 		'packages'  => array(
-			'orm', 'auth', 'messages',
+			'orm', 'auth', 'messages', 'email',
 		),
 
 		/**
