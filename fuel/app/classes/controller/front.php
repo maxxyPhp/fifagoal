@@ -205,7 +205,13 @@ class Controller_Front extends \Controller
 		} else return null;
 	}
 
-	// Données entrantes
+	/**
+	 * Secure
+	 * Sécurise les données entrantes d'un formulaire
+	 *
+	 * @param String $string
+	 * @return String $string
+	 */
 	public static function secure($string)
 	{
 		// On regarde si le type de string est un nombre entier (int)
