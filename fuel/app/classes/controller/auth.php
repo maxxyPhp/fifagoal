@@ -15,7 +15,7 @@ class Controller_Auth extends \Controller_Front
 		}
 
 		if (\Input::post('login')){
-			if (\Auth::instance()->login(\Input::param('username'), \Input::param('password'))){
+			if (\Auth::instance()->login($this->secure(\Input::param('username')), $this->secure(\Input::param('password')))){
 				if (\Input::post('remember_me', false)){
 					\Auth::remember_me();
 				}
@@ -63,21 +63,21 @@ class Controller_Auth extends \Controller_Front
 	 */
 	public function action_signin (){
 		if (\Input::post('register')){
-			if (!filter_var(\Input::post('email'), FILTER_VALIDATE_EMAIL) || (\Input::post('password') != \Input::post('confirm')) || !$this->testDate(\Input::post('naissance'))){
+			if (!filter_var(\Input::post('email'), FILTER_VALIDATE_EMAIL) || ($this->secure(\Input::post('password')) != $this->secure(\Input::post('confirm'))) || !$this->testDate(\Input::post('naissance'))){
 				\Response::redirect('/auth/signin');
 			}
 
 			try {
 				$date = DateTime::createFromFormat('d/m/Y', \Input::post('naissance'));
 				$timestamp = $date->getTimestamp();
-				// var_dump(\Input::post('naissance'));die();
-				$created = \Auth::create_user(htmlspecialchars(\Input::post('username')), \Input::post('password'), \Input::post('email'), 3, array('fullname' => htmlspecialchars(\Input::post('fullname')), 'naissance' => $timestamp));
+				
+				$created = \Auth::create_user(htmlspecialchars($this->secure(\Input::post('username'))), $this->secure(\Input::post('password')), \Input::post('email'), 3, array('fullname' => $this->secure(\Input::post('fullname')), 'naissance' => $timestamp));
 
 				if ($created){
 					/* Notification */
-					$this->newNotify($created, $this->modelMessage('bienvenue', \Input::post('username')));
+					$this->newNotify($created, $this->modelMessage('bienvenue', $this->secure(\Input::post('username'))));
 					/* Connexion */
-					\Auth::login(\Input::post('username'), \Input::post('password'));
+					\Auth::login($this->secure(\Input::post('username')), $this->secure(\Input::post('password')));
 					\Response::redirect('/');
 				}
 				else {
