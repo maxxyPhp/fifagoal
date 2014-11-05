@@ -67,6 +67,20 @@ class Controller_Joueur extends \Controller_Gestion
 				
 				return json_encode($array);
 				break;
+
+			case 'getJoueursSelections':
+				if (!is_string(\Input::get('id_equipe'))){
+					return 'KO';
+				}
+
+				$joueurs = \Model_Joueur::query()->where('id_selection', '=', substr(\Input::get('id_equipe'), 2))->order_by('nom')->get();
+
+				foreach ($joueurs as $joueur){
+					$array[] = $this->object_to_array($joueur);
+				}
+				
+				return json_encode($array);
+				break;
 		}
 	}
 

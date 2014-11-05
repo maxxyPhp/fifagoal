@@ -33,6 +33,9 @@
 							<?php endforeach; ?>
 							</optgroup>
 						<?php endforeach; ?>
+						<optgroup label="Selections nationales">
+							<option value="sel">Toutes les selections</option>
+						</optgroup>
 					</select>
 				</div>
 			</div>
@@ -155,6 +158,9 @@
 							<?php endforeach; ?>
 							</optgroup>
 						<?php endforeach; ?>
+						<optgroup label="Selections nationales">
+							<option value="sel">Toutes les selections</option>
+						</optgroup>
 					</select>
 				</div>
 			</div>
@@ -294,31 +300,59 @@
 		 * @param Noeud afficher : la div contenant le select
 		 */
 		function afficherEquipes (id_championnat, select, afficher){
-			$.ajax({
-				url : window.location.origin + '/equipe/api/getEquipes.json',
-				data: 'id_championnat='+id_championnat,
-				type: 'get',
-				dataType: 'json',
-				success: function(data){
-					if (data != 'KO'){
-						select.select2('val', '');
-						select.html('');
-						select.append('<option></option>');
-						select.select2({
-							placeholder: "Selectionnez une équipe",
-							width: '300px'
-						});
-						equipe = data;
-						for (var i in equipe){
-							select.append('<option value="'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
+			if (id_championnat != 'sel'){
+				$.ajax({
+					url : window.location.origin + '/equipe/api/getEquipes.json',
+					data: 'id_championnat='+id_championnat,
+					type: 'get',
+					dataType: 'json',
+					success: function(data){
+						if (data != 'KO'){
+							select.select2('val', '');
+							select.html('');
+							select.append('<option></option>');
+							select.select2({
+								placeholder: "Selectionnez une équipe",
+								width: '300px'
+							});
+							equipe = data;
+							for (var i in equipe){
+								select.append('<option value="'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
+							}
+							afficher.addClass('animated fadeInUp').show();
 						}
-						afficher.addClass('animated fadeInUp').show();
+					},
+					error: function(){
+						alert('Une erreur est survenue');
 					}
-				},
-				error: function(){
-					alert('Une erreur est survenue');
-				}
-			});
+				});
+			} else {
+				$.ajax({
+					url : window.location.origin + '/selection/api/getEquipes.json',
+					data: 'id_championnat='+id_championnat,
+					type: 'get',
+					dataType: 'json',
+					success: function(data){
+						if (data != 'KO'){
+							select.select2('val', '');
+							select.html('');
+							select.append('<option></option>');
+							select.select2({
+								placeholder: "Selectionnez une équipe",
+								width: '300px'
+							});
+							equipe = data;
+							for (var i in equipe){
+								select.append('<option value="s_'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
+							}
+							afficher.addClass('animated fadeInUp').show();
+						}
+					},
+					error: function(){
+						alert('Une erreur est survenue');
+					}
+				});
+			}
 		}
 
 
@@ -378,25 +412,48 @@
 		 */
 		function clickEquipe (id_equipe, div_equipe, classImg){
 			$('.'+classImg).remove();
-			$.ajax({
-				url: window.location.origin + '/equipe/api/getEquipe.json',
-				data: 'id_equipe=' + id_equipe,
-				dataType: 'json',
-				type: 'get',
-				success : function(data){
-					div_equipe.append(
-						'<img src="'+window.location.origin+'/upload/equipes/'+data[7]+'/'+data[2]+'" alt="'+data[0]+'" width="100px" class="'+classImg+'" />'
-					);
+			if (id_equipe.substring(0, 1) != 's'){
+				$.ajax({
+					url: window.location.origin + '/equipe/api/getEquipe.json',
+					data: 'id_equipe=' + id_equipe,
+					dataType: 'json',
+					type: 'get',
+					success : function(data){
+						div_equipe.append(
+							'<img src="'+window.location.origin+'/upload/equipes/'+data[7]+'/'+data[2]+'" alt="'+data[0]+'" width="100px" class="'+classImg+'" />'
+						);
 
-					if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
-						$('.score').show();
-						$('input:submit').attr('disabled', false);
-					}
-				},
-				error: function(){
-					alert('Une erreur est survenue');
-				},
-			});
+						if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
+							$('.score').show();
+							$('input:submit').attr('disabled', false);
+						}
+					},
+					error: function(){
+						alert('Une erreur est survenue');
+					},
+				});
+			} else {
+				$.ajax({
+					url: window.location.origin + '/selection/api/getSelection.json',
+					data: 'id_equipe=' + id_equipe,
+					dataType: 'json',
+					type: 'get',
+					success : function(data){
+						console.log(data);
+						div_equipe.append(
+							'<img src="'+window.location.origin+'/upload/selection/'+data[1]+'" alt="'+data[0]+'" width="100px" class="'+classImg+'" />'
+						);
+
+						if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
+							$('.score').show();
+							$('input:submit').attr('disabled', false);
+						}
+					},
+					error: function(){
+						alert('Une erreur est survenue');
+					},
+				});
+			}
 		}
 
 
@@ -494,41 +551,79 @@
 		 * @param element select : le select qui contiendra les noms des joueurs
 		 */
 		function afficherJoueurs (id_equipe, select, context){
-			$.ajax({
-				url : window.location.origin + '/joueur/api/getJoueurs.json',
-				data: 'id_equipe='+id_equipe,
-				type: 'get',
-				dataType: 'json',
-				success: function(data){
-					if (data != 'KO'){
-						select.html('');
-						
-						if (context == 'but'){
-							select.select2('val', '');
-							select.append('<option></option>');
-							select.select2({
-								placeholder: "Selectionnez un joueur",
-								width: '230px'
-							});
+			if (id_equipe.substring(0, 1) != 's'){
+				$.ajax({
+					url : window.location.origin + '/joueur/api/getJoueurs.json',
+					data: 'id_equipe='+id_equipe,
+					type: 'get',
+					dataType: 'json',
+					success: function(data){
+						if (data != 'KO'){
+							select.html('');
+							
+							if (context == 'but'){
+								select.select2('val', '');
+								select.append('<option></option>');
+								select.select2({
+									placeholder: "Selectionnez un joueur",
+									width: '230px'
+								});
+							}
+							else if (context == 'tir_reset'){
+								select.select2('val', '');
+								select.append('<option></option>');
+								select.select2({
+									placeholder: "Tireur",
+									width: '140px'
+								});
+							}
+							joueur = data;
+							for (var i in joueur){
+								select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
+							}
 						}
-						else if (context == 'tir_reset'){
-							select.select2('val', '');
-							select.append('<option></option>');
-							select.select2({
-								placeholder: "Tireur",
-								width: '140px'
-							});
-						}
-						joueur = data;
-						for (var i in joueur){
-							select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
-						}
+					},
+					error: function(){
+						alert('Une erreur est survenue');
 					}
-				},
-				error: function(){
-					alert('Une erreur est survenue');
-				}
-			});
+				});
+			} else {
+				$.ajax({
+					url : window.location.origin + '/joueur/api/getJoueursSelections.json',
+					data: 'id_equipe='+id_equipe,
+					type: 'get',
+					dataType: 'json',
+					success: function(data){
+						if (data != 'KO'){
+							select.html('');
+							
+							if (context == 'but'){
+								select.select2('val', '');
+								select.append('<option></option>');
+								select.select2({
+									placeholder: "Selectionnez un joueur",
+									width: '230px'
+								});
+							}
+							else if (context == 'tir_reset'){
+								select.select2('val', '');
+								select.append('<option></option>');
+								select.select2({
+									placeholder: "Tireur",
+									width: '140px'
+								});
+							}
+							joueur = data;
+							for (var i in joueur){
+								select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
+							}
+						}
+					},
+					error: function(){
+						alert('Une erreur est survenue');
+					}
+				});
+			}
 		}
 
 		// Choix d'un buteur, focus sur la minute

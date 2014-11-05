@@ -3,6 +3,45 @@
 class Controller_Selection extends \Controller_Gestion
 {
 	/**
+	 * Get Api
+	 * AJAX ONLY
+	 *
+	 * @param String $context
+	 */
+	public function get_api ($context){
+		switch ($context){
+			case 'getEquipes':
+				if (!is_string(\Input::get('id_championnat'))){
+					return 'KO';
+				}
+
+				$equipes = \Model_Selection::find('all');
+
+				foreach ($equipes as $equipe){
+					$array[] = $this->object_to_array($equipe);
+				}
+				
+				return json_encode($array);
+				break;
+
+			case 'getSelection':
+				if (!is_string(\Input::get('id_equipe'))){
+					return 'KO';
+				}
+
+				$equipe = \Model_Selection::find(substr(\Input::get('id_equipe'), 2));
+
+				foreach ($equipe as $eq){
+					$array[] = $this->object_to_array($eq);
+				}
+
+				return json_encode($array);
+				break;
+		}
+	}
+
+
+	/**
 	 * Index
 	 * Liste les équipes
 	 */
