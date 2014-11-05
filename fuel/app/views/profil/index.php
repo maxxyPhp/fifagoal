@@ -24,7 +24,7 @@
 	<?php endif; ?>
 
 	<?php if (date('d/m') == date('d/m', \Auth::get('naissance'))): ?>
-		<div class="alert alert-success"><i class="fa fa-birthday-cake"></i> C'est son anniversaire !</div>
+		<div class="alert alert-success"><i class="fa fa-birthday-cake"></i> Joyeux anniversaire !</div>
 	<?php endif; ?>
 	
 	<div class="row">
@@ -56,8 +56,6 @@
 				<?php endif; ?>
 				</strong><br>
 				<?= floor((time() - \Auth::get('naissance'))/((1461*24*60*60)/4)) ?> ans
-				<?= date('d/m'); ?>
-				<?= date('d/m', \Auth::get('naissance')) ?>
 				<hr>
 				Dernière connexion : <?= date('d/m/Y à H:i', \Auth::get('last_login')) ?><br>
 				Inscription : <?= date('d/m/Y à H:i', \Auth::get('created_at')) ?><br>

@@ -41,7 +41,8 @@
 				<?php else: ?>
 					Administrateur
 				<?php endif; ?>
-				</strong>
+				</strong> - 
+				<?= floor((time() - $user->naissance)/((1461*24*60*60)/4)) ?> ans
 
 				<?php if ($defi != 0): ?>
 					<a data-id-user="<?= \Auth::get('id') ?>" data-id="<?= $user->id ?>" class="btn btn-success btn-defier-tooltip-profil" role="button" disabled="disabled"><i class="fa fa-flash"></i> Défier</a>
@@ -131,6 +132,7 @@
 				success: function(data){
 					if (data == 'OK'){
 						$('.btn-ami').text('Demande envoyée');
+						$('.btn-ami').attr('disabled', 'disabled');
 					} else alert('Une erreur est survenue pendant le processus d\'ajout d\'ami');
 				},
 				error: function(){
@@ -142,7 +144,6 @@
 		// ACCEPTER UNE DEMANDE EN AMI
 		$('.btn-acp-ami').on('click', function(){
 			user = $(this).attr('data-user');
-			console.log(user);
 			$.ajax({
 				url: window.location.origin + '/membre/api/validFriend.json',
 				data: 'user='+user,
@@ -164,6 +165,31 @@
 
 						$('.btn-acp-ami').text('Ami').addClass('btn-success').removeClass('btn-primary').attr('disabled', 'disabled');
 					} else alert('Une erreur est survenue pendant le processus d\'ajout d\'ami');
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				},
+			});
+		});
+
+		// BOUTON DEFIER
+		$('.btn-defier-profil').on('click', function(){
+			btn = $(this);
+			btn.button('loading');
+			id_defieur = $(this).attr('data-id-user');
+			id_defier = $(this).attr('data-id');
+
+			$.ajax({
+				url: window.location.origin+'/matchs/api/defier.json',
+				data: 'defieur='+id_defieur+'&defier='+id_defier,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					if (data == 'OK'){
+						// btn.button('reset');
+						btn.html('Défier').attr('disabled', 'disabled');
+						alert('Demande transmise. Le joueur défié recevra une notification de défis.');
+					} else alert('Une erreur est survenue pendant le traitement');
 				},
 				error: function(){
 					alert('Une erreur est survenue');
