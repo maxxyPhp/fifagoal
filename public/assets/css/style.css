@@ -10,6 +10,22 @@ body {
 	padding-top: 70px;
 }
 
+#body-default {
+	background-image: url('../img/stadium.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.panel-home{
+	opacity : 0.9;
+}
+
+.paragraphe-home {
+	margin-bottom : 15px;
+	font-size : 21px;
+	font-weight: 200;
+}
+
 .site_title {
 	font-family: 'Audiowide', cursive;
 }

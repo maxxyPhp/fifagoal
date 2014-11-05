@@ -71,7 +71,7 @@ class Controller_Auth extends \Controller_Front
 				$date = DateTime::createFromFormat('d/m/Y', \Input::post('naissance'));
 				$timestamp = $date->getTimestamp();
 				
-				$created = \Auth::create_user(htmlspecialchars($this->secure(\Input::post('username'))), $this->secure(\Input::post('password')), \Input::post('email'), 3, array('fullname' => $this->secure(\Input::post('fullname')), 'naissance' => $timestamp));
+				$created = \Auth::create_user(htmlspecialchars($this->secure(\Input::post('username'))), $this->secure(\Input::post('password')), \Input::post('email'), 3, array('naissance' => $timestamp));
 
 				if ($created){
 					/* Notification */

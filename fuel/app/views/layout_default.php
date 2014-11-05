@@ -3,11 +3,7 @@
     <head>
         <?php echo $head; ?>
     </head>
-    <body>
+    <body id="body-default">
         <?php echo $content; ?>
     </body>
-
-    <footer>
-    	<?php echo $footer; ?>
-    </footer>
 </html>
