@@ -42,38 +42,38 @@
 	</div>
 
 	<div class="row">
-		<div class="col-md-6">
-			<?php if ($matchs): ?>
-			<div class="panel panel-default">
-				<div class="panel-heading">Les derniers matchs joués</div>
-				<div class="panel-body">
-					<?php foreach ($matchs as $match): ?>
-						<div class="row" style="margin-bottom:15px;">
-							<div class="col-md-4">
-								<?php if ($match['photouser1']): ?>
-									<a href="/profil/view/<?= $match['match']->defi->defieur->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser1']->photo ?>" alt="<?= $match['match']->defi->defieur->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defieur->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
-								<?php else: ?>
-									<a href="/profil/view/<?= $match['match']->defi->defieur->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['match']->defi->defieur->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defieur->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
-								<?php endif; ?>
+		<?php if ($matchs): ?>
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">Les derniers matchs joués</div>
+					<div class="panel-body">
+						<?php foreach ($matchs as $match): ?>
+							<div class="row" style="margin-bottom:15px;">
+								<div class="col-md-4">
+									<?php if ($match['photouser1']): ?>
+										<a href="/profil/view/<?= $match['match']->defi->defieur->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser1']->photo ?>" alt="<?= $match['match']->defi->defieur->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defieur->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
+									<?php else: ?>
+										<a href="/profil/view/<?= $match['match']->defi->defieur->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['match']->defi->defieur->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defieur->username ?>" class="img-circle photos_derniers_match_accueil"/></a>
+									<?php endif; ?>
+								</div>
+								<div class="col-md-4">
+									<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['match']->equipe1->championnat->nom)) . '/' . $match['match']->equipe1->logo ?>" alt="<?= $match['match']->equipe1->nom ?>" width="40" style="margin-right:15px;" />
+									<a href="/matchs/view/<?= $match['match']->id ?>" class="score_matchs"><?= $match['match']->score_joueur1 ?> - <?= $match['match']->score_joueur2 ?></a>
+									<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['match']->equipe2->championnat->nom)) . '/' . $match['match']->equipe2->logo ?>" alt="<?= $match['match']->equipe2->nom ?>" width="40" style="margin-left:15px;" />
+								</div>
+								<div class="col-md-4">
+									<?php if ($match['photouser2']): ?>
+										<a href="/profil/view/<?= $match['match']->defi->defier->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser2']->photo ?>" alt="<?= $match['match']->defi->defier->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defier->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
+									<?php else: ?>
+										<a href="/profil/view/<?= $match['match']->defi->defier->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['match']->defi->defier->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defier->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
+									<?php endif; ?>
+								</div>
 							</div>
-							<div class="col-md-4">
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['match']->equipe1->championnat->nom)) . '/' . $match['match']->equipe1->logo ?>" alt="<?= $match['match']->equipe1->nom ?>" width="40" style="margin-right:15px;" />
-								<a href="/matchs/view/<?= $match['match']->id ?>" class="score_matchs"><?= $match['match']->score_joueur1 ?> - <?= $match['match']->score_joueur2 ?></a>
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($match['match']->equipe2->championnat->nom)) . '/' . $match['match']->equipe2->logo ?>" alt="<?= $match['match']->equipe2->nom ?>" width="40" style="margin-left:15px;" />
-							</div>
-							<div class="col-md-4">
-								<?php if ($match['photouser2']): ?>
-									<a href="/profil/view/<?= $match['match']->defi->defier->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . $match['photouser2']->photo ?>" alt="<?= $match['match']->defi->defier->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defier->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
-								<?php else: ?>
-									<a href="/profil/view/<?= $match['match']->defi->defier->id ?>"><img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $match['match']->defi->defier->username ?>" width="64" height="64" data-toggle="tooltip" data-placement="top" title="<?= $match['match']->defi->defier->username ?>" class="img-circle photos_derniers_match_accueil" style="float:right;"/></a>
-								<?php endif; ?>
-							</div>
-						</div>
-					<?php endforeach; ?>
+						<?php endforeach; ?>
+					</div>
 				</div>
-			</div>
-			<?php endif; ?>
-		</div><!-- derniers matchs -->
+			</div><!-- derniers matchs -->
+		<?php endif; ?>
 
 		<div class="col-md-4">
 			<div class="panel panel-default">
@@ -83,30 +83,32 @@
 				</div>
 			</div>
 		</div>
-<?php //var_dump($buteurs);die(); ?>
-		<div class="col-md-2">
-			<div class="panel panel-default">
-				<div class="panel-heading">Top Buteurs</div>
-				<div class="panel-body">
-					<ul class="media-list">
-						<?php foreach ($buteurs as $buteur): ?>
-							<li class="media">
-								<a class="media-left">
-									<?php if ($buteur->photo): ?>
-										<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($buteur->nomc)) . '/' . str_replace(' ', '_', strtolower($buteur->nome)) . '/' . $buteur->photo ?>" alt="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?>" width="50" data-toggle="tooltip" data-placement="top" title="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?> (<?= $buteur->nome ?>)" class="top_buteurs">
-									<?php else: ?>
-										<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/notfound.png' ?>" alt="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?>" width="40" data-toggle="tooltip" data-placement="top" title="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom)?> (<?= $buteur->nome ?>)" class="top_buteurs">
-									<?php endif; ?>
-								</a>
-								<div class="media-body" style="float:right;margin-top:10px;">
-									<?= $buteur->nb ?> buts
-								</div>
-							</li>
-						<?php endforeach; ?>
-					</ul>
+
+		<?php if ($buteurs): ?>
+			<div class="col-md-2">
+				<div class="panel panel-default">
+					<div class="panel-heading">Top Buteurs</div>
+					<div class="panel-body">
+						<ul class="media-list">
+							<?php foreach ($buteurs as $buteur): ?>
+								<li class="media">
+									<a class="media-left">
+										<?php if ($buteur->photo): ?>
+											<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($buteur->nomc)) . '/' . str_replace(' ', '_', strtolower($buteur->nome)) . '/' . $buteur->photo ?>" alt="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?>" width="50" data-toggle="tooltip" data-placement="top" title="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?> (<?= $buteur->nome ?>)" class="top_buteurs">
+										<?php else: ?>
+											<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/notfound.png' ?>" alt="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom) ?>" width="40" data-toggle="tooltip" data-placement="top" title="<?= strtoupper($buteur->nomj).' '.ucfirst($buteur->prenom)?> (<?= $buteur->nome ?>)" class="top_buteurs">
+										<?php endif; ?>
+									</a>
+									<div class="media-body" style="float:right;margin-top:10px;">
+										<?= $buteur->nb ?> buts
+									</div>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
 				</div>
 			</div>
-		</div>
+		<?php endif; ?>
 	</div>
 </div>
 
