@@ -47,13 +47,15 @@
 					<select id="form_championnat">
 						<option></option>
 						<?php foreach ($pays as $pay): ?>
-							<optgroup label="<?= $pay->nom ?>">
-							<?php foreach ($championnats as $championnat): ?>
-								<?php if ($championnat->id_pays == $pay->id): ?>
-									<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
-								<?php endif; ?>
-							<?php endforeach; ?>
-							</optgroup>
+							<?php if ($pay->nom != 'FIFA'): ?>
+								<optgroup label="<?= $pay->nom ?>">
+								<?php foreach ($championnats as $championnat): ?>
+									<?php if ($championnat->id_pays == $pay->id): ?>
+										<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
+									<?php endif; ?>
+								<?php endforeach; ?>
+								</optgroup>
+							<?php endif; ?>
 						<?php endforeach; ?>
 					</select>
 				</div>

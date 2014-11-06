@@ -84,7 +84,7 @@ class Model_Joueur extends \Orm\Model
 	protected static $_belongs_to = array(
 	    'selection' => array(
 	        'key_from' => 'id_selection',
-	        'model_to' => 'Model_Selection',
+	        'model_to' => 'Model_Equipe',
 	        'key_to' => 'id',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,

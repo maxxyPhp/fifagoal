@@ -135,7 +135,7 @@ class Controller_Joueur extends \Controller_Gestion
 		}
 
 		// $equipes = \Model_Equipe::find('all');
-		$selections = \Model_Selection::find('all');
+		// $selections = \Model_Selection::find('all');
 		$postes = \Model_Poste::find('all');
 		$championnats = \Model_Championnat::find('all');
 
@@ -145,6 +145,10 @@ class Controller_Joueur extends \Controller_Gestion
 		foreach ($query as $result){
 			$pays[] = $result;
 		}
+
+		$fifa = \Model_Championnat::query()->where('nom', '=', 'Selections Nationales')->get();
+		if (!empty($fifa)) $fifa = current($fifa);
+		$selections = \Model_Equipe::query()->where('id_championnat', '=', $fifa->id)->get();
 		
 
 
@@ -296,34 +300,11 @@ class Controller_Joueur extends \Controller_Gestion
 
 
 				if (!empty($data['Selection'])){
-					/**
-					 *
-					 * TRAITEMENT DU PAYS
-					 *
-					 */
-					$pays = \Model_Pays::query()->where('nom', '=', $data['Selection'])->get();
-					if (empty($pays)){
-						$pays = \Model_Pays::forge();
-						$pays->nom = $data['Selection'];
-						$pays->drapeau = '';
-						$pays->save();
-					} else $pays = current($pays);
+					$selection = \Model_Equipe::query()->where('nom', '=', $data['Selection'])->get();
 
-					/**
-					 *
-					 * TRAITEMENT DE LA SELECTION
-					 *
-					 */
-					$selection = \Model_Selection::query()->where('nom', '=', $data['Selection'])->get();
-
-
-					if (empty($selection)){
-						$selection = \Model_Selection::forge();
-						$selection->nom = $data['Selection'];
-						$selection->logo = '';
-						$selection->id_pays = $pays->id;
-						$selection->save();
-					} else $selection = current($selection);
+					if (!empty($selection)){
+						$selection = current($selection);
+					}
 				}
 
 				/**

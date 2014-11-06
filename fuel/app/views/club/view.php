@@ -22,7 +22,7 @@
 							<?php endif; ?>
 						
 							<?php if ($j->selection): ?>
-                    			<img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $j->selection->logo ?>" alt="<?= $j->selection->nom ?>" width="40" data-toggle="tooltip" data-placement="top" title="Equipe nationale <?= $j->selection->nom ?>" class="photo-tooltip" style="float:right;margin-top:-30px;" />
+                    			<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($j->selection->championnat->nom)) . '/' . $j->selection->logo ?>" alt="<?= $j->selection->nom ?>" width="40" data-toggle="tooltip" data-placement="top" title="Equipe nationale <?= $j->selection->nom ?>" class="photo-tooltip" style="float:right;margin-top:-30px;" />
                     		<?php endif; ?>
 						</p>
 					</div><!-- .caption -->
