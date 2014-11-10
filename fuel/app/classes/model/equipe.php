@@ -28,6 +28,12 @@ class Model_Equipe extends \Orm\Model
 			'null' => false,
 			'form' => array('type' => 'select'),
 		),
+		'isSelection' => array(
+			'label' => 'Est une selection',
+			'default' => 0,
+			'null' => false,
+			'validation' => array('required'),
+		),
 		'created_at' => array(
 			'form' => array('type' => false),
 			'default' => 0,
@@ -41,7 +47,7 @@ class Model_Equipe extends \Orm\Model
 	);
 
 	protected static $_conditions = array(
-		'oder_by' => array('nom' => 'asc'),
+		'order_by' => array('nom' => 'asc'),
 	);
 
 	protected static $_observers = array(
@@ -90,6 +96,13 @@ class Model_Equipe extends \Orm\Model
 	        'key_to' => 'id_equipe2',
 	        'cascade_save' => true,
 	        'cascade_delete' => false,
+	    ),
+	    'selectionne' => array(
+	    	'key_from' => 'id',
+	        'model_to' => 'Model_Joueur',
+	        'key_to' => 'id_selection',
+	        'cascade_save' => true,
+	        'cascade_delete' => true,
 	    ),
 	);
 }

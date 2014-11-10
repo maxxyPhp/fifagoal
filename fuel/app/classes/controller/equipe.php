@@ -259,6 +259,7 @@ class Controller_Equipe extends \Controller_Gestion
 					$equipe->nom_court = (isset($data['Nom_court'])) ? strtoupper($data['Nom_court']) : '';
 					$equipe->logo = str_replace(' ', '_', strtolower($data['Nom'])) . '.png';
 					$equipe->id_championnat = $championnat->id;
+					$equipe->isSelection = $data['isSelection'];
 					$equipe->save();
 
 					try {
