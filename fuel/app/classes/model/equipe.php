@@ -34,6 +34,12 @@ class Model_Equipe extends \Orm\Model
 			'null' => false,
 			'validation' => array('required'),
 		),
+		'actif' => array(
+			'label' => 'Actif',
+			'default' => 1,
+			'null' => false,
+			'validation' => array('required'),
+		),
 		'created_at' => array(
 			'form' => array('type' => false),
 			'default' => 0,

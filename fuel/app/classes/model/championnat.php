@@ -23,6 +23,12 @@ class Model_Championnat extends \Orm\Model
 			'null' => false,
 			'form' => array('type' => 'select'),
 		),
+		'actif' => array(
+			'label' => 'Actif',
+			'default' => 1,
+			'null' => false,
+			'type' => array('required'),
+		),
 		'created_at' => array(
 			'form' => array('type' => false),
 			'default' => 0,

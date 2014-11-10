@@ -3,7 +3,7 @@
 class Controller_Ligue extends \Controller_Front
 {
 	public function action_index (){
-		$championnats = \Model_Championnat::find('all');
+		$championnats = \Model_Championnat::query()->where('actif', '=', 1)->get();
 
 		return $this->view('ligue/index', array('championnats' => $championnats));
 	}
@@ -13,6 +13,10 @@ class Controller_Ligue extends \Controller_Front
 
 		if (empty($championnat)){
 			\Messages::error('Cette ligue n\'existe pas');
+			\Response::redirect('/');
+		}
+
+		if ($championnat->actif == 0){
 			\Response::redirect('/');
 		}
 

@@ -15,7 +15,7 @@ class Controller_Equipe extends \Controller_Gestion
 					return 'KO';
 				}
 
-				$equipes = \Model_Equipe::query()->where('id_championnat', '=', \Input::get('id_championnat'))->order_by('nom')->get();
+				$equipes = \Model_Equipe::query()->where('id_championnat', '=', \Input::get('id_championnat'))->where('actif', '=', 1)->order_by('nom')->get();
 
 				foreach ($equipes as $equipe){
 					$array[] = $this->object_to_array($equipe);
@@ -319,6 +319,34 @@ class Controller_Equipe extends \Controller_Gestion
 		}
 
 		return $this->view('equipe/view', array('equipe' => $equipe, 'joueurs' => $equipe->joueurs));
+	}
+
+
+	/**
+	 * Activate
+	 * Active ou désactive une équipe
+	 *
+	 * @param int $id
+	 */
+	public function action_activate ($id){
+		$this->verifAutorisation();
+
+		$equipe = \Model_Equipe::find($id);
+		if (empty($equipe)){
+			\Messages::error('Cette equipe n\'existe pas');
+			\Response::redirect('/equipe');
+		}
+
+		if ($equipe->actif == 1){
+			$equipe->actif = 0;
+		} else {
+			$equipe->actif = 1;
+		}
+		$equipe->save();
+
+		\Messages::success($equipe->nom.' activée');
+	
+		return $this->view('equipe/index', array('equipes' => \Model_Equipe::find('all')));
 	}
 
 }

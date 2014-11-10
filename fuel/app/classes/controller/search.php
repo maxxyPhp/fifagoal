@@ -15,9 +15,9 @@ class Controller_Search extends \Controller_Front {
 			
 				$users = \Model\Auth_User::query()->where('username', 'like', '%'.$requete.'%')->get();
 
-				$championnats = \Model_Championnat::query()->where('nom', 'like', '%'.$requete.'%')->get();
+				$championnats = \Model_Championnat::query()->where('nom', 'like', '%'.$requete.'%')->where('actif', '=', 1)->get();
 
-				$equipes = \Model_Equipe::query()->where('nom', 'like', '%'.$requete.'%')->get();
+				$equipes = \Model_Equipe::query()->where('nom', 'like', '%'.$requete.'%')->where('actif', '=', 1)->get();
 
 				$joueurs = \Model_Joueur::query()
 					->or_where_open()

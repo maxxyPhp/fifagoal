@@ -20,7 +20,7 @@
 		<section class="table-responsive">
 			<table id="myTab" class="table table-hover table-striped">
 				<thead>
-					<th>ID</th>
+					<th></th>
 					<th>Nom</th>
 					<th>Logo</th>
 					<th>Championnat</th>
@@ -30,7 +30,13 @@
 				<tbody>
 					<?php foreach ($equipes as $equipe): ?>
 						<tr>
-							<td><?= $equipe->id ?></td>
+							<td>
+								<?php if ($equipe->actif == 1): ?>
+									<i class="fa fa-check fa-2x"></i>
+								<?php else: ?>
+									<i class="fa fa-close fa-2x"></i>
+								<?php endif; ?>
+							</td>
 							<td><?= strtoupper($equipe->nom) ?> - <?= strtoupper($equipe->nom_court) ?></td>
 							<td><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($equipe->championnat->nom)) . '/' . $equipe->logo ?>" alt="<?= $equipe->nom ?>" width='60px' /></td>
 							<td><img src="<?= \Uri::base() . \Config::get('upload.championnat.path') . '/' . $equipe->championnat->logo ?>" alt="<?= $equipe->championnat->logo ?>" width="60px" data-toggle="tooltip" data-placement="top" title="<?= $equipe->championnat->nom ?>" /></td>

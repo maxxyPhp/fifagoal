@@ -222,11 +222,9 @@ footer {
 }
 
 .list-unstyled > li {
-	/*display : inline-block;*/
 	height : 30px;
 	margin-bottom : 20px;
 	border-left : solid black 1px;
-
 }
 
 .menu-defis {
@@ -235,6 +233,11 @@ footer {
 
 .div_resultat {
 	margin-top : 10px;
+}
+
+.div_resultat > img, .div_resultat > a {
+	display: inline-block;
+	margin-right : 10px;
 }
 
 /***************************************************************************************************************

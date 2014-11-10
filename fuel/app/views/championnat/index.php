@@ -21,7 +21,7 @@
 			<table id="myTab" class="table table-hover table-striped">
 				<thead>
 					<tr>
-						<th>ID</th>
+						<th></th>
 						<th>Nom</th>
 						<th>Logo</th>
 						<th>Pays</th>
@@ -32,11 +32,25 @@
 				<tbody>
 					<?php foreach ($championnats as $championnat): ?>
 						<tr>
-							<td><?= $championnat->id ?></td>
+							<td>
+								<?php if ($championnat->actif == 1): ?>
+									<i class="fa fa-check fa-2x"></i>
+								<?php else: ?>
+									<i class="fa fa-close fa-2x"></i>
+								<?php endif; ?>
+							</td>
 							<td><?= $championnat->nom ?></td>
 							<td><img src="<?= \Uri::base() . \Config::get('upload.championnat.path') . '/' . $championnat->logo ?>" alt="<?= $championnat->nom ?>" width="80px" /></td>
 							<td><img src="<?= \Uri::base() . \Config::get('upload.pays.path') . '/' . $championnat->pays->drapeau ?>" alt="<?= $championnat->pays->nom ?>" width="80px" data-toggle="tooltip" data-placement="top" title="<?= $championnat->pays->nom ?>" class="img_pays" /></td>
 							<td>
+								<a href="/championnat/activate/<?= $championnat->id ?>" class="btn btn-primary">
+									<?php if ($championnat->actif == 1): ?>
+										<i class="fa fa-close"></i> Désactiver
+									<?php else: ?>
+										<i class="fa fa-check"></i> Activer
+									<?php endif; ?>
+								</a>
+								<a href="/championnat/activateall/<?= $championnat->id ?>" class="btn btn-primary"><i class="fa fa-check"></i> Tout activer</a>
 								<a href="/championnat/view/<?= $championnat->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir les équipes</a>
 								<a href="/championnat/add/<?= $championnat->id ?>" class="btn btn-warning"><i class="fa fa-edit"></i> Modifier</a>
 								<a href="/championnat/delete/<?= $championnat->id ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>

@@ -294,32 +294,31 @@
 		 * @param Noeud afficher : la div contenant le select
 		 */
 		function afficherEquipes (id_championnat, select, afficher){
-			console.log(id_championnat);
-				$.ajax({
-					url : window.location.origin + '/equipe/api/getEquipes.json',
-					data: 'id_championnat='+id_championnat,
-					type: 'get',
-					dataType: 'json',
-					success: function(data){
-						if (data != 'KO'){
-							select.select2('val', '');
-							select.html('');
-							select.append('<option></option>');
-							select.select2({
-								placeholder: "Selectionnez une équipe",
-								width: '300px'
-							});
-							equipe = data;
-							for (var i in equipe){
-								select.append('<option value="'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
-							}
-							afficher.addClass('animated fadeInUp').show();
+			$.ajax({
+				url : window.location.origin + '/equipe/api/getEquipes.json',
+				data: 'id_championnat='+id_championnat,
+				type: 'get',
+				dataType: 'json',
+				success: function(data){
+					if (data != 'KO'){
+						select.select2('val', '');
+						select.html('');
+						select.append('<option></option>');
+						select.select2({
+							placeholder: "Selectionnez une équipe",
+							width: '300px'
+						});
+						equipe = data;
+						for (var i in equipe){
+							select.append('<option value="'+equipe[i]['id']+'">'+equipe[i]['nom']+'</option>');
 						}
-					},
-					error: function(){
-						alert('Une erreur est survenue');
+						afficher.addClass('animated fadeInUp').show();
 					}
-				});
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				}
+			});
 		}
 
 
@@ -379,26 +378,26 @@
 		 */
 		function clickEquipe (id_equipe, div_equipe, classImg){
 			$('.'+classImg).remove();
-				$.ajax({
-					url: window.location.origin + '/equipe/api/getEquipe.json',
-					data: 'id_equipe=' + id_equipe,
-					dataType: 'json',
-					type: 'get',
-					success : function(data){
-						console.log(data);
-						div_equipe.append(
-							'<img src="'+window.location.origin+'/upload/equipes/'+data[8]+'/'+data[2]+'" alt="'+data[0]+'" width="100px" class="'+classImg+'" />'
-						);
+			$.ajax({
+				url: window.location.origin + '/equipe/api/getEquipe.json',
+				data: 'id_equipe=' + id_equipe,
+				dataType: 'json',
+				type: 'get',
+				success : function(data){
+					console.log(data);
+					div_equipe.append(
+						'<img src="'+window.location.origin+'/upload/equipes/'+data[9]+'/'+data[2]+'" alt="'+data[0]+'" width="100px" class="'+classImg+'" />'
+					);
 
-						if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
-							$('.score').show();
-							$('input:submit').attr('disabled', false);
-						}
-					},
-					error: function(){
-						alert('Une erreur est survenue');
-					},
-				});
+					if ($('#form_equipe_defieur').val() != 0 && $('#form_equipe_defier').val() != 0){
+						$('.score').show();
+						$('input:submit').attr('disabled', false);
+					}
+				},
+				error: function(){
+					alert('Une erreur est survenue');
+				},
+			});
 		}
 
 

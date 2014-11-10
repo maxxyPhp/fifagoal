@@ -236,4 +236,58 @@ class Controller_Championnat extends Controller_Gestion
 
 		return $this->view('championnat/view', array('championnat' => $championnat, 'equipes' => $championnat->equipes));
 	}
+
+
+	/**
+	 * Activate
+	 * Active ou désactive un championnat
+	 *
+	 * @param int $id
+	 */
+	public function action_activate ($id){
+		$this->verifAutorisation();
+
+		$championnat = \Model_Championnat::find($id);
+		if (empty($championnat)){
+			\Messages::error('Ce championnat n\'existe pas');
+			\Response::redirect('/championnat');
+		}
+
+		if ($championnat->actif == 1){
+			$championnat->actif = 0;
+		} else {
+			$championnat->actif = 1;
+		}
+		$championnat->save();
+
+		\Messages::success($championnat->nom.' activé');
+
+		return $this->view('championnat/index', array('championnats' => \Model_Championnat::find('all')));
+	}
+
+
+	/**
+	 * Activate All
+	 * Ative les équipes d'un championnat
+	 *
+	 * @param int $id
+	 */
+	public function action_activateall ($id){
+		$this->verifAutorisation();
+
+		$championnat = \Model_Championnat::find($id);
+		if (empty($championnat)){
+			\Messages::error('Ce championnat n\'existe pas');
+			\Response::redirect('/championnat');
+		}
+
+		foreach ($championnat->equipes as $eq){
+			$eq->actif = 1;
+			$eq->save();
+		}
+
+		\Messages::success('Equipes de '.$championnat->nom.' activées');
+
+		return $this->view('championnat/index', array('championnats' => \Model_Championnat::find('all')));
+	}
 }

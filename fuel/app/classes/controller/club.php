@@ -23,6 +23,10 @@ class Controller_Club extends \Controller_Front {
 			\Response::redirect('/ligue');
 		}
 
+		if ($equipe->actif == 0){
+			\Response::redirect('/ligue');
+		}
+
 		return $this->view('club/view', array('equipe' => $equipe));
 	}
 }

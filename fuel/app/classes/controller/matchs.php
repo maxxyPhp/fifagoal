@@ -325,10 +325,9 @@ class Controller_Matchs extends \Controller_Front
 			$pays[] = $result;
 		}
 
-		$championnats = \Model_Championnat::find('all');
-		$selections = \Model_Selection::find('all');
+		$championnats = \Model_Championnat::query()->where('actif', '=', 1)->get();
 
-		return $this->view('matchs/add', array('defi' => $defi, 'photo_defieur' => $this->photo($defi->defieur->id), 'photo_defier' => $this->photo ($defi->defier->id), 'pays' => $pays, 'championnats' => $championnats, 'selections' => $selections));
+		return $this->view('matchs/add', array('defi' => $defi, 'photo_defieur' => $this->photo($defi->defieur->id), 'photo_defier' => $this->photo ($defi->defier->id), 'pays' => $pays, 'championnats' => $championnats));
 	}
 
 
