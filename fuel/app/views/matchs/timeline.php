@@ -51,12 +51,12 @@
 			<?php endif; ?>
 			<?php $b = $buteur; ?>
 
-			<?php if ($buteur->joueur->equipe->id == $match->equipe1->id): ?>
+			<?php if ($buteur->joueur->equipe->id == $match->equipe1->id || $buteur->joueur->selection->id == $match->equipe1->id): ?>
 				<div class="ss-row ss-medium">
 					<div class="ss-left">
                         <div class="ss-circle">
                         	<?php if ($buteur->joueur->photo): ?>
-                        		<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($match->equipe1->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($match->equipe1->nom)) . '/' . $buteur->joueur->photo ?>" width="100"/><br>
+                        		<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($buteur->joueur->equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($buteur->joueur->equipe->nom)) . '/' . $buteur->joueur->photo ?>" width="100"/><br>
                         	<?php else: ?>
                         		<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . 'notfound.png' ?>" width="100"/><br>
                         	<?php endif; ?>
@@ -85,7 +85,7 @@
                     <div class="ss-right">
                         <div class="ss-circle">
                         	<?php if ($buteur->joueur->photo): ?>
-	                        	<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($match->equipe2->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($match->equipe2->nom)) . '/' . $buteur->joueur->photo ?>" width="100"/><br>
+	                        	<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($buteur->joueur->equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($buteur->joueur->equipe->nom)) . '/' . $buteur->joueur->photo ?>" width="100"/><br>
 	                        <?php else: ?>
                         		<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . 'notfound.png' ?>" width="100"/><br>
                         	<?php endif; ?>

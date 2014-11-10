@@ -58,8 +58,16 @@ class Controller_Joueur extends \Controller_Gestion
 				if (!is_numeric(\Input::get('id_equipe'))){
 					return 'KO';
 				}
+				$id_equipe = $this->secure(\Input::get('id_equipe'));
 
-				$joueurs = \Model_Joueur::query()->where('id_equipe', '=', \Input::get('id_equipe'))->order_by('nom')->get();
+				$equipe = \Model_Equipe::find($id_equipe);
+				if (!empty($equipe)){
+					if ($equipe->isSelection == 0){
+						$joueurs = \Model_Joueur::query()->where('id_equipe', '=', \Input::get('id_equipe'))->order_by('nom')->get();
+					} else {
+						$joueurs = \Model_Joueur::query()->where('id_selection', '=', \Input::get('id_equipe'))->order_by('nom')->get();
+					}
+				}
 
 				foreach ($joueurs as $joueur){
 					$array[] = $this->object_to_array($joueur);

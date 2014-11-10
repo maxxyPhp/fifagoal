@@ -49,6 +49,7 @@ class Controller_Migrations extends \Controller_Gestion
 				'nom_court' => array('constraint' => 255, 'type' => 'varchar'),
 				'logo' => array('constraint' => 255, 'type' => 'varchar'),
 				'id_championnat' => array('constraint' => 11, 'type' => 'int'),
+				'isSelection' => array('constraint' => 4, 'type' => 'tinyint'),
 				'created_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
 				'updated_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
 			), array('id'));
@@ -196,6 +197,7 @@ class Controller_Migrations extends \Controller_Gestion
 				'score_joueur2' => array('constraint' => 11, 'type' => 'int'),
 				'prolongation' => array('constraint' => 4, 'type' => 'tinyint'),
 				'id_tab' => array('constraint' => 11, 'type' => 'int', 'null' => true),
+				'selection' => array('constraint' => 4, 'type' => 'tinyint'),
 				'created_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
 				'updated_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
 			), array('id'));
