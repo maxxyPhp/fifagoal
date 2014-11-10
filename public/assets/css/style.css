@@ -304,6 +304,10 @@ footer {
 	margin-top: 20px;
 }
 
+.div-j-eq > a {
+	display : inline-block;
+}
+
 .h3-search-j {
 	font-family: 'Hammersmith One', sans-serif;
 }

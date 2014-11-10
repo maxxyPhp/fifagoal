@@ -26,7 +26,6 @@ class Controller_Search extends \Controller_Front {
 					->or_where_close()
 					->get();
 
-				$selections = \Model_Selection::query()->where('nom', 'like', '%'.$requete.'%')->get();
 
 				foreach ($users as $user){
 					if (preg_match('/'.$requete.'/i', $user->username)){
@@ -52,23 +51,20 @@ class Controller_Search extends \Controller_Front {
 						);
 					} 
 				}
-				// var_dump($tusers);die();
 
 				foreach ($championnats as $champ){
 					if (preg_match('/'.$requete.'/i', $champ->nom)) $tchampionnats[] = $champ;
 				}
 
 				foreach ($equipes as $equipe){
-					if (preg_match('/'.$requete.'/i', $equipe->nom)) $tequipes[] = $equipe;
+					if ($equipe->isSelection == 0){
+						if (preg_match('/'.$requete.'/i', $equipe->nom)) $tequipes[] = $equipe;
+					} else $tselections[] = $equipe;
 				}
 
 				foreach ($joueurs as $joueur){
 					if (preg_match('/'.$requete.'/i', $joueur->nom)) $tjoueurs[] = $joueur;
 					else if (preg_match('/'.$requete.'/i', $joueur->prenom)) $tjoueurs[] = $joueur;
-				}
-
-				foreach ($selections as $selection){
-					if (preg_match('/'.$requete.'/i', $selection->nom)) $tselections[] = $selection;
 				}
 			}
 		}
