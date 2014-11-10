@@ -1,4 +1,10 @@
 <div class="container">
+	<ol class="breadcrumb">
+		<li><a href="/">Accueil</a></li>
+		<li><a href="#">Recherche</a></li>
+	</ol>
+
+
 	<h1 class="page-header">Recherche : <?= \Session::get('recherche') ?></h1>
 
 	<ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
@@ -158,9 +164,9 @@
 												<?php endif; ?>
 											</div>
 											<div class="col-sm-6 div-j-eq">
-												<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($j->equipe->championnat->nom)) . '/' . $j->equipe->logo ?>" alt="<?= $j->equipe->nom ?>" width="60" data-toggle="tooltip" data-placement="top" title="<?= $j->equipe->nom ?>" class="photo-tooltip" />
+												<a href="/club/view/<?= $j->equipe->id ?>"><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($j->equipe->championnat->nom)) . '/' . $j->equipe->logo ?>" alt="<?= $j->equipe->nom ?>" width="60" data-toggle="tooltip" data-placement="top" title="<?= $j->equipe->nom ?>" class="photo-tooltip" /></a>
 												<?php if ($j->selection): ?>
-				                        			<img src="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $j->selection->logo ?>" alt="<?= $j->selection->nom ?>" width="60" data-toggle="tooltip" data-placement="top" title="Equipe nationale <?= $j->selection->nom ?>" class="photo-tooltip" />
+				                        			<a href="/club/view/<?= $j->selection->id ?>"><img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($j->selection->championnat->nom)) . '/' . $j->selection->logo ?>" alt="<?= $j->selection->nom ?>" width="60" data-toggle="tooltip" data-placement="top" title="Equipe nationale <?= $j->selection->nom ?>" class="photo-tooltip" /></a>
 				                        		<?php endif; ?>
 											</div>
 										</div>		
@@ -174,7 +180,7 @@
 				<?php endif; ?>
 			</section>
 
-			<!-- SEELCTIONS -->
+			<!-- SELECTIONS -->
 			<?php if (count($users) == 0 && count($championnats) == 0 && count($equipes) == 0 && count($joueurs) == 0 && count($selections) > 0): ?>
 				<section class="tab-pane active" id="selections">
 			<?php else: ?>
@@ -185,9 +191,9 @@
 						<?php foreach ($selections as $s): ?>
 							<div class="col-sm-6 col-sm-4">
 								<div class="thumbnail">
-									<img class="lazy" data-original="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $s->logo ?>" alt="<?= $s->nom ?>">
+									<a href="/club/view/<?= $s->id ?>"><img class="lazy" data-original="<?= \Uri::base() . \Config::get('upload.selections.path') . '/' . $s->logo ?>" alt="<?= $s->nom ?>"></a>
 									<div class="caption">
-										<h3 class="h3-search-j"><?= $s->nom ?></h3>
+										<a href="/club/view/<?= $s->id ?>" style="color:black;"><h3 class="h3-search-j"><?= $s->nom ?></h3></a>
 									</div>
 								</div>
 							</div>

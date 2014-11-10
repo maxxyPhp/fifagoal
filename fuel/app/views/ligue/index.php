@@ -1,4 +1,9 @@
 <div class="container">
+	<ol class="breadcrumb">
+		<li><a href="/">Accueil</a></li>
+		<li><a href="#">Ligues</a></li>
+	</ol>
+
 	<h1 class="page-header">Ligues</h1>
 	<div class="row">
 		<?php foreach ($championnats as $c): ?>
