@@ -10,220 +10,34 @@
 		</ul>
 	</div>
 
-	<?php if (\Messages::any()): ?>
-	    <br/>
-	    <?php foreach (array('success', 'info', 'warning', 'danger') as $type): ?>
-
-	        <?php foreach (\Messages::instance()->get($type) as $message): ?>
-	            <div class="alert alert-<?= $message['type']; ?>"><?= $message['body']; ?></div>
-	        <?php endforeach; ?>
-
-	    <?php endforeach; ?>
-	    <?php \Messages::reset(); ?>
-	<?php endif; ?>
-
+	<?= render('helper/messages'); ?>
+	
 	<!-- DEFIS EN ATTENTE -->
 	<h1 id="new-defis" class="page-header">Vos défis</h1>
-	<?php if ($defis): ?>
-		<?php if ($new > 0): ?>
-			<div class="alert alert-success"><i class="fa fa-smile-o"></i> <?= $new ?> nouveaux défis !</div>
-		<?php endif; ?>
-		<?php foreach ($defis as $defi): ?>
-			<div class="row">
-				<div class="col-md-8">
-					<?php if ($defi['defi']->updated_at == 0): ?>
-						<span class="label label-success label-new label-<?= $defi['defi']->id ?>">NEW</span>
-					<?php else: ?>
-						<span class="label label-default label-new label-<?= $defi['defi']->id ?>">Attendre</span>
-					<?php endif; ?>
-
-					<?php if ($defi['photouser'] == null): ?>
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi['defi']->defieur->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defieur->username ?>"/>
-					<?php else: ?>
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser']->photo ?>" alt="<?= $defi['defi']->defieur->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defieur->username ?>"/>
-					<?php endif; ?>
-					<a href="/profil/view/<?= $defi['defi']->defieur->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
-					<?= $defi['defi']->defieur->username ?> vous défis
-				</div>	
-
-				<div class="col-md-4 btn-<?= $defi['defi']->id ?>">
-					<a class="btn btn-success btn-accepte btn-acp-<?= $defi['defi']->id ?>" data-defi="<?= $defi['defi']->id ?>" data-loading-text="Chargement..."><i class="fa fa-check"></i> Accepter</a>
-					<a class="btn btn-default btn-attendre btn-att-<?= $defi['defi']->id ?>" data-defi="<?= $defi['defi']->id ?>" data-loading-text="Chargement..."><i class="fa fa-ellipsis-h"></i> Attendre</a>
-					<a class="btn btn-danger btn-refuse btn-ref-<?= $defi['defi']->id ?>" data-defi="<?= $defi['defi']->id ?>" data-loading-text="Chargement..."><i class="fa fa-close"></i> Refuser</a>
-				</div>
-			</div>
-		<?php endforeach ?>
-	<?php else: ?>
-		<div class="alert alert-warning alert-dismissible" role="alert">
-			<button type="button" class="close" data-dismiss="alert">
-				<span arua-hidden="true">&times;</span>
-				<span class="sr-only">Close</span>
-			</button>
-			<i class="fa fa-frown-o"></i> Pas de défis pour le moment
-		</div>
-	<?php endif; ?>
-
-
+	<?= render('defis/defisattente', array('defis' => $defis)); ?>
 
 	<!-- DEFIS ENVOYES -->
 	<h1 id="defis-env" class="page-header">Vos défis envoyés</h1>
-	<?php if ($defis_lances): ?>
-		<?php foreach ($defis_lances as $defi): ?>
-			<div class="row" style="margin-top:10px;">
-				<div class="col-md-8">
-					<?php if ($defi['photouser'] == null): ?>
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>"/>
-					<?php else: ?>
-						<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser']->photo ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>"/>
-					<?php endif; ?>
-					<a href="/profil/view/<?= $defi['defi']->defier->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
-				</div>
-
-				<div class="col-md-4">
-					<?php if ($defi['defi']->status->code == 0): ?>
-						<span class="label label-default">En attente</span>
-					<?php elseif ($defi['defi']->status->code == 1): ?>
-						<span class="label label-success">Accepté</span>
-						<a class="btn btn-primary btn-rapport" data-defi="<?= $defi['defi']['id'] ?>">Faire le rapport du match</a>
-						<form id="form-rapport-<?= $defi['defi']->id ?>" action="/matchs/add" method="post">
-							<input type="hidden" name="defi" value="<?= $defi['defi']->id ?>" />
-						</form>
-					<?php else: ?>
-						<span class="label label-danger">Refusé</span>
-					<?php endif; ?>
-				</div>
-			</div>
-		<?php endforeach; ?>
-	<?php else: ?>
-		<div class="alert alert-warning alert-dismissible">
-			<button type="button" class="close" data-dismiss="alert">
-				<span aria-hidden="true">&times;</span>
-				<span class="sr-only">Close</span>
-			</button>
-			<i class="fa fa-frown-o"></i> Vous n'avez pas envoyé de défi récemment
-		</div>
-	<?php endif; ?>
+	<?= render('defis/defisenv', array('defis_lances' => $defis_lances)); ?>
 
 	
 	<!-- DEFIS ACCEPTES -->
 	<h1 id="defis-acp" class="page-header">Vos défis acceptés</h1><a class="btn btn-default btn-acp" data-action="1">Voir les défis acceptés</a>
 	<div class="defis_acceptes animated" style="display:none;">
-		<?php if ($defis_acp): ?>
-			<?php foreach ($defis_acp as $defi): ?>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-md-6">
-						<?php if ($defi['photouser'] == null): ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>"/>
-						<?php else: ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser']->photo ?>" alt="<?= $defi['defi']->defieur->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defieur->username ?>"/>
-						<?php endif; ?>
-						<a href="/profil/view/<?= $defi['defi']->defieur->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
-						Vous avez accepté le défi de <?= $defi['defi']->defieur->username ?>
-					</div>
-
-					<div class="col-md-6">
-
-						<?php if ($defi['defi']->id_match != 0): ?>
-							<div class="row">
-								<div class="col-md-8">
-									<div class="col-md-4 defis_club">
-										<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($defi['defi']->match->equipe1->championnat->nom)) . '/' . $defi['defi']->match->equipe1->logo ?>" alt="<?= $defi['defi']->match->equipe1->nom ?>" width="30px" />
-									</div>
-									<div class="col-md-4">
-										<div class="score_defis"><?= $defi['defi']->match->score_joueur1 ?> - <?= $defi['defi']->match->score_joueur2 ?></div>
-									</div>
-									<div class="col-md-4 defis_club">
-										<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($defi['defi']->match->equipe2->championnat->nom)) . '/' . $defi['defi']->match->equipe2->logo ?>" alt="<?= $defi['defi']->match->equipe2->nom ?>" width="30px" />
-									</div>
-								</div>
-								<div class="col-md-4">
-									<a class="btn btn-primary" href="/matchs/view/<?= $defi['defi']->id_match ?>">Voir le rapport du match</a>
-								</div>
-							</div>
-						<?php else: ?>
-							<a class="btn btn-primary btn-rapport" data-defi="<?= $defi['defi']->id ?>">Faire le rapport du match</a>
-							<form id="form-rapport-<?= $defi['defi']->id ?>" action="/matchs/add" method="post">
-								<input type="hidden" name="defi" value="<?= $defi['defi']->id ?>" />
-							</form>
-						<?php endif; ?>
-					</div>
-				</div>
-			<?php endforeach ?>
-		<?php else: ?>
-			<div class="alert alert-warning" style="margin-top:10px;"><i class="fa fa-frown-o"></i> Vous n'avez pas encore accepté de défis</div>
-		<?php endif; ?>
+		<?= render('defis/defisacp', array('defis_acp' => $defis_acp)); ?>
 	</div>
 
 	<!-- DEFIS A VALIDER -->
 	<h1 id="defis_avalider" class="page-header">Vos défis à valider</h1><a class="btn btn-default btn-avalider" data-action="1"><span class="badge"><?= count($defis_avalider) ?></span> Voir les défis à valider</a>
 	<div class="defis_avalider animated" style="display:none;"?>
-		<?php if ($defis_avalider): ?>
-			<?php foreach ($defis_avalider as $defi): ?>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-md-6">
-						<?php if ($defi['photouser']): ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser']->photo ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>" />
-						<?php else: ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>" />
-						<?php endif; ?>
-						<a href="/profil/view/<?= $defi['defi']->defier->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
-
-						<?php if (($defi['defi']->id_joueur_defier == \Auth::get('id') && $defi['defi']->match_valider2 == 0) || ($defi['defi']->id_joueur_defieur == \Auth::get('id') && $defi['defi']->match_valider1 == 0)): ?>
-							<a href="/matchs/view/<?= $defi['defi']->match->id ?>" class="btn btn-warning"><i class="fa fa-exclamation-triangle"></i> N'oubliez pas de valider le match</a>
-						<?php endif; ?>
-					</div>
-
-					<div class="col-md-4 div_resultat">
-						<div class="row">
-							<div class="col-md-4 defis_club">
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($defi['defi']->match->equipe1->championnat->nom)) . '/' . $defi['defi']->match->equipe1->logo ?>" alt="<?= $defi['defi']->match->equipe1->nom ?>" width="30px" />
-							</div>
-							<div class="col-md-4">
-								<a href="/matchs/view/<?= $defi['defi']->match->id ?>"><div class="score_defis"><?= $defi['defi']->match->score_joueur1 ?> - <?= $defi['defi']->match->score_joueur2 ?></div></a>
-							</div>
-							<div class="col-md-4 defis_club">
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($defi['defi']->match->equipe2->championnat->nom)) . '/' . $defi['defi']->match->equipe2->logo ?>" alt="<?= $defi['defi']->match->equipe2->nom ?>" width="30px" />
-							</div>
-						</div>
-					</div>
-
-					<div class="col-md-2 div_resultat">
-						<?php if ($defi['defi']->match->score_joueur1 > $defi['defi']->match->score_joueur2): ?>
-							<span class="label label-success">Victoire</span>
-						<?php elseif ($defi['defi']->match->score_joueur1 == $defi['defi']->match->score_joueur2): ?>
-							<span class="label label-default">Nul</span>
-						<?php else: ?>
-							<span class="label label-danger">Défaite</span>
-						<?php endif; ?>
-					</div>
-				</div>
-			<?php endforeach; ?>
-		<?php else: ?>
-			<div class="alert alert-warning" style="margin-top:10px;">Pas de défis à valider !</div>
-		<?php endif; ?>
+		<?= render('defis/defisavalider', array('defis_avalider' => $defis_avalider)); ?>
 	</div>
 
 
 	<!-- DEFIS REFUSES -->
 	<h1 id="defis-ref" class="page-header">Vos défis refusés</h1><a class="btn btn-default btn-ref" data-action="1">Voir les défis refusés</a>
 	<div class="defis_refuses animated" style="display:none;">
-		<?php if ($defis_ref): ?>
-			<?php foreach ($defis_ref as $defi): ?>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-md-6">
-						<?php if ($defi['photouser'] == null): ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>"/>
-						<?php else: ?>
-							<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser']->photo ?>" alt="<?= $defi['defi']->defieur->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>" />
-						<?php endif; ?>
-						<a href="/profil/view/<?= $defi['defi']->defieur->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
-						Vous avez refusé le défi de <?= $defi['defi']->defieur->username ?>
-					</div>
-				</div>
-			<?php endforeach ?>
-		<?php else: ?>
-			<div class="alert alert-warning" style="margin-top:10px;"><i class="fa fa-smile-o"></i> Vous n'avez pas encore refusé de défis</div>
-		<?php endif; ?>
+		<?= render('defis/defisrefuses', array('defis_ref' => $defis_ref)); ?>
 	</div>
 
 
@@ -231,66 +45,7 @@
 	<h1 id="defis-ter" class="page-header">Vos défis terminés</h1>
 	<a class="btn btn-default btn-ter" data-action="1">Voir les défis terminés</a>
 	<div class="defis_termines animated" style="display:none;">
-		<?php if ($defis_termines): ?>
-			<?php foreach ($defis_termines as $defi): ?>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-md-6">
-						<?php if ($defi['photouser']): ?>
-							<?php if ($defi['defi']->defieur->id == \Auth::get('id')): ?>
-								<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser']->photo ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>" />
-							<?php else: ?>
-								<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $defi['photouser']->photo ?>" alt="<?= $defi['defi']->defieur->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defieur->username ?>" />
-							<?php endif; ?>
-						<?php else: ?>
-							<?php if ($defi['defi']->defieur->id == \Auth::get('id')): ?>
-								<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi['defi']->defier->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defier->username ?>" />
-							<?php else: ?>
-								<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi['defi']->defieur->username ?>" class="img-thumbnail img-tooltip" width='80px' data-toggle="tooltip" data-placement="top" title="<?= $defi['defi']->defieur->username ?>" />
-							<?php endif; ?>
-						<?php endif; ?>
-						<a href="/profil/view/<?= $defi['defi']->defier->id ?>" class="btn btn-info"><i class="fa fa-eye"></i> Voir son profil </a>
-
-						<?php if (($defi['defi']->id_joueur_defier == \Auth::get('id') && $defi['defi']->match_valider2 == 0) || ($defi['defi']->id_joueur_defieur == \Auth::get('id') && $defi['defi']->match_valider1 == 0)): ?>
-							<a href="/matchs/view/<?= $defi['defi']->id_match ?>" class="btn btn-warning"><i class="fa fa-exclamation-triangle"></i> N'oubliez pas de valider le match</a>
-						<?php endif; ?>
-					</div>
-
-					<div class="col-md-4 div_resultat">
-						<div class="row">
-							<div class="col-md-4 defis_club">
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($defi['defi']->match->equipe1->championnat->nom)) . '/' . $defi['defi']->match->equipe1->logo ?>" alt="<?= $defi['defi']->match->equipe1->nom ?>" width="30px" />
-							</div>
-							<div class="col-md-4">
-								<a href="/matchs/view/<?= $defi['defi']->match->id ?>"><div class="score_defis"><?= $defi['defi']->match->score_joueur1 ?> - <?= $defi['defi']->match->score_joueur2 ?></div></a>
-							</div>
-							<div class="col-md-4 defis_club">
-								<img src="<?= \Uri::base() . \Config::get('upload.equipes.path') . '/' . str_replace(' ', '_', strtolower($defi['defi']->match->equipe2->championnat->nom)) . '/' . $defi['defi']->match->equipe2->logo ?>" alt="<?= $defi['defi']->match->equipe2->nom ?>" width="30px" />
-							</div>
-						</div>
-					</div>
-
-					<div class="col-md-2 div_resultat">
-						<?php if ($defi['defi']->defieur->id == \Auth::get('id')): ?>
-							<?php if ($defi['defi']->match->score_joueur1 > $defi['defi']->match->score_joueur2): ?>
-								<span class="label label-success">Victoire</span>
-							<?php elseif ($defi['defi']->match->score_joueur1 == $defi['defi']->match->score_joueur2): ?>
-								<span class="label label-default">Nul</span>
-							<?php else: ?>
-								<span class="label label-danger">Défaite</span>
-							<?php endif; ?>
-						<?php else: ?>
-							<?php if ($defi['defi']->match->score_joueur1 > $defi['defi']->match->score_joueur2): ?>
-								<span class="label label-danger">Défaite</span>
-							<?php elseif ($defi['defi']->match->score_joueur1 == $defi['defi']->match->score_joueur2): ?>
-								<span class="label label-default">Nul</span>
-							<?php else: ?>
-								<span class="label label-success">Victoire</span>
-							<?php endif; ?>
-						<?php endif; ?>
-					</div>
-				</div>
-			<?php endforeach; ?>
-		<?php endif; ?>
+		<?= render('defis/matchstermines', array('defis_termines' => $defis_termines)); ?>	
 	</div>
 
 </div>
