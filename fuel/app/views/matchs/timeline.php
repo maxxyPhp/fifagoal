@@ -51,7 +51,7 @@
 			<?php endif; ?>
 			<?php $b = $buteur; ?>
 
-			<?php if ($buteur->joueur->equipe->id == $match->equipe1->id || $buteur->joueur->selection->id == $match->equipe1->id): ?>
+			<?php if ($buteur->joueur->equipe->id == $match->equipe1->id || (!empty($buteur->joueur->selection) && $buteur->joueur->selection->id == $match->equipe1->id)): ?>
 				<div class="ss-row ss-medium">
 					<div class="ss-left">
                         <div class="ss-circle">
@@ -123,7 +123,7 @@
                 	</div>
         		<?php endif; ?>
         			<div class="ss-row ss-small">
-        			<?php if ($tireur->joueur->equipe->id == $match->id_equipe1): ?>
+        			<?php if ($tireur->joueur->equipe->id == $match->id_equipe1 || (!empty($tireur->joueur->selection) && $tireur->joueur->selection->id == $match->id_equipe1)): ?>
 	                    <div class="ss-left">
 	                    	<?php if ($tireur->reussi == 1): ?>
 	                    		<div class="ss-circle">
@@ -131,7 +131,7 @@
 	                    		<div class="ss-circle">
 	                    	<?php endif; ?>
 	                        	<?php if ($tireur->joueur->photo): ?>
-		                        	<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($match->equipe1->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($match->equipe1->nom)) . '/' . $tireur->joueur->photo ?>" width="100"/><br>
+		                        	<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($tireur->joueur->equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($tireur->joueur->equipe->nom)) . '/' . $tireur->joueur->photo ?>" width="100"/><br>
 		                        <?php else: ?>
 	                        		<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . 'notfound.png' ?>" width="100"/><br>
 	                        	<?php endif; ?>
@@ -169,7 +169,7 @@
 	                    <div class="ss-right">
 	                        <div class="ss-circle">
 	                        	<?php if ($tireur->joueur->photo): ?>
-		                        	<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($match->equipe2->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($match->equipe2->nom)) . '/' . $tireur->joueur->photo ?>" width="100"/><br>
+		                        	<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . str_replace(' ', '_', strtolower($tireur->joueur->equipe->championnat->nom)) . '/' . str_replace(' ', '_', strtolower($tireur->joueur->equipe->nom)) . '/' . $tireur->joueur->photo ?>" width="100"/><br>
 		                        <?php else: ?>
 	                        		<img src="<?= \Uri::base() . \Config::get('upload.joueurs.path') . '/' . 'notfound.png' ?>" width="100"/><br>
 	                        	<?php endif; ?>
