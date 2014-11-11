@@ -187,7 +187,7 @@
 "Uruguay",,"http://upload.wikimedia.org/wikipedia/fr/thumb/b/b8/Football_Uruguay_federation.svg/langfr-130px-Football_Uruguay_federation.svg.png","Selections Nationales","FIFA",1
 "Venezuela",,"http://upload.wikimedia.org/wikipedia/fr/thumb/5/51/Football_Venezuela_federation.svg/langfr-130px-Football_Venezuela_federation.svg.png","Selections Nationales","FIFA",1
 "Nouvelle-Zelande",,"http://upload.wikimedia.org/wikipedia/fr/thumb/6/6d/Nouvelle_Z%C3%A9lande_football_logo.png/130px-Nouvelle_Z%C3%A9lande_football_logo.png","Selections Nationales","FIFA",1
-"Allemagne",,"http://upload.wikimedia.org/wikipedia/fr/e/e3/Logo_mannschaft_2014.jpg","Selections Nationales","FIFA",1
+"Allemagne",,"http://upload.wikimedia.org/wikipedia/de/thumb/e/e3/DFBEagle.svg/150px-DFBEagle.svg.png","Selections Nationales","FIFA",1
 "Angleterre",,"http://upload.wikimedia.org/wikipedia/fr/thumb/7/79/Football_Angleterre_maillot.png/130px-Football_Angleterre_maillot.png","Selections Nationales","FIFA",1
 "Autriche",,"http://upload.wikimedia.org/wikipedia/fr/thumb/c/ca/Football_Autriche_maillot.svg/langfr-130px-Football_Autriche_maillot.svg.png","Selections Nationales","FIFA",1
 "Belgique",,"http://upload.wikimedia.org/wikipedia/fr/thumb/0/03/URBSFA.jpg/130px-URBSFA.jpg","Selections Nationales","FIFA",1
@@ -214,3 +214,45 @@
 "Suisse",,"http://upload.wikimedia.org/wikipedia/fr/thumb/d/d9/Football_Suisse_federation.svg/langfr-130px-Football_Suisse_federation.svg.png","Selections Nationales","FIFA",1
 "Turquie",,"http://upload.wikimedia.org/wikipedia/fr/thumb/0/0c/Tff.png/130px-Tff.png","Selections Nationales","FIFA",1
 "Suede",,"http://upload.wikimedia.org/wikipedia/fr/thumb/0/05/Football_Su%C3%A8de_federation.svg/langfr-130px-Football_Su%C3%A8de_federation.svg.png","Selections Nationales","FIFA",1
+"Atalanta Bergame",,"http://upload.wikimedia.org/wikipedia/it/thumb/8/81/Logo_Atalanta_Bergamo.svg/140px-Logo_Atalanta_Bergamo.svg.png","Serie A","Italie",0
+"Cagliari Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/9/96/Cagliaricalciostemma.svg/140px-Cagliaricalciostemma.svg.png","Serie A","Italie",0
+"AC Cesena",,"http://upload.wikimedia.org/wikipedia/it/thumb/c/c3/Cesenastemma.png/140px-Cesenastemma.png","Serie A","Italie",0
+"AC Chievo Verona",,"http://upload.wikimedia.org/wikipedia/it/thumb/1/11/Chievostemma.png/140px-Chievostemma.png","Serie A","Italie",0
+"Empoli FC",,"http://upload.wikimedia.org/wikipedia/it/thumb/a/a3/Empoli_FC_1920.png/140px-Empoli_FC_1920.png","Serie A","Italie",0
+"ACF Fiorentina",,"http://upload.wikimedia.org/wikipedia/it/thumb/3/31/Stemma_Ufficiale_ACF_Fiorentina.png/140px-Stemma_Ufficiale_ACF_Fiorentina.png","Serie A","Italie",0
+"Genoa CFC",,"http://upload.wikimedia.org/wikipedia/it/thumb/6/6f/Genoacfcstemma.png/140px-Genoacfcstemma.png","Serie A","Italie",0
+"FC Inter Milan",,"http://upload.wikimedia.org/wikipedia/it/thumb/4/4b/Inter_logo_centenario.svg/140px-Inter_logo_centenario.svg.png","Serie A","Italie",0
+"Juventus FC",,"http://upload.wikimedia.org/wikipedia/it/thumb/0/05/Juventusstemma.png/140px-Juventusstemma.png","Serie A","Italie",0
+"SS Lazio Rome",,"http://upload.wikimedia.org/wikipedia/it/thumb/6/62/Stemma_della_Societ%C3%A0_Sportiva_Lazio.svg/140px-Stemma_della_Societ%C3%A0_Sportiva_Lazio.svg.png","Serie A","Italie",0
+"AC Milan",,"http://upload.wikimedia.org/wikipedia/it/thumb/d/d2/Milanstemma.png/140px-Milanstemma.png","Serie A","Italie",0
+"SSC Napoli",,"http://upload.wikimedia.org/wikipedia/commons/thumb/2/28/S.S.C._Napoli_logo.svg/140px-S.S.C._Napoli_logo.svg.png","Serie A","Italie",0
+"US Citta di Palermo",,"http://upload.wikimedia.org/wikipedia/it/thumb/7/7d/Palermostemma.png/140px-Palermostemma.png","Serie A","Italie",0
+"Parma FC",,"http://upload.wikimedia.org/wikipedia/en/thumb/1/1a/Parma_FC_logo.png/150px-Parma_FC_logo.png","Serie A","Italie",0
+"AS Roma",,"http://upload.wikimedia.org/wikipedia/it/thumb/4/4d/AS_Roma_Logo_2013.svg/140px-AS_Roma_Logo_2013.svg.png","Serie A","Italie",0
+"UC Sampdoria",,"http://upload.wikimedia.org/wikipedia/it/thumb/1/19/Sampdoriastemma.png/140px-Sampdoriastemma.png","Serie A","Italie",0
+"US Sassuolo",,"http://upload.wikimedia.org/wikipedia/it/thumb/a/a4/Ussassuolostemma.svg/140px-Ussassuolostemma.svg.png","Serie A","Italie",0
+"Torino FC",,"http://upload.wikimedia.org/wikipedia/it/thumb/0/04/Torino_FC_logo.svg/140px-Torino_FC_logo.svg.png","Serie A","Italie",0
+"Udinese Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/4/44/Logo_Udinese.png/140px-Logo_Udinese.png","Serie A","Italie",0
+"Hellas Verona FC",,"http://upload.wikimedia.org/wikipedia/it/thumb/c/c9/HellasVeronaFCstemma.png/140px-HellasVeronaFCstemma.png","Serie A","Italie",0
+"AS Avellino 1912",,"http://upload.wikimedia.org/wikipedia/it/thumb/9/96/Asavellino1912stemma.png/140px-Asavellino1912stemma.png","Serie B","Italie",0
+"FC Bari 1908",,"http://upload.wikimedia.org/wikipedia/it/thumb/3/38/Fcbari1908.svg/140px-Fcbari1908.svg.png","Serie B","Italie",0
+"Bologna FC 1909",,"http://upload.wikimedia.org/wikipedia/it/thumb/4/47/Bolognafcstemma.png/140px-Bolognafcstemma.png","Serie B","Italie",0
+"Brescia Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/7/77/BresciaCalciostemma.png/140px-BresciaCalciostemma.png","Serie B","Italie",0
+"Carpi FC 1909",,"http://upload.wikimedia.org/wikipedia/it/thumb/8/8b/Carpistemma.png/140px-Carpistemma.png","Serie B","Italie",0
+"Calcio Catania",,"http://upload.wikimedia.org/wikipedia/it/thumb/8/80/Cataniastemma.png/140px-Cataniastemma.png","Serie B","Italie",0
+"AS Cittadella",,"http://upload.wikimedia.org/wikipedia/it/thumb/2/24/Logo_AS_Cittadella.png/140px-Logo_AS_Cittadella.png","Serie B","Italie",0
+"FC Crotone",,"http://upload.wikimedia.org/wikipedia/it/thumb/2/27/FC_Crotone_Logo.png/140px-FC_Crotone_Logo.png","Serie B","Italie",0
+"Frosinone Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/c/c3/Frosinonestemma.png/140px-Frosinonestemma.png","Serie B","Italie",0
+"US Latina Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/c/c5/USLatina.svg/140px-USLatina.svg.png","Serie B","Italie",0
+"AS Livorno Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/7/73/AS_Livorno_Stemma.png/140px-AS_Livorno_Stemma.png","Serie B","Italie",0
+"Modena FC",,"http://upload.wikimedia.org/wikipedia/it/thumb/c/cf/Modenastemma.png/140px-Modenastemma.png","Serie B","Italie",0
+"AC Perugia",,"http://upload.wikimedia.org/wikipedia/it/thumb/6/6c/Logo_AC_Perugia.png/140px-Logo_AC_Perugia.png","Serie B","Italie",0
+"Delfino Pescara 1936",,"http://upload.wikimedia.org/wikipedia/it/thumb/7/72/Pescarastemma.png/140px-Pescarastemma.png","Serie B","Italie",0
+"FC Pro Vercelli 1892",,"http://upload.wikimedia.org/wikipedia/it/thumb/d/da/Stemmaprovercelli.png/140px-Stemmaprovercelli.png","Serie B","Italie",0
+"Spezia Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/6/6a/Stemma_Spezia_Calcio.png/140px-Stemma_Spezia_Calcio.png","Serie B","Italie",0
+"Ternana",,"http://upload.wikimedia.org/wikipedia/it/thumb/c/c7/Ternanastemma.png/140px-Ternanastemma.png","Serie B","Italie",0
+"Trapani Calcio",,"http://upload.wikimedia.org/wikipedia/it/thumb/5/56/Trapani_Calcio_S.r.l._2010.png/140px-Trapani_Calcio_S.r.l._2010.png","Serie B","Italie",0
+"AS Varese",,"http://upload.wikimedia.org/wikipedia/it/thumb/9/92/AS_Varese_1910_stemma_vettoriale.svg/140px-AS_Varese_1910_stemma_vettoriale.svg.png","Serie B","Italie",0
+"Vicenza Calcio",,"http://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Vicenza_Calcio.svg/140px-Vicenza_Calcio.svg.png","Serie B","Italie",0
+"Virtus Entella",,"http://upload.wikimedia.org/wikipedia/it/thumb/b/b2/Stemma_Virtus_Entella.png/140px-Stemma_Virtus_Entella.png","Serie B","Italie",0
+"SS Virtus Lanciano",,"http://upload.wikimedia.org/wikipedia/it/thumb/6/6b/Virtuslancianostemma.png/140px-Virtuslancianostemma.png","Serie B","Italie",0
