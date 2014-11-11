@@ -221,7 +221,9 @@
 			onSwitchChange: function (event, state){
 				//OUI
 				if (state){
-					$('#rapp_tab').show();
+					if ($('#score_joueur1').val() == $('#score_joueur2').val()){
+						$('#rapp_tab').show();
+					} else alert('Pour effectuer une séance de tirs aux buts, le score doit être nul.');
 				} else {
 					$('#rapp_tab').hide();
 				} 

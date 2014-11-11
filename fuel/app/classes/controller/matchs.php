@@ -745,9 +745,7 @@ class Controller_Matchs extends \Controller_Front
 					// Suppression des anciens tireurs
 					$array_tireurs = array_merge(\Input::post('tireurs-dom'), \Input::post('tireurs-ext'));
 					$this->deleteOldTireurs($match, $array_tireurs);
-				}
-
-				
+				}		
 
 			}//IF TAB
 			
