@@ -14,7 +14,7 @@
 	
 	<!-- DEFIS EN ATTENTE -->
 	<h1 id="new-defis" class="page-header">Vos défis</h1>
-	<?= render('defis/defisattente', array('defis' => $defis)); ?>
+	<?= render('defis/defisattente', array('defis' => $defis, 'new' => $new)); ?>
 
 	<!-- DEFIS ENVOYES -->
 	<h1 id="defis-env" class="page-header">Vos défis envoyés</h1>
