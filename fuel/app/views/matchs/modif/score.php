@@ -72,7 +72,7 @@
 				</div>
 			<?php else: ?>
 				<!-- SCORE -->
-				<div class="row tab-score">
+				<div class="row tab-score" style="display:none;">
 					<div class="col-md-6">
 						<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" placeholder="Score J1">
 					</div>
@@ -82,7 +82,7 @@
 				</div>
 
 				<!-- DETAILLE -->
-				<div class="row tab-detaille" style="display:none;">
+				<div class="row tab-detaille">
 					<div class="col-md-6">
 						<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" value="<?php if (!empty($nb_tireurs_dom)): echo $nb_tireurs_dom; endif; ?>" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
 					</div>
@@ -107,17 +107,17 @@
 												<?php if ($match->equipe1->isSelection == 0): ?>
 													<?php foreach ($match->equipe1->joueurs as $joueur): ?>
 														<?php if ($joueur->id == $tireur->id_joueur): ?>
-															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php else: ?>
-															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php endif; ?>
 													<?php endforeach; ?>
 												<?php else: ?>
 													<?php foreach ($match->equipe1->selectionne as $joueur): ?>
 														<?php if ($joueur->id == $tireur->id_joueur): ?>
-															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php else: ?>
-															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php endif; ?>
 													<?php endforeach; ?>
 												<?php endif; ?>
@@ -150,17 +150,17 @@
 												<?php if ($match->equipe2->isSelection == 0): ?>
 													<?php foreach ($match->equipe2->joueurs as $joueur): ?>
 														<?php if ($joueur->id == $tireur->id_joueur): ?>
-															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php else: ?>
-															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php endif; ?>
 													<?php endforeach; ?>
 												<?php else: ?>
 													<?php foreach ($match->equipe2->selectionne as $joueur): ?>
 														<?php if ($joueur->id == $tireur->id_joueur): ?>
-															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>" selected><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php else: ?>
-															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?> - <?= ucfirst($joueur->prenom) ?></option>
+															<option value="<?= $joueur->id ?>"><?= strtoupper($joueur->nom) ?>  <?= ucfirst($joueur->prenom) ?></option>
 														<?php endif; ?>
 													<?php endforeach; ?>
 												<?php endif; ?>
