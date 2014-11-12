@@ -68,6 +68,7 @@
 			}
 		});
 
+		// Switch TAB
 		$('#tab').bootstrapSwitch({
 			size: 'normal',
 			onText: 'Oui',
@@ -78,7 +79,10 @@
 				if (state){
 					if ($('#score_joueur1').val() == $('#score_joueur2').val()){
 						$('#rapp_tab').show();
-					} else alert('Pour effectuer une séance de tirs aux buts, le score doit être nul.');
+					} else {
+						alert('Pour effectuer une séance de tirs aux buts, le score doit être nul.');
+						$('#tab').bootstrapSwitch('state', false);
+					}
 				} else {
 					$('#rapp_tab').hide();
 				} 
@@ -125,31 +129,6 @@
 			resetAll ($('.list-buteurs-defier > div').length, $('.list-tireurs-defier > div').length, '#buteurs-ext-', '#tireurs-ext-');
 		});
 
-		function resetAll (nb_element_buteurs, nb_element_tireurs, select_buteurs, select_tireurs){
-			for (var i = 1; i <= nb_element_buteurs; i++){
-				select = $(select_buteurs+i);
-				select.html('');
-				select.select2('val', '');
-				select.append('<option></option>');
-				select.select2({
-					placeholder: "Selectionnez un joueur",
-					width: '230px'
-				});
-			}
-
-			for (var i = 1; i <= nb_element_tireurs; i++){
-				select = $(select_tireurs+i);
-				select.html('');
-				select.select2('val', '');
-				select.append('<option></option>');
-				select.select2({
-					placeholder: "Tireur #"+i,
-					width: '140px'
-				});
-			}
-
-			$('input:submit').attr('disabled', true);
-		}
 
 		/**
 		 * afficherEquipes
@@ -197,34 +176,6 @@
 			resetButeurs ($('.list-buteurs-defier > div').length, $('#form_equipe_defier').val(), '#buteurs-ext-');
 			resetTireurs($('.list-tireurs-defier > div').length, $('#form_equipe_defier').val(), '#tireurs-ext-');
 		});
-
-		/**
-		 * resetButeurs
-		 * Change le noms des buteurs dans les listes déroulantes
-		 *
-		 * @param int nb_element
-		 * @param int idEquipe
-		 * @param String select
-		 */
-		function resetButeurs (nb_element, idEquipe, select){
-			for (var i = 1; i <= nb_element; i++){
-				afficherJoueurs(idEquipe, $(select+i), 'but');
-			}
-		}
-
-		/**
-		 * resetTireurs
-		 * Change les nomrs des tireurs dans les listes déroulantes
-		 *
-		 * @param int nb_element
-		 * @param int idEquipe
-		 * @param String select
-		 */
-		function resetTireurs (nb_element, idEquipe, select){
-			for (var i = 1; i <= nb_element; i++){
-				afficherJoueurs(idEquipe, $(select+i), 'tir_reset');
-			}
-		}
 
 		/**
 		 * ClickEquipe
@@ -383,7 +334,7 @@
 						}
 						joueur = data;
 						for (var i in joueur){
-							select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
+							select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
 						}
 					}
 				},
@@ -503,3 +454,4 @@
 		}
 	});
 </script>
+<?= \Asset::js('helper/matchs/resetAll.js'); ?>
