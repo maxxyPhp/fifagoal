@@ -10,174 +10,17 @@
 
 		<!-- DEFIEUR -->
 		<div class="col-md-4">
-			<div class="thumbnail-profil">
-				<?php if ($photo_defieur): ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defieur->photo ?>" alt="<?= $defi->defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
-				<?php else: ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi->defieur->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
-				<?php endif; ?>
-			</div>	
-			<input type="hidden" name="joueur1" value="<?= $defi->defieur->id ?>">
-
-			<!-- Div championnat -->
-			<div class="form-group animated fadeInUp">
-				<div class="col-sm-10">
-					<select id="form_championnat_defieur">
-						<option></option>
-						<?php foreach ($pays as $pay): ?>
-							<optgroup label="<?= $pay->nom ?>">
-							<?php foreach ($championnats as $championnat): ?>
-								<?php if ($championnat->id_pays == $pay->id): ?>
-									<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
-								<?php endif; ?>
-							<?php endforeach; ?>
-							</optgroup>
-						<?php endforeach; ?>
-					</select>
-				</div>
-			</div>
-
-			<!-- Div équipes -->
-			<div class="form-group" style="display:none;" id="div_equipes_defieur">
-				<div class="col-sm-10">
-					<select id="form_equipe_defieur" name="id_equipe_defieur">
-						<option></option>
-					</select>
-				</div>
-			</div>
-
-			<!-- Div buteurs -->
-			<div class="list-buteurs-defieur" style="display:none;"></div>
-
-			<div class="form-group" style="display:none;" id="div_joueurs_defieur">
-				<div class="col-sm-10">
-					<select id="form_joueur_defieur" name="id_joueur_defieur">
-						<option></option>
-					</select>
-				</div>
-			</div>
+			<?= render('matchs/add/defieur', array('photo_defieur' => $photo_defieur, 'defi' => $defi, 'pays' => $pays, 'championnats' => $championnats)); ?>
 		</div>
 
 		<!-- SCORE -->
 		<div class="col-md-4">
-			<!-- Logos equipes -->
-			<div class="row">
-				<div class="col-md-4 club club_defieur"></div>
-				<div class="col-md-4" style="text-align:center;"><h1 style="display:inline-block;">vs</h1></div>
-				<div class="col-md-4 club club_defier"></div>
-			</div>
-
-			<div class="score" style="display:none;">
-				<div class="row"><h2 class="center-block center">Score</h2></div>
-				<div class="row">
-					<div class="col-md-6">
-						<input type="number" class="form-control" id="score_joueur1" name="score_joueur_1" min="0" max="20" value="0">
-					</div>
-					<div class="col-md-6">
-						<input type="number" class="form-control" id="score_joueur2" name="score_joueur_2" min="0" max="20" value="0">
-					</div>
-				</div>
-
-				<div class="center-block center" style="margin-top:10px;">
-					<input type="checkbox" name="prolongation" id="prolong">
-				</div>
-
-				<div class="center-block center" style="margin-top:10px;">
-					<input type="checkbox" name="tab" id="tab">
-				</div>
-
-				<div id="rapp_tab" class="center-block center" style="display:none;margin-top:10px;">
-					<div class="row"><h3 class="center-block center">Tirs aux buts</h3></div>
-					<a class="btn btn-primary btn-lg btn-score-tab" data-mode="score"><i class="fa fa-tag fa-2x pull-left"></i> Score</a>
-					<a class="btn btn-primary btn-lg btn-score-tab" data-mode="detaille"><i class="fa fa-newspaper-o fa-2x pull-left"></i> Descriptif détaillé</a>
-
-					<input type="hidden" id="mode_tab" name="mode_tab">
-					<!-- SCORE -->
-					<div class="row tab-score" style="display:none;">
-						<div class="col-md-6">
-							<input type="number" class="form-control" id="tab_joueur1" name="tab_joueur_1" min="3" max="20" placeholder="Score J1">
-						</div>
-						<div class="col-md-6">
-							<input type="number" class="form-control" id="tab_joueur2" name="tab_joueur_2" min="3" max="20" placeholder="Score J2">
-						</div>
-					</div>
-
-					<!-- DETAILLE -->
-					<div class="row tab-detaille" style="display:none;">
-						<div class="col-md-6">
-							<input type="number" class="form-control" id="score_tab_joueur1" name="score_tab_joueur_1" min="3" max="20" placeholder="Nb tirs" data-toggle="popover" data-trigger="focus" title="Attention" data-content="Les cases des TAB permettent d'indiquer le nombre de tirs de chaque équipe, et non le score. Vous pourrez ensuite indiquer si certains joueurs ont loupés leurs tirs ou non. Il faut minimum trois tirs pour gagner une séance de TAB.">
-						</div>
-						<div class="col-md-6">
-							<input type="number" class="form-control" id="score_tab_joueur2" name="score_tab_joueur_2" min="3" max="20" placeholder="Nb tirs">
-						</div>
-					</div>
-
-					<div class="row tab-tireurs-detail" style="margin-top:10px;">
-						<div class="col-md-6">
-							<div class="list-tireurs-defieur" style="display:none;"></div>
-						</div>
-						<div class="col-md-6">
-							<div class="list-tireurs-defier" style="display:none;"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-
-			<div class="row valid_match">
-				<input type="submit" name="add" value="Valider le match" class="btn btn-primary btn-lg btn-block" disabled="disabled">
-			</div>
+			<?= render('matchs/add/score'); ?>
 		</div>
-
 
 		<!-- DEFIER -->
 		<div class="col-md-4 center-block">
-			<div class="thumbnail-profil">
-				<?php if ($photo_defier): ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . $photo_defier->photo ?>" alt="<?= $defi->defier->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
-				<?php else: ?>
-					<img src="<?= \Uri::base() . \Config::get('users.photo.path') . 'notfound.png' ?>" alt="<?= $defi->defier->username ?>" class="img-thumbnail img-responsive center-block img-profil-rapport animated fadeInUp" width="120px" />
-				<?php endif; ?>
-			</div>
-			<input type="hidden" name="joueur2" value="<?= $defi->defier->id ?>">
-
-			<!-- Div championnat -->
-			<div class="form-group animated fadeInUp center-block">
-				<div class="col-sm-10">
-					<select id="form_championnat_defier">
-						<option></option>
-						<?php foreach ($pays as $pay): ?>
-							<optgroup label="<?= $pay->nom ?>">
-							<?php foreach ($championnats as $championnat): ?>
-								<?php if ($championnat->id_pays == $pay->id): ?>
-									<option value="<?= $championnat->id ?>"><?= $championnat->nom ?></option>
-								<?php endif; ?>
-							<?php endforeach; ?>
-							</optgroup>
-						<?php endforeach; ?>
-					</select>
-				</div>
-			</div>
-
-			<!-- Div equipes -->
-			<div class="form-group" style="display:none;" id="div_equipes_defier">
-				<div class="col-sm-10">
-					<select id="form_equipe_defier" name="id_equipe_defier">
-						<option></option>
-					</select>
-				</div>
-			</div>
-
-			<!-- Div buteurs -->
-			<div class="list-buteurs-defier" style="display:none;"></div>
-
-			<div class="form-group" style="display:none;" id="div_joueurs_defier">
-				<div class="col-sm-10">
-					<select id="form_joueur_defier" name="id_joueur_defier">
-						<option></option>
-					</select>
-				</div>
-			</div>
+			<?= render('matchs/add/defier', array('photo_defier' => $photo_defier, 'defi' => $defi, 'pays' => $pays, 'championnats' => $championnats)); ?>
 		</div>
 		<?= \Form::close(); ?>
 	</div>
@@ -223,7 +66,10 @@
 				if (state){
 					if ($('#score_joueur1').val() == $('#score_joueur2').val()){
 						$('#rapp_tab').show();
-					} else alert('Pour effectuer une séance de tirs aux buts, le score doit être nul.');
+					} else {
+						alert('Pour effectuer une séance de tirs aux buts, le score doit être nul.');
+						$('#tab').bootstrapSwitch('state', false);
+					}
 				} else {
 					$('#rapp_tab').hide();
 				} 
@@ -260,32 +106,6 @@
 			$('.logo_club_defier').remove();
 			resetAll ($('.list-buteurs-defier > div').length, $('.list-tireurs-defier > div').length, '#buteurs-ext-', '#tireurs-ext-');
 		});
-
-		function resetAll (nb_element_buteurs, nb_element_tireurs, select_buteurs, select_tireurs){
-			for (var i = 1; i <= nb_element_buteurs; i++){
-				select = $(select_buteurs+i);
-				select.html('');
-				select.select2('val', '');
-				select.append('<option></option>');
-				select.select2({
-					placeholder: "Selectionnez un joueur",
-					width: '230px'
-				});
-			}
-
-			for (var i = 1; i <= nb_element_tireurs; i++){
-				select = $(select_tireurs+i);
-				select.html('');
-				select.select2('val', '');
-				select.append('<option></option>');
-				select.select2({
-					placeholder: "Tireur #"+i,
-					width: '140px'
-				});
-			}
-
-			$('input:submit').attr('disabled', true);
-		}
 
 		/**
 		 * afficherEquipes
@@ -342,33 +162,7 @@
 			resetTireurs($('.list-tireurs-defier > div').length, $('#form_equipe_defier').val(), '#tireurs-ext-');
 		});
 
-		/**
-		 * resetButeurs
-		 * Change le noms des buteurs dans les listes déroulantes
-		 *
-		 * @param int nb_element
-		 * @param int idEquipe
-		 * @param String select
-		 */
-		function resetButeurs (nb_element, idEquipe, select){
-			for (var i = 1; i <= nb_element; i++){
-				afficherJoueurs(idEquipe, $(select+i), 'but');
-			}
-		}
-
-		/**
-		 * resetTireurs
-		 * Change les nomrs des tireurs dans les listes déroulantes
-		 *
-		 * @param int nb_element
-		 * @param int idEquipe
-		 * @param String select
-		 */
-		function resetTireurs (nb_element, idEquipe, select){
-			for (var i = 1; i <= nb_element; i++){
-				afficherJoueurs(idEquipe, $(select+i), 'tir_reset');
-			}
-		}
+		
 
 		/**
 		 * ClickEquipe
@@ -524,7 +318,7 @@
 							}
 							joueur = data;
 							for (var i in joueur){
-								select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' - '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
+								select.append('<option value="'+joueur[i]['id']+'">'+joueur[i]['nom'].toUpperCase()+' '+joueur[i]['prenom'].charAt(0).toUpperCase() + joueur[i]['prenom'].substring(1).toLowerCase()+'</option>');
 							}
 						}
 					},
@@ -621,11 +415,6 @@
 				$('.'+listeJoueur).show();
 			}
 		}
-
-		// $('body').on('change', '.tireurs', function(){
-		// 	id = $(this).attr('id');
-		// 	console.log(id);
-		// 	console.log($('#'+id).val());
-		// });
 	});
 </script>
+<?= \Asset::js('helper/matchs/resetAll.js'); ?>
